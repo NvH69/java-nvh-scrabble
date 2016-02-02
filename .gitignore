@@ -1,0 +1,7 @@
+/bin/*
+/.idea/*
+/src/main/resources/*
+*.iml
+*.swp
+*.jar
+
