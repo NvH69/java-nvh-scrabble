@@ -1,7 +1,7 @@
 package com.nvh.controller;
 
-import com.nvh.model.Dictionnaire;
-import com.nvh.model.SampledSon;
+import com.nvh.model.Dictionary;
+import com.nvh.model.SampledSound;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -51,12 +51,12 @@ public class Timer extends Thread implements Serializable {
                 nowTimer = System.currentTimeMillis();
                 c.setTimeInMillis(this.dt - nowTimer);
                 if (c.getTimeInMillis() < 20000 && !flagtictac)
-                    new SampledSon(Dictionnaire.chemin + "/sons/timer_short.wav").play();
+                    new SampledSound(Dictionary.chemin + "/sounds/timer_short.wav").play();
                 if (c.getTimeInMillis() < 0) {
                     tempLcd.delete(0, 7);
                     //jouer son
                     flagtictac = true;
-                    new SampledSon(Dictionnaire.chemin + "/sons/ding.wav").play();
+                    new SampledSound(Dictionary.chemin + "/sounds/ding.wav").play();
                 }
                 if (c.get(Calendar.MINUTE) > 9) {
                     tempLcd.append(c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));

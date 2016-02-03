@@ -2,9 +2,9 @@ package com.nvh.controller;
 
 import com.nvh.controller.Scrabble.Mot;
 import com.nvh.controller.Scrabble.Solution;
-import com.nvh.model.Dictionnaire;
-import com.nvh.view.FenetrePrincipale;
-import com.nvh.view.Main;
+import com.nvh.model.Dictionary;
+import com.nvh.view.MainWindow;
+import com.nvh.Launcher;
 
 import java.util.*;
 
@@ -13,18 +13,18 @@ public class Solve extends Observable {
     public static List<Solution> toutesSolutions = new ArrayList<Solution>();
     static ArrayList<Character> tirageBase = new ArrayList<Character>();
     static List<Solution> allSolutions = new ArrayList<Solution>();
-    private static Grille g;
+    private static Grid g;
     private static String t;
     public static int indexDico;
 
     public Solve(Scrabble partie) {
         g = partie.getGrille();
         t = partie.getTirage();
-        addObserver((Observer) FenetrePrincipale.frameSolutions);
-        addObserver((Observer) FenetrePrincipale.frameProgress);
-        addObserver((Observer) Main.f);
+        addObserver((Observer) MainWindow.frameSolutions);
+        addObserver((Observer) MainWindow.frameProgress);
+        addObserver((Observer) Launcher.f);
 
-        FenetrePrincipale.frameProgress.setVisible(true);
+        MainWindow.frameProgress.setVisible(true);
 
         for (int i = 0; i < t.length(); i++) {
             tirageBase.add(t.charAt(i));
@@ -34,7 +34,7 @@ public class Solve extends Observable {
         toutesSolutions = new ArrayList<Solution>();
 
 
-        for (String mot : Dictionnaire.dico) {
+        for (String mot : Dictionary.dico) {
             {
                 if (mot == null || mot.length() < 2) break;
                 setChanged();
@@ -61,8 +61,8 @@ public class Solve extends Observable {
                 //2nd filtre : exhaustif
                 for (int x = 0; x < 15; x++)
                     for (int y = 0; y < 15; y++) {
-                        motHToTest = Main.partie.new Mot(mot, x, y, true);
-                        motVToTest = Main.partie.new Mot(mot, x, y, false);
+                        motHToTest = Launcher.partie.new Mot(mot, x, y, true);
+                        motVToTest = Launcher.partie.new Mot(mot, x, y, false);
 
                         if (y >= g.getOptiRaccords()[2] && y <= g.getOptiRaccords()[3]) {
                             retourMot = motHToTest.motPossible(t, g);
@@ -87,7 +87,7 @@ public class Solve extends Observable {
             indexDico++;
         }
 
-        FenetrePrincipale.frameProgress.setVisible(true);
+        MainWindow.frameProgress.setVisible(true);
 
         Collections.sort(toutesSolutions);
         //toutesSolutions.add(0,partie.new Solution(0, partie.new Mot("-------",  "A1"), new String[2]));

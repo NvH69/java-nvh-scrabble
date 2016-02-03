@@ -12,10 +12,10 @@ public class Definitions {
     public Definitions() {
 
         int i = 0;
-        System.out.println(Dictionnaire.chemin + "/dicos/definitions");
+        System.out.println(Dictionary.chemin + "/dictionaries/definitions");
 
         try {
-            BufferedReader in = new BufferedReader(new FileReader(Dictionnaire.chemin + "/dicos/definitions.txt"));
+            BufferedReader in = new BufferedReader(new FileReader(Dictionary.chemin + "/dictionaries/definitions.txt"));
 
             while ((line = in.readLine()).equals("*") != true) {
 
