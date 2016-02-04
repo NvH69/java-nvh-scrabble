@@ -1,11 +1,12 @@
-package com.nvh.view.internaldialpanes;
+package com.nvh.scrabble.view.internaldialpanes;
 
-import com.nvh.controller.Scrabble;
-import com.nvh.model.Dictionary;
-import com.nvh.model.Serializer;
-import com.nvh.view.internalwindows.GameWindow;
-import com.nvh.view.internalwindows.BoardWindow;
-import com.nvh.Launcher;
+import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.model.Dictionary;
+import com.nvh.scrabble.model.Serializer;
+import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.view.MainWindow;
+import com.nvh.scrabble.view.internalwindows.GameWindow;
+import com.nvh.scrabble.view.internalwindows.BoardWindow;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,8 +18,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
-
-import static com.nvh.view.MainWindow.*;
 
 public class FileFrame extends JFrame {
     private static final long serialVersionUID = -4105494649356150949L;
@@ -125,15 +124,15 @@ public class FileFrame extends JFrame {
                     partie.copyOf(partieChargee);
                     //dessine la grille
                     BoardWindow.displayGrille(partie.getGrille(),
-                            frameGrille);
+                            MainWindow.frameGrille);
 
                     //invalide les menus de d�marrage si la partie est commenc�e
                     if (partie.isPartieEncours()) {
-                        mntmAjouterJoueur.setEnabled(false);
-                        mntmLancer.setEnabled(false);
-                        if (partie.isAutoTop()) chckbxmntmTopAutomatique.setSelected(true);
-                        if (partie.isAuto()) rdbtnmntmTirageAutomatique.setSelected(true);
-                        else rdbtnmntmTirageManuel.setSelected(true);
+                        MainWindow.mntmAjouterJoueur.setEnabled(false);
+                        MainWindow.mntmLancer.setEnabled(false);
+                        if (partie.isAutoTop()) MainWindow.chckbxmntmTopAutomatique.setSelected(true);
+                        if (partie.isAuto()) MainWindow.rdbtnmntmTirageAutomatique.setSelected(true);
+                        else MainWindow.rdbtnmntmTirageManuel.setSelected(true);
 
                     }
                     Launcher.phase = 0;

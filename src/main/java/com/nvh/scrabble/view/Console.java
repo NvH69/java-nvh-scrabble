@@ -1,7 +1,7 @@
-package com.nvh.view;
+package com.nvh.scrabble.view;
 
-import com.nvh.controller.Grid;
-import com.nvh.controller.Scrabble;
+import com.nvh.scrabble.model.Grid;
+import com.nvh.scrabble.model.Scrabble;
 
 public  class Console 
 {

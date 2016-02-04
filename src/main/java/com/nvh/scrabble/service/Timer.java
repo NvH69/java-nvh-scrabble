@@ -1,7 +1,6 @@
-package com.nvh.controller;
+package com.nvh.scrabble.service;
 
-import com.nvh.model.Dictionary;
-import com.nvh.model.SampledSound;
+import com.nvh.scrabble.model.Dictionary;
 
 import java.io.Serializable;
 import java.util.Calendar;

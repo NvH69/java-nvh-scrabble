@@ -1,8 +1,8 @@
-package com.nvh.view.internalwindows;
+package com.nvh.scrabble.view.internalwindows;
 
-import com.nvh.controller.Solve;
-import com.nvh.model.Dictionary;
-import com.nvh.view.MainWindow;
+import com.nvh.scrabble.model.Dictionary;
+import com.nvh.scrabble.service.Solve;
+import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

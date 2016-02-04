@@ -1,26 +1,22 @@
-package com.nvh;
+package com.nvh.scrabble;
 
-import com.nvh.controller.*;
-import com.nvh.controller.Scrabble.Solution;
-import com.nvh.controller.Timer;
-import com.nvh.model.Definitions;
-import com.nvh.model.Dictionary;
-import com.nvh.model.SampledSound;
-import com.nvh.model.Serializer;
-import com.nvh.view.MainWindow;
-import com.nvh.view.internaldialpanes.ConfirmationPane;
-import com.nvh.view.internaldialpanes.ManualDrawingPane;
-import com.nvh.view.internalwindows.GameWindow;
-import com.nvh.view.internalwindows.ScoreWindow;
-import com.nvh.view.internalwindows.SolutionWindow;
+import com.nvh.scrabble.model.*;
+import com.nvh.scrabble.model.Scrabble.Solution;
+import com.nvh.scrabble.service.SampledSound;
+import com.nvh.scrabble.view.MainWindow;
+import com.nvh.scrabble.view.internalwindows.ScoreWindow;
+import com.nvh.scrabble.service.Solve;
+import com.nvh.scrabble.service.Timer;
+import com.nvh.scrabble.view.internaldialpanes.ConfirmationPane;
+import com.nvh.scrabble.view.internaldialpanes.ManualDrawingPane;
+import com.nvh.scrabble.view.internalwindows.GameWindow;
+import com.nvh.scrabble.view.internalwindows.SolutionWindow;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observer;
-
-import static com.nvh.view.MainWindow.*;
 
 
 public class Launcher {
@@ -56,12 +52,12 @@ public class Launcher {
         f = new MainWindow(partie);
         f.setVisible(true);
 
-        partie.addObserver((Observer) frameScores);
-        partie.addObserver((Observer) lblComm);
-        partie.addObserver((Observer) frameSolutions);
-        partie.addObserver((Observer) frameGrille);
-        partie.addObserver((Observer) lettersPane);
-        partie.addObserver((Observer) frameProgress);
+        partie.addObserver((Observer) MainWindow.frameScores);
+        partie.addObserver((Observer) MainWindow.lblComm);
+        partie.addObserver((Observer) MainWindow.frameSolutions);
+        partie.addObserver((Observer) MainWindow.frameGrille);
+        partie.addObserver((Observer) MainWindow.lettersPane);
+        partie.addObserver((Observer) MainWindow.frameProgress);
 
 
         while (!partie.isPartieEncours())
@@ -72,17 +68,17 @@ public class Launcher {
             switch (phase) {
                 case 0: //attente de l'utlisateur pour suite jeu
 
-                    mainBtn.setText("Tour suivant >>>");
-                    mntmSauvegarder.setEnabled(true);
-                    mntmReprendre.setEnabled(true);
+                    MainWindow.mainBtn.setText("Tour suivant >>>");
+                    MainWindow.mntmSauvegarder.setEnabled(true);
+                    MainWindow.mntmReprendre.setEnabled(true);
                     if (!partie.lettresSuffisantes()) partie.setPartieEncours(false);
                     if (partie.isAuto() && partie.isAutoTop() && partie.getNbJoueurs() == 1) phase++;
                     break;
 
                 case 1: //tirage
                     //d�sactivation sauvegarde et ajout nvx joueurs
-                    mntmSauvegarder.setEnabled(false);
-                    mntmReprendre.setEnabled(false);
+                    MainWindow.mntmSauvegarder.setEnabled(false);
+                    MainWindow.mntmReprendre.setEnabled(false);
 
                     //passage � auto si nb lettres insuffisant pour continuer manuel
                     if (partie.getTour() > 1)
@@ -101,19 +97,19 @@ public class Launcher {
 
                     if (!partie.isAuto() || !partie.isAutoTop() || partie.getNbJoueurs() > 1)
                         new ConfirmationPane(partie);
-                    mainBtn.setText("");
-                    mainBtn.setEnabled(false);
+                    MainWindow.mainBtn.setText("");
+                    MainWindow.mainBtn.setEnabled(false);
                     new Solve(partie);
                     phase++;
                     break;
 
                 case 2: //recherche termin�e
-                    mainBtn.setText("Choisir joueur");
-                    mainBtn.setEnabled(true);
+                    MainWindow.mainBtn.setText("Choisir joueur");
+                    MainWindow.mainBtn.setEnabled(true);
                     SolutionWindow.btnVoir.setText("Voir toutes les solutions");
-                    frameProgress.dispose();
+                    MainWindow.frameProgress.dispose();
                     if (partie.isAutoTop() && partie.getNbJoueurs() == 1) {
-                        mainBtn.doClick();
+                        MainWindow.mainBtn.doClick();
                         SolutionWindow.btnVoir.doClick();
                     }
 
@@ -122,23 +118,23 @@ public class Launcher {
 
                     while (currentTurn != partie.getTour()) //controle de validation des coups par utilisateurs
                     {
-                        lblChrono.setText(partie.getMainTimer().getLcd());
+                        MainWindow.lblChrono.setText(partie.getMainTimer().getLcd());
                         boolean controleTousJoueurs = true;
                         //controle si tous les joueurs ont eu un score :
                         for (int i = 1; i < partie.getNbJoueurs(); i++) {
                             if (partie.getJoueur(i).getNbCoupsJoues() < partie.getTour()) controleTousJoueurs = false;
                         }
                         if (controleTousJoueurs) //si tous les joueurs ont valid� leur choix
-                            if (partie.isAutoTop()) mainBtn.doClick(); //top jou� auto
+                            if (partie.isAutoTop()) MainWindow.mainBtn.doClick(); //top jou� auto
                             else if (!partie.isAutoTop())
-                                mainBtn.setText("CHOISIR TOP"); //top � choisir
+                                MainWindow.mainBtn.setText("CHOISIR TOP"); //top � choisir
                         //sinon :
                         if (!controleTousJoueurs)
-                            if (ScoreWindow.tableS.getSelectedRow() > -1 && ScoreWindow.tableS.getSelectedRow() < partie.getNbJoueurs())
+                            if (ScoreWindow.scoreTable.getSelectedRow() > -1 && ScoreWindow.scoreTable.getSelectedRow() < partie.getNbJoueurs())
                                 if (SolutionWindow.table.getSelectedRow() > -1)
-                                    mainBtn.setText("VALIDER");
+                                    MainWindow.mainBtn.setText("VALIDER");
                                 else
-                                    mainBtn.setText("Choisir mot");
+                                    MainWindow.mainBtn.setText("Choisir mot");
                     }
                     //sauvegarde auto en fin de tour
                     try {
@@ -153,6 +149,6 @@ public class Launcher {
             }
         }
         //si partie n'est plus en cours (par manque de lettres)
-        mainBtn.setText("Partie termin�e");
+        MainWindow.mainBtn.setText("Partie termin�e");
     }
 }

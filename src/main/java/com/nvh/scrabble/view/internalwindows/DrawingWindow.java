@@ -1,4 +1,4 @@
-package com.nvh.view.internalwindows;
+package com.nvh.scrabble.view.internalwindows;
 
 import javax.swing.*;
 import java.awt.*;
