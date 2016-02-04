@@ -1,6 +1,4 @@
-package com.nvh.model;
-
-import com.nvh.controller.Scrabble;
+package com.nvh.scrabble.model;
 
 import java.io.*;
 

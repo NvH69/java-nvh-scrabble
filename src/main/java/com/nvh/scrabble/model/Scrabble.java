@@ -1,6 +1,4 @@
-package com.nvh.controller;
-
-import com.nvh.model.Dictionary;
+package com.nvh.scrabble.model;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,7 +14,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     private int tour;
     private boolean auto, autoTop, partieEncours;
     private long temps;
-    private Timer mainTimer;
+    private com.nvh.scrabble.service.Timer mainTimer;
 
 
     public static final String posLettres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
@@ -29,7 +27,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     // * : joker    # : raccord possible
 
     public Scrabble(Grid g, ArrayList<Player> players, boolean auto, boolean autoTop, long temps, ArrayList<Character> lettres,
-                    int tour, String tirage, ArrayList<String> histoTirage, ArrayList<Solution> Solutions, boolean partieEncours, Timer mainTimer) {
+                    int tour, String tirage, ArrayList<String> histoTirage, ArrayList<Solution> Solutions, boolean partieEncours, com.nvh.scrabble.service.Timer mainTimer) {
         this.g = g;
         this.players = players;
         this.auto = auto;
@@ -40,7 +38,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         this.Solutions = new ArrayList<Solution>();
         this.partieEncours = partieEncours;
         this.autoTop = autoTop;
-        this.mainTimer = new Timer(temps);
+        this.mainTimer = new com.nvh.scrabble.service.Timer(temps);
 
         g.addObserver(this);
 
@@ -127,7 +125,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
     public void setTemps(long temps) {
         this.temps = temps;
-        this.mainTimer = new Timer(temps);
+        this.mainTimer = new com.nvh.scrabble.service.Timer(temps);
     }
 
     public ArrayList<Character> getLettres() {
@@ -187,11 +185,11 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
     }
 
-    public Timer getMainTimer() {
+    public com.nvh.scrabble.service.Timer getMainTimer() {
         return mainTimer;
     }
 
-    public void setMainTimer(Timer mainTimer) {
+    public void setMainTimer(com.nvh.scrabble.service.Timer mainTimer) {
         this.mainTimer = mainTimer;
     }
 

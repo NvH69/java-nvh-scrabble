@@ -1,7 +1,7 @@
-package com.nvh.view.internalwindows;
+package com.nvh.scrabble.view.internalwindows;
 
-import com.nvh.model.Definitions;
-import com.nvh.view.MainWindow;
+import com.nvh.scrabble.model.Definitions;
+import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
 import java.awt.*;

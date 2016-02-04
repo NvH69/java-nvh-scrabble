@@ -1,4 +1,4 @@
-package com.nvh.view.internaldialpanes;
+package com.nvh.scrabble.view.internaldialpanes;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,9 +14,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.nvh.controller.Scrabble;
-import com.nvh.controller.Scrabble.Solution;
-import com.nvh.view.MainWindow;
+import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.view.MainWindow;
 
 public class ConfirmationPane extends JDialog
 {
@@ -63,7 +62,7 @@ public class ConfirmationPane extends JDialog
 	}
 	
 	
-		public ConfirmationPane(Scrabble partie, int j, Solution s) {
+		public ConfirmationPane(Scrabble partie, int j, Scrabble.Solution s) {
 			setTitle("Confirmation");
 		setModal(true);
 		setBounds(600, 460, 469, 193);

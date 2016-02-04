@@ -1,18 +1,17 @@
-package com.nvh.controller;
+package com.nvh.scrabble.service;
 
-import com.nvh.controller.Scrabble.Mot;
-import com.nvh.controller.Scrabble.Solution;
-import com.nvh.model.Dictionary;
-import com.nvh.view.MainWindow;
-import com.nvh.Launcher;
+import com.nvh.scrabble.model.Grid;
+import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.view.MainWindow;
 
 import java.util.*;
 
 public class Solve extends Observable {
 
-    public static List<Solution> toutesSolutions = new ArrayList<Solution>();
+    public static List<Scrabble.Solution> toutesSolutions = new ArrayList<Scrabble.Solution>();
     static ArrayList<Character> tirageBase = new ArrayList<Character>();
-    static List<Solution> allSolutions = new ArrayList<Solution>();
+    static List<Scrabble.Solution> allSolutions = new ArrayList<Scrabble.Solution>();
     private static Grid g;
     private static String t;
     public static int indexDico;
@@ -31,16 +30,16 @@ public class Solve extends Observable {
         }
         partie.getMainTimer().reset();
         indexDico = 0;
-        toutesSolutions = new ArrayList<Solution>();
+        toutesSolutions = new ArrayList<Scrabble.Solution>();
 
 
-        for (String mot : Dictionary.dico) {
+        for (String mot : com.nvh.scrabble.model.Dictionary.dico) {
             {
                 if (mot == null || mot.length() < 2) break;
                 setChanged();
                 notifyObservers((int) (indexDico / 3900));
 
-                Mot motHToTest, motVToTest;
+                Scrabble.Mot motHToTest, motVToTest;
                 StringBuffer motTest = new StringBuffer(mot);
                 String[] retourMot = new String[2];
                 //1er filtre : trouver s�quence manquante sur grille : si NON : pas possible
@@ -67,14 +66,14 @@ public class Solve extends Observable {
                         if (y >= g.getOptiRaccords()[2] && y <= g.getOptiRaccords()[3]) {
                             retourMot = motHToTest.motPossible(t, g);
                             if (retourMot != null)
-                                allSolutions.add((Solution) partie.
+                                allSolutions.add((Scrabble.Solution) partie.
                                         new Solution(motHToTest.getScore(g, retourMot), motHToTest, retourMot));
 
                         }
                         if (x >= g.getOptiRaccords()[0] && x <= g.getOptiRaccords()[1]) {
                             retourMot = motVToTest.motPossible(t, g);
                             if (retourMot != null)
-                                allSolutions.add((Solution) partie.
+                                allSolutions.add((Scrabble.Solution) partie.
                                         new Solution(motVToTest.getScore(g, retourMot), motVToTest, retourMot));
 
                         }
@@ -82,7 +81,7 @@ public class Solve extends Observable {
             }
 
             if (allSolutions != null)
-                for (Solution sol : allSolutions) toutesSolutions.add(sol);
+                for (Scrabble.Solution sol : allSolutions) toutesSolutions.add(sol);
             allSolutions.clear();
             indexDico++;
         }

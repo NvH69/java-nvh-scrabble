@@ -1,7 +1,7 @@
-package com.nvh.view.internaldialpanes;
+package com.nvh.scrabble.view.internaldialpanes;
 
-import com.nvh.view.MainWindow;
-import com.nvh.Launcher;
+import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

@@ -1,7 +1,7 @@
-package com.nvh.controller;
+package com.nvh.scrabble.model;
 
-import com.nvh.controller.Scrabble.Solution;
-import com.nvh.Launcher;
+import com.nvh.scrabble.model.Scrabble.Solution;
+import com.nvh.scrabble.Launcher;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.nvh.controller;
+package com.nvh.scrabble.service;
 
 
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package com.nvh.model;
+package com.nvh.scrabble.service;
 
 import javax.sound.sampled.*;
 import java.io.*;
