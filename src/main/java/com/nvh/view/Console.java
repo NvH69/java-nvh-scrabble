@@ -1,11 +1,11 @@
 package com.nvh.view;
 
-import com.nvh.controller.Grille;
+import com.nvh.controller.Grid;
 import com.nvh.controller.Scrabble;
 
 public  class Console 
 {
-	public static void display(Grille g)
+	public static void display(Grid g)
 	{
 		System.out.print("   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15"+"\n");
 		System.out.print(" ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐"+"\n");  

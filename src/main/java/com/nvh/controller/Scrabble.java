@@ -1,18 +1,18 @@
 package com.nvh.controller;
 
-import com.nvh.model.Dictionnaire;
+import com.nvh.model.Dictionary;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Scrabble extends Observable implements Serializable, Observer {
     private static final long serialVersionUID = 1L;
-    private ArrayList<Joueur> joueurs;
+    private ArrayList<Player> players;
     private String tirage;
 
     private ArrayList<Solution> Solutions;
     private ArrayList<String> histoTirage = new ArrayList<String>();
-    private Grille g;
+    private Grid g;
     private int tour;
     private boolean auto, autoTop, partieEncours;
     private long temps;
@@ -28,10 +28,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
             + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
     // * : joker    # : raccord possible
 
-    public Scrabble(Grille g, ArrayList<Joueur> joueurs, boolean auto, boolean autoTop, long temps, ArrayList<Character> lettres,
+    public Scrabble(Grid g, ArrayList<Player> players, boolean auto, boolean autoTop, long temps, ArrayList<Character> lettres,
                     int tour, String tirage, ArrayList<String> histoTirage, ArrayList<Solution> Solutions, boolean partieEncours, Timer mainTimer) {
         this.g = g;
-        this.joueurs = joueurs;
+        this.players = players;
         this.auto = auto;
         this.temps = temps;
         this.tour = 1;
@@ -53,7 +53,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     public void copyOf(Scrabble aCopier) {
         this.partieEncours = true;
         this.setGrille(aCopier.g);
-        this.setJoueurs(aCopier.joueurs);
+        this.setPlayers(aCopier.players);
         this.auto = aCopier.auto;
         this.autoTop = aCopier.autoTop;
         this.temps = aCopier.temps;
@@ -71,11 +71,11 @@ public class Scrabble extends Observable implements Serializable, Observer {
         notifyObservers();
     }
 
-    public Grille getGrille() {
+    public Grid getGrille() {
         return this.g;
     }
 
-    public void setGrille(Grille aCopier) {
+    public void setGrille(Grid aCopier) {
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++) {
                 this.g.set(x, y, aCopier.get(x, y));
@@ -83,24 +83,24 @@ public class Scrabble extends Observable implements Serializable, Observer {
             }
     }
 
-    public Joueur getJoueur(int i) {
-        return joueurs.get(i);
+    public Player getJoueur(int i) {
+        return players.get(i);
     }
 
-    public ArrayList<Joueur> getAllJoueurs() {
-        return this.joueurs;
+    public ArrayList<Player> getAllJoueurs() {
+        return this.players;
     }
 
     public void addJoueur(String name) {
-        this.joueurs.add(new Joueur(name.toUpperCase(), 0, new ArrayList<Solution>()));
+        this.players.add(new Player(name.toUpperCase(), 0, new ArrayList<Solution>()));
         setChanged();
         notifyObservers();
     }
 
-    public void setJoueurs(ArrayList<Joueur> j) {
-        this.joueurs = new ArrayList<Joueur>();
-        for (Joueur nj : j)
-            this.joueurs.add(nj);
+    public void setPlayers(ArrayList<Player> j) {
+        this.players = new ArrayList<Player>();
+        for (Player nj : j)
+            this.players.add(nj);
         setChanged();
         notifyObservers();
     }
@@ -162,7 +162,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     }
 
     public int getNbJoueurs() {
-        return this.joueurs.size();
+        return this.players.size();
     }
 
 
@@ -424,7 +424,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return this.h;
         }
 
-        public String[] motPossible(String t, Grille g)
+        public String[] motPossible(String t, Grid g)
         // Teste un Mot plac� : renvoie les lettres utilis�es (index 0) et le tirage restant (index1)
         // OU null si impossible
 
@@ -562,7 +562,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             for (String s : tousMots) // parcourir tous les nouveaux mots
                 if (!g.getListeMots().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est form�
                     // v�rif de l'orthographe
-                    if (!Dictionnaire.orthographe(s)) return null;
+                    if (!Dictionary.orthographe(s)) return null;
             //si tous les mots sont corrects
             retour[0] = temp.toString();
             retour[1] = tirageBase.toString();
@@ -594,17 +594,17 @@ public class Scrabble extends Observable implements Serializable, Observer {
             boolean h = this.isHorizontal();
             String reponse = "";
             if (h) {
-                reponse += Grille.coorLettres.charAt(y);
+                reponse += Grid.coorLettres.charAt(y);
                 reponse += x + 1;
             } else {
                 reponse += x + 1;
-                reponse += Grille.coorLettres.charAt(y);
+                reponse += Grid.coorLettres.charAt(y);
             }
 
             return reponse;
         }
 
-        public int getScore(Grille g, String[] sequence) {
+        public int getScore(Grid g, String[] sequence) {
             int pts = 0, pts2 = 0, multi = 1, multi2 = 1;
             int[][] bonusT = g.getBonus();
             boolean bordSup = false, bordInf = false, bordG = false, bordD = false, sensUnique;
@@ -768,8 +768,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (retour[1] == "[]" && getTirage().length() > 6) scr2 = "Scrabble !";
             else scr2 = "";
             if (m.longueur() > 6)
-                return m.nom + " \t| " + "\t" + Grille.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
-            return m.nom + "\t \t| " + "\t" + Grille.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
+                return m.nom + " \t| " + "\t" + Grid.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
+            return m.nom + "\t \t| " + "\t" + Grid.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
         }
 
         public String getTirageRestant() {

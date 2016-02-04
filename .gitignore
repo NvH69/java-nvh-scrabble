@@ -1,6 +1,7 @@
 /bin/*
 /.idea/*
-/src/main/resources/*
+/src/main/resources/savedgames
+/src/main/resources/screenshots
 *.iml
 *.swp
 *.jar
