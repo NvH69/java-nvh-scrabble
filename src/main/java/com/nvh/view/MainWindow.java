@@ -7,7 +7,7 @@ import com.nvh.controller.Solve;
 import com.nvh.view.internaldialpanes.ConfirmationPane;
 import com.nvh.view.internaldialpanes.PlayerDialPane;
 import com.nvh.view.internaldialpanes.FileFrame;
-import com.nvh.view.internaldialpanes.PanelLettres;
+import com.nvh.view.internaldialpanes.LettersPanel;
 import com.nvh.view.internalwindows.*;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class MainWindow extends JFrame implements Observer {
     public static JInternalFrame frameSolutions = new SolutionWindow();
     public static JInternalFrame frameScores = new ScoreWindow();
     public static JFrame frameProgress = new ProgressWindow();
-    public static JTextPane lettersPane = new PanelLettres();
+    public static JTextPane lettersPane = new LettersPanel();
     public static JLabel lblChrono = new JLabel("");
     public static JButton mainBtn = new JButton();
 
