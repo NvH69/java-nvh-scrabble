@@ -27,7 +27,7 @@ public class ProgressWindow extends JFrame implements Observer {
         contentPane.setLayout(null);
 
         bar.setMinimum(0);
-        bar.setMaximum(Dictionary.dico.length - 30000);
+        bar.setMaximum(Dictionary.dictionary.length - 30000);
 
         bar.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         bar.setBounds(0, 0, 270, 35);
@@ -43,7 +43,7 @@ public class ProgressWindow extends JFrame implements Observer {
     @Override
     public void update(Observable obs, Object obj) {
         if (obs instanceof Solve)
-            bar.setValue(Solve.indexDico);
+            bar.setValue(Solve.dictionaryIndex);
 
     }
 }

@@ -9,13 +9,6 @@ public class SampledSound implements Serializable {
     private AudioFormat format;
     private byte[] samples;
 
-    final String[] lettres = new String[]{"Alj�ri.A.", "B�ljik.B.", "Canada.C.", "Dannemark.D.",
-            "�jiptt.E.", "fransse.F.", "graisse.J�.", "ongri.H.", "itali.I.", "jordani.J.",
-            "k�nia.K.", "luxembour.L.", "marok.�m.", "norv�j.N.", "oc�ani.O.", "portugal.P.",
-            "k�b�k.Q.", "roumani.R.", "suisse.�ss.", "Tunizi.T�.", "urugw�.U.", "v�n�zu�la.V.",
-            "walloni.W.", "x�nofon.X.", "yougosslavi. igr�k.", "zambi.Z.", "Djok�r."};
-
-
     public SampledSound(String filename) {
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
@@ -26,7 +19,6 @@ public class SampledSound implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public byte[] getSamples() {
@@ -49,8 +41,6 @@ public class SampledSound implements Serializable {
     public void play() {
         InputStream source = new ByteArrayInputStream(this.getSamples());
 
-        // 100 ms buffer for real time change to the sound stream
-        //int bufferSize = format.getFrameSize() * Math.round(format.getSampleRate() / 10);
         int bufferSize = 1000000;
         byte[] buffer = new byte[bufferSize];
         SourceDataLine line;
@@ -75,7 +65,5 @@ public class SampledSound implements Serializable {
         }
         line.drain();
         line.close();
-
-
     }
 }

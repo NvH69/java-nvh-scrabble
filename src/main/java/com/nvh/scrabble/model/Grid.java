@@ -1,7 +1,7 @@
 package com.nvh.scrabble.model;
 
-import com.nvh.scrabble.model.Scrabble.Mot;
 import com.nvh.scrabble.model.Scrabble.Solution;
+import com.nvh.scrabble.model.Scrabble.Word;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,15 +11,15 @@ import java.util.Observable;
 
 public class Grid extends Observable implements Serializable {
     private static final long serialVersionUID = 6143259766902247495L;
-    private char[][] coor;
+    private char[][] coordinates;
     private int[][] bonus;
     private char[][] undo;
-    private int[] optiRaccords = new int[]{7, 7, 7, 7};
-    private String sequencePresente;
-    private String listeMots = new String("");
+    private int[] filledCoordinates = new int[]{7, 7, 7, 7};
+    private String presentSequence;
+    private String listOfWords = "";
 
-    public static final String coorLettres = "ABCDEFGHIJKLMNO";
-    public static final char[][] resetGrille = new char[][]{
+    public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
+    public static final char[][] resetGrid = new char[][]{
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
@@ -54,11 +54,12 @@ public class Grid extends Observable implements Serializable {
             {30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30}};
 
 
-    public Grid(char[][] coor, int[][] bonus) {
-        if (coor == null)
-            coor = resetGrille;
+    public Grid(char[][] coordinates, int[][] bonus, String presentSequence) {
+        this.presentSequence = presentSequence;
+        if (coordinates == null)
+            coordinates = resetGrid;
 
-        this.coor = coor;
+        this.coordinates = coordinates;
 
         if (bonus == null)
             this.bonus = resetBonus;
@@ -68,17 +69,17 @@ public class Grid extends Observable implements Serializable {
 
     }
 
-    public char[][] getCoor() {
-        return this.coor;
+    public char[][] getCoordinates() {
+        return this.coordinates;
     }
 
 
     public char get(int x, int y) {
-        return this.coor[x][y];
+        return this.coordinates[x][y];
     }
 
     public void set(int x, int y, char c) {
-        this.coor[x][y] = c;
+        this.coordinates[x][y] = c;
     }
 
     public int[][] getBonus() {
@@ -89,198 +90,158 @@ public class Grid extends Observable implements Serializable {
         this.bonus[x][y] = pts;
     }
 
-    public String getListeMots() {
-        return this.listeMots;
+    public String getListOfWords() {
+        return this.listOfWords;
     }
 
-    public void setListeMot(String m) {
-        this.listeMots += "_" + m + "_";
+    public void setWordList(String m) {
+        this.listOfWords += "_" + m + "_";
     }
 
-    public String getSequencePresente() {
-        return sequencePresente;
+    public String getPresentSequence() {
+        return presentSequence;
     }
 
-    public void setSequencePresente(String sequencePresente) {
-        this.sequencePresente = sequencePresente;
+    public int[] getFilledCoordinates() {
+        return filledCoordinates;
     }
 
-    public int[] getOptiRaccords() {
-        return optiRaccords;
+    public void setFilledCoordinates(int[] filledCoordinates) {
+        this.filledCoordinates = filledCoordinates;
     }
 
-    public void setOptiRaccords(int[] optiRaccords) {
-        this.optiRaccords = optiRaccords;
-    }
-
-    public Grid clone() {
-        Grid rep = new Grid(null, null);
-        for (int x = 0; x < 15; x++)
-            for (int y = 0; y < 15; y++)
-                rep.set(x, y, this.get(x, y));
-
-        return rep;
-    }
-
-    public void setSolution(Scrabble partie, Solution s) //place le mot sur la grille
+    public void setSolution(Solution solution) //place le mot sur la grille
     {
-        Mot m = s.getM();
-        String[] info = s.getRetour();
-        int x = m.getX();
-        int y = m.getY();
-        if (m.isHorizontal()) {
-            for (int i = 0; i < m.longueur(); i++) {
-                this.set(x + i, y, m.charAt(i));    //remplissage
-                //si un joker est utilis�, les points de la case sont annul�s, la case est identifi�e joker
-                if (info[0].charAt(i) == '*') this.setBonus(x + i, y, 0);
-                else this.setBonus(x + i, y, 1);        //mat�rialise les cases bonus occup�es
+        Word word = solution.getWord();
+        String[] information = solution.getInformation();
+        int x = word.getX();
+        int y = word.getY();
+        if (word.isHorizontal()) {
+            for (int i = 0; i < word.lenght(); i++) {
+                this.set(x + i, y, word.charAt(i));    //remplissage
+                //si un joker est utilisé, les points de la case sont annulés, la case est identifiée joker
+                if (information[0].charAt(i) == '*') this.setBonus(x + i, y, 0);
+                else this.setBonus(x + i, y, 1);        //matérialise les cases bonus occupées
             }
         } else {
-            for (int i = 0; i < m.longueur(); i++) {
-                this.set(x, y + i, m.charAt(i));    //remplissage
+            for (int i = 0; i < word.lenght(); i++) {
+                this.set(x, y + i, word.charAt(i));    //remplissage
                 //si un joker est utilis�, les points de la case sont annul�s, la case est identifi�e joker
-                if (info[0].charAt(i) == '*') this.setBonus(x, y + i, 0);
+                if (information[0].charAt(i) == '*') this.setBonus(x, y + i, 0);
                 else this.setBonus(x, y + i, 1);        //mat�rialise les cases bonus occup�es
             }
         }
-        // mise � jour des raccords
-        //mise � jour des mots form�s
+        // mise à jour des fittings
+        //mise à jour des mots formés
 
-        List<String> tousMots = this.listeMotsPlaces(); // liste de tous les mots  + nouveaux
-        //String motsPresents = this.motsPlaces();
+        List<String> placedWords = this.placedWords(); // liste de tous les mots  + nouveaux
+        //String motsPresents = this.allCells();
 
-        for (String tm : tousMots) // parcourir tous les nouveaux mots
-        {
-            if (!this.getListeMots().contains("_" + tm + "_") && tm.length() > 1)
-                this.setListeMot(tm);
-
-            // ajouter le nouveau mot � la liste des mots de la partie
-        }
+        // ajouter le nouveau mot à la liste des mots de la game
+        placedWords.stream().filter(tm -> !this.getListOfWords().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
         this.setChanged();
-        this.notifyObservers(s); //notification nouvelle solution � partie
-        this.raccords(); //mise � jour de la grille avec les nouveaux raccords
+        this.notifyObservers(solution); //notification nouvelle solution à game
+        this.fittings(); //mise à jour de la grille avec les nouveaux fittings
 
     }
 
-    public void setMot(Mot m) {// place un mot "test" : pour placer v�ritablement un mot : setSolution
-        int x = m.getX();
-        int y = m.getY();
+    public void setWord(Word word) {// place un word "test" : pour placer véritablement un word : setSolution
+        int x = word.getX();
+        int y = word.getY();
         undo = new char[15][15];
-        //�criture du mot dans la grille (H et V)
-        if (m.isHorizontal()) {
-            for (int i = 0; i < m.longueur(); i++) {
-                undo[x + i][y] = this.get(x + i, y);    //pour retour en arri�re (utile pour le test)
-                this.set(x + i, y, m.charAt(i));    //remplissage
+        //écriture du word dans la grille (H et V)
+        if (word.isHorizontal()) {
+            for (int i = 0; i < word.lenght(); i++) {
+                undo[x + i][y] = this.get(x + i, y);    //pour retour en arrière (utile pour le test)
+                this.set(x + i, y, word.charAt(i));    //remplissage
             }
         } else {
-            for (int i = 0; i < m.longueur(); i++) {
-                undo[x][y + i] = this.get(x, y + i);    //pour retour en arri�re (utile pour le test)
-                this.set(x, y + i, m.charAt(i));    //remplissage
+            for (int i = 0; i < word.lenght(); i++) {
+                undo[x][y + i] = this.get(x, y + i);    //pour retour en arrière (utile pour le test)
+                this.set(x, y + i, word.charAt(i));    //remplissage
             }
         }
     }
 
 
-    public void deleteMot(Mot m) {
-        int x = m.getX();
-        int y = m.getY();
-        if (m.isHorizontal()) {
-            for (int i = 0; i < m.longueur(); i++) {
-                this.coor[x + i][y] = undo[x + i][y];
+    public void deleteWord(Word word) {
+        int x = word.getX();
+        int y = word.getY();
+        if (word.isHorizontal()) {
+            for (int i = 0; i < word.lenght(); i++) {
+                this.coordinates[x + i][y] = undo[x + i][y];
             }
         } else {
-            for (int i = 0; i < m.longueur(); i++) {
-                this.coor[x][y + i] = undo[x][y + i];
-            }
+            System.arraycopy(undo[x], y, this.coordinates[x], y, word.lenght());
         }
-
     }
 
-    public String motsPlaces()  //renvoie les mots plac�s s�par�s par _
+    public void fittings() //place # sur toutes les cases de fittings
     {
-        String reponseH = new String("");
-        String reponseV = new String("");
-
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
-                if (this.coor[j][i] == ' ' || this.coor[j][i] == '#') reponseH += '_';
-                else reponseH += this.coor[j][i];
-                if (this.coor[i][j] == ' ' || this.coor[i][j] == '#') reponseV += '_';
-                else reponseV += this.coor[i][j];
-            }
-            reponseH += " ";
-            reponseV += " ";
-        }
-
-        return reponseH + " " + reponseV;
-    }
-
-    public void raccords() //place # sur toutes les cases de raccords
-    {
-        setOptiRaccords(new int[]{14, 0, 14, 0});
+        setFilledCoordinates(new int[]{14, 0, 14, 0});
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++)
                 for (int deltaX = -1; deltaX < 2; deltaX++)
                     for (int deltaY = -1; deltaY < 2; deltaY++)
                         if (x + deltaX >= 0 && y + deltaY >= 0 && x + deltaX <= 14 && y + deltaY <= 14)
-                            if (Character.isLetter((coor[x + deltaX][y + deltaY]))
-                                    && (deltaX == 0 || deltaY == 0) && (coor[x][y] == ' '))
-                                this.coor[x][y] = '#';
+                            if (Character.isLetter((coordinates[x + deltaX][y + deltaY]))
+                                    && (deltaX == 0 || deltaY == 0) && (coordinates[x][y] == ' '))
+                                this.coordinates[x][y] = '#';
 
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++)
-                if (this.coor[x][y] == '#') {
-                    if (x < getOptiRaccords()[0]) getOptiRaccords()[0] = x;
-                    if (x > getOptiRaccords()[1]) getOptiRaccords()[1] = x;
-                    if (y < getOptiRaccords()[2]) getOptiRaccords()[2] = y;
-                    if (y > getOptiRaccords()[3]) getOptiRaccords()[3] = y;
+                if (this.coordinates[x][y] == '#') {
+                    if (x < getFilledCoordinates()[0]) getFilledCoordinates()[0] = x;
+                    if (x > getFilledCoordinates()[1]) getFilledCoordinates()[1] = x;
+                    if (y < getFilledCoordinates()[2]) getFilledCoordinates()[2] = y;
+                    if (y > getFilledCoordinates()[3]) getFilledCoordinates()[3] = y;
                 }
     }
 
 
-    public static String toCoor(int x, int y, boolean h) {//renvoie les coordonn�es de type Scrabble
-        String reponse = "";
+    public static String toCoordinates(int x, int y, boolean h) {//renvoie les coordonn�es de type Scrabble
+        String coordinates = "";
         if (h) {
-            reponse += coorLettres.charAt(y);
-            reponse += x + 1;
+            coordinates += xAxisLetters.charAt(y);
+            coordinates += x + 1;
         } else {
-            reponse += x + 1;
-            reponse += coorLettres.charAt(y);
+            coordinates += x + 1;
+            coordinates += xAxisLetters.charAt(y);
         }
 
-        return reponse;
+        return coordinates;
     }
 
-    public List<String> listeMotsPlaces() {//renvoie la liste de tous les mots pr�sents dans une grille
-        List<String> reponse = new ArrayList<String>();
+    public List<String> placedWords() {//renvoie la liste de tous les mots pr�sents dans une grille
+        List<String> placedWords = new ArrayList<>();
 
-        String reponseH = new String("");
-        String reponseV = new String("");
+        String horizontalAnswers = "";
+        String verticalAnswers = "";
 
         for (int i = 0; i < 15; i++) {
-            if (reponseH.length() > 1) reponse.add(reponseH);
-            if (reponseV.length() > 1) reponse.add(reponseV);
-            reponseH = "";
-            reponseV = "";
+            if (horizontalAnswers.length() > 1) placedWords.add(horizontalAnswers);
+            if (verticalAnswers.length() > 1) placedWords.add(verticalAnswers);
+            horizontalAnswers = "";
+            verticalAnswers = "";
             for (int j = 0; j < 15; j++) {
-                Character h = this.coor[j][i];
-                Character v = this.coor[i][j];
-                if (Character.isLetter(h)) reponseH += h;
-                else if (reponseH.length() > 1 && !reponse.contains(reponseH)) {
-                    reponse.add(reponseH);
-                    reponseH = "";
-                } else reponseH = "";
+                Character h = this.coordinates[j][i];
+                Character v = this.coordinates[i][j];
+                if (Character.isLetter(h)) horizontalAnswers += h;
+                else if (horizontalAnswers.length() > 1 && !placedWords.contains(horizontalAnswers)) {
+                    placedWords.add(horizontalAnswers);
+                    horizontalAnswers = "";
+                } else horizontalAnswers = "";
 
-                if (Character.isLetter(v)) reponseV += v;
-                else if (reponseV.length() > 1 && !reponse.contains(reponseV)) {
-                    reponse.add(reponseV);
-                    reponseV = "";
-                } else reponseV = "";
+                if (Character.isLetter(v)) verticalAnswers += v;
+                else if (verticalAnswers.length() > 1 && !placedWords.contains(verticalAnswers)) {
+                    placedWords.add(verticalAnswers);
+                    verticalAnswers = "";
+                } else verticalAnswers = "";
             }
         }
-        if (reponseH.length() > 1) reponse.add(reponseH);
-        if (reponseV.length() > 1) reponse.add(reponseV);
-        return reponse;
+        if (horizontalAnswers.length() > 1) placedWords.add(horizontalAnswers);
+        if (verticalAnswers.length() > 1) placedWords.add(verticalAnswers);
+        return placedWords;
     }
 
-}	
+}

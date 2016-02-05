@@ -17,7 +17,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
     static String lettres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0";
     static ImageIcon[] lettre = new ImageIcon[27];
     static ImageIcon[] lettre_jok = new ImageIcon[27];
-    String chemin = Dictionary.chemin + "/letters/wood/";
+    String chemin = Dictionary.path + "/letters/wood/";
 
     public BoardWindow() {
 
@@ -27,7 +27,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
         setVisible(true);
         setBounds(10, 11, 655, 673);
 
-        ImagePanel plateau = new ImagePanel(new ImageIcon(Dictionary.chemin+"/boards/boardr0.jpg").getImage(), 0, 0);
+        ImagePanel plateau = new ImagePanel(new ImageIcon(Dictionary.path +"/boards/boardr0.jpg").getImage(), 0, 0);
         this.getContentPane().add(plateau);
         setContentPane(plateau);
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -95,18 +95,18 @@ public class BoardWindow extends JInternalFrame implements Observer {
     public void update(Observable obs, Object obj) {
         if (obj instanceof Scrabble.Solution) {
             Scrabble.Solution s = (Scrabble.Solution) obj;
-            String mot = s.getM().getMot();
+            String mot = s.getWord().getWord();
             for (int i = 0; i < mot.length(); i++) {
-                if (s.getM().isHorizontal()) {
-                    if (s.getRetour()[0].charAt(i) == '*')
-                        drawLettre(mot.charAt(i), s.getM().getX() + i + 1, s.getM().getY() + 1, true, this);
+                if (s.getWord().isHorizontal()) {
+                    if (s.getInformation()[0].charAt(i) == '*')
+                        drawLettre(mot.charAt(i), s.getWord().getX() + i + 1, s.getWord().getY() + 1, true, this);
                     else
-                        drawLettre(mot.charAt(i), s.getM().getX() + i + 1, s.getM().getY() + 1, false, this);
+                        drawLettre(mot.charAt(i), s.getWord().getX() + i + 1, s.getWord().getY() + 1, false, this);
                 } else {
-                    if (s.getRetour()[0].charAt(i) == '*')
-                        drawLettre(mot.charAt(i), s.getM().getX() + 1, s.getM().getY() + i + 1, true, this);
+                    if (s.getInformation()[0].charAt(i) == '*')
+                        drawLettre(mot.charAt(i), s.getWord().getX() + 1, s.getWord().getY() + i + 1, true, this);
                     else
-                        drawLettre(mot.charAt(i), s.getM().getX() + 1, s.getM().getY() + i + 1, false, this);
+                        drawLettre(mot.charAt(i), s.getWord().getX() + 1, s.getWord().getY() + i + 1, false, this);
                 }
 
             }

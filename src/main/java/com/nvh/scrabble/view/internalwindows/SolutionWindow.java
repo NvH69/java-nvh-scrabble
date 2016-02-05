@@ -15,7 +15,7 @@ import java.util.Observer;
 @SuppressWarnings("serial")
 public class SolutionWindow extends JInternalFrame implements Observer {
     public static JTable table;
-    static String[] titres = {"N�", "Mot", "Pos", "Score", ""};
+    static String[] titres = {"N�", "Word", "Pos", "Score", ""};
     public static JScrollPane scrollPane;
     public static JButton btnVoir = new JButton("Voir toutes les solutions");
     private final Action action = new SwingAction();
@@ -77,10 +77,10 @@ public class SolutionWindow extends JInternalFrame implements Observer {
             sol[index][3] = "0";
             for (Object s : (List<?>) arg) {
                 sol[index][0] = index;
-                sol[index][1] = ((Solution) s).getMotJokers();
-                sol[index][2] = ((Solution) s).getM().toCoor();
+                sol[index][1] = ((Solution) s).getWildcardedWord();
+                sol[index][2] = ((Solution) s).getWord().toCoordinates();
                 sol[index][3] = ((Solution) s).getPoints();
-                if (((Solution) s).getRetour()[1] == "[]" && Launcher.partie.getTirage().length() > 6)
+                if (((Solution) s).getInformation()[1] == "[]" && Launcher.game.getDrawing().length() > 6)
                     sol[index][4] = "Scrabble!";
                 else sol[index][4] = "";
                 index++;

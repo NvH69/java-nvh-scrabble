@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-
 public class Dictionary {
 
-    private static String line;
+    public static final String path = new File("Scrabble.jar").getAbsoluteFile().getParent() + "/src/main/resources/";
+    public static final String finalPath = path + "dictionaries/ODS6.txt";
 
-    public static final String chemin = new File("Scrabble.jar").getAbsoluteFile().getParent() + "/src/main/resources/";
-    public static final String cheminFinal = new String(chemin + "dictionaries/ODS6.txt");
-
-    public static final String[] dico = new String[400000];
+    public static final String[] dictionary = new String[400000];
 
 
     public Dictionary() {
@@ -21,12 +18,13 @@ public class Dictionary {
 
         for (byte j = 2; j <= 15; j++) {
             try {
-                BufferedReader in = new BufferedReader(new FileReader(cheminFinal));
+                BufferedReader in = new BufferedReader(new FileReader(finalPath));
 
-                while ((line = in.readLine()).equals("*") != true) {
+                String line;
+                while (!(line = in.readLine()).equals("*")) {
 
                     if (line.length() == j) {
-                        dico[i] = line;
+                        dictionary[i] = line;
                         i++;
                     }
                 }
@@ -37,14 +35,13 @@ public class Dictionary {
         }
     }
 
-    public static boolean orthographe(String s) {
+    public static boolean isCorrectlySpelled(String s) {
 
         int i = 0;
-        while (Dictionary.dico[i] != null) {
-            if (s.equals(Dictionary.dico[i]) == true) return true;
+        while (Dictionary.dictionary[i] != null) {
+            if (s.equals(Dictionary.dictionary[i])) return true;
             i++;
         }
-
         return false;
     }
 }

@@ -45,7 +45,7 @@ public class ConfirmationPane extends JDialog
 		zoneTexte.setDisabledTextColor(UIManager.getColor("ToggleButton.light"));
 		zoneTexte.setFont(new Font(MainWindow.mainFont, Font.BOLD, 48));
 		zoneTexte.setHorizontalAlignment(SwingConstants.CENTER);
-		zoneTexte.setText(partie.getHistoTirage().get(partie.getTour()-1));
+		zoneTexte.setText(partie.getDrawingHistory().get(partie.getTurn()-1));
 		zoneTexte.setBounds(10, 11, 443, 80);
 		zoneTexte.setEditable(false);
 		contentPane.add(zoneTexte);
@@ -81,11 +81,11 @@ public class ConfirmationPane extends JDialog
 		zoneTexte.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 16));
 		zoneTexte.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		if (s.getM().getMot()=="-------") 
-			zoneTexte.setText(partie.getJoueur(j).getNom()+" joue un coup invalide");
+		if (s.getWord().getWord()=="-------")
+			zoneTexte.setText(partie.getPlayer(j).getName()+" joue un coup invalide");
 		else
 			
-			zoneTexte.setText(partie.getJoueur(j).getNom()+" joue : "+s.getM().getMot()+" en "+s.getM().toCoor());
+			zoneTexte.setText(partie.getPlayer(j).getName()+" joue : "+s.getWord().getWord()+" en "+s.getWord().toCoordinates());
 		
 		zoneTexte.setBounds(10, 11, 443, 80);
 		zoneTexte.setEditable(false);
@@ -101,8 +101,8 @@ public class ConfirmationPane extends JDialog
 			{	//pour tout joueur (sauf TOP) on ajoute le coup jou�
 				//le coup jou� par TOP est valid� par setSolutions
 				if (j>0)
-				partie.getJoueur(j).setCoupJoue(s); 
-				if (partie.getMainTimer().isKeepCounting()) partie.getMainTimer().arret();
+				partie.getPlayer(j).setWord(s);
+				if (partie.getMainTimer().isOn()) partie.getMainTimer().arret();
 				dispose();
 			}
 		});

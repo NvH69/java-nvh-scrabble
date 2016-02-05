@@ -6,38 +6,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class KeyboardListener {
-    public static String lireString()   // lecture d'une chaine
+    public static String stringReader()   // lecture d'une chaine
     {
-        String ligne_lue = null;
+        String readLine = null;
         try {
-            InputStreamReader lecteur = new InputStreamReader(System.in);
-            BufferedReader entree = new BufferedReader(lecteur);
-            ligne_lue = entree.readLine();
+            InputStreamReader reader = new InputStreamReader(System.in);
+            BufferedReader input = new BufferedReader(reader);
+            readLine = input.readLine();
         } catch (IOException err) {
             System.exit(0);
         }
-        return ligne_lue;
+        return readLine;
     }
 
-    public static float lireFloat()   // lecture d'un float
+    public static float floatReader()   // lecture d'un float
     {
         float x = 0;   // valeur a lire
         try {
-            String ligne_lue = lireString();
-            x = Float.parseFloat(ligne_lue);
-        } catch (NumberFormatException err) {
-            System.out.println("*** Erreur de donnee ***");
-            System.exit(0);
-        }
-        return x;
-    }
-
-    public static double lireDouble()   // lecture d'un double
-    {
-        double x = 0;   // valeur a lire
-        try {
-            String ligne_lue = lireString();
-            x = Double.parseDouble(ligne_lue);
+            String readLine = stringReader();
+            x = Float.parseFloat(readLine);
         } catch (NumberFormatException err) {
             System.out.println("*** Erreur de donnee ***");
             System.exit(0);
@@ -47,28 +34,14 @@ public class KeyboardListener {
 
     public static int lireInt()         // lecture d'un int
     {
-        int n = 0;   // valeur a lire
+        int n = 0;
         try {
-            String ligne_lue = lireString();
-            n = Integer.parseInt(ligne_lue);
+            String readLine = stringReader();
+            n = Integer.parseInt(readLine);
         } catch (NumberFormatException err) {
             System.out.println("*** Erreur de donnee ***");
             System.exit(0);
         }
         return n;
     }
-
-    // programme de test de la classe KeyboardListener
-    public static void main(String[] args) {
-        System.out.println("donnez un flottant");
-        float x;
-        x = KeyboardListener.lireFloat();
-        System.out.println("merci pour " + x);
-        System.out.println("donnez un entier");
-        int n;
-        n = KeyboardListener.lireInt();
-        System.out.println("merci pour " + n);
-    }
 }
-
-

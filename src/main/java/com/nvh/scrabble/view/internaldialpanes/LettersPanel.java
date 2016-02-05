@@ -24,7 +24,7 @@ public class LettersPanel extends JTextPane implements Observer {
     public void update(Observable arg0, Object obj) {
 
         if (obj instanceof String) {
-            setText("Lettres restantes : " + Launcher.partie.getLettres().size() + "\n" + Launcher.partie.getNombreLettres());
+            setText("Lettres restantes : " + Launcher.game.getLetters().size() + "\n" + Launcher.game.getCountOfRemainingLetters());
             setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         }
     }

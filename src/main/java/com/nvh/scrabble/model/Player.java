@@ -1,42 +1,33 @@
 package com.nvh.scrabble.model;
 
-import com.nvh.scrabble.model.Scrabble.Solution;
 import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.model.Scrabble.Solution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Observer;
 
 public class Player extends Observable implements Serializable {
     private static final long serialVersionUID = 408209690201416162L;
-    private String nom;
+    private String name;
     private int points;
-    private ArrayList<Solution> coupJoues;
+    private ArrayList<Solution> words;
 
-
-    public Player(String nom, int points, ArrayList<Solution> coupJoues) {
-        this.nom = nom;
+    public Player(String name, int points, ArrayList<Solution> words) {
+        this.name = name;
         this.points = points;
-        this.coupJoues = coupJoues;
-        this.addObserver((Observer) Launcher.partie);
+        this.words = words;
+        this.addObserver(Launcher.game);
     }
 
 
-    public String getNom() {
-        return this.nom;
+    public String getName() {
+        return this.name;
     }
-
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
 
     public int getPoints() {
         return this.points;
     }
-
 
     public void addPoints(int p) {
         this.points += p;
@@ -44,23 +35,21 @@ public class Player extends Observable implements Serializable {
         notifyObservers();
     }
 
-
-    public Solution getCoupJoue(int i) {
-        if (i <= this.getNbCoupsJoues())
-            return this.coupJoues.get(i);
+    public Solution getWord(int i) {
+        if (i <= this.getWordsCount())
+            return this.words.get(i);
         else return null;
     }
 
 
-    public void setCoupJoue(Solution s) {
-        this.coupJoues.add(s);
+    public void setWord(Solution s) {
+        this.words.add(s);
         this.points += s.getPoints();
         setChanged();
         notifyObservers();
     }
 
-    public int getNbCoupsJoues() {
-        return this.coupJoues.size();
+    public int getWordsCount() {
+        return this.words.size();
     }
-
 }

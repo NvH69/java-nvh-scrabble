@@ -7,33 +7,28 @@ import java.util.Calendar;
 
 public class Timer extends Thread implements Serializable {
     private static final long serialVersionUID = -6290616549583735992L;
-    private boolean keepCounting;
+    private boolean isOn;
 
-    public boolean isKeepCounting() {
-        return keepCounting;
-    }
-
-    public void setKeepCounting(boolean keepCounting) {
-        this.keepCounting = keepCounting;
+    public boolean isOn() {
+        return isOn;
     }
 
     private long dt;
-    private final long dtreset;
+    private final long dtReset;
 
-    private static long nowTimer;
-    public static boolean flagtictac = false;
-    public String lcd;
+    public static boolean isTicking = false;
+    public String display;
 
     public static StringBuffer tempLcd = new StringBuffer("");
-    public static Calendar c;
+    public static Calendar calendar;
 
     public Timer(long dt) {
         this.dt = dt + 1000 + System.currentTimeMillis();
-        this.dtreset = dt + 1000;
-        this.keepCounting = false;
+        this.dtReset = dt + 1000;
+        this.isOn = false;
         setDaemon(true);
         setPriority(Thread.MIN_PRIORITY);
-        c = Calendar.getInstance();
+        calendar = Calendar.getInstance();
 
         start();
     }
@@ -45,52 +40,48 @@ public class Timer extends Thread implements Serializable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (keepCounting) {
+            if (isOn) {
                 tempLcd.delete(0, tempLcd.length());
-                nowTimer = System.currentTimeMillis();
-                c.setTimeInMillis(this.dt - nowTimer);
-                if (c.getTimeInMillis() < 20000 && !flagtictac)
-                    new SampledSound(Dictionary.chemin + "/sounds/timer_short.wav").play();
-                if (c.getTimeInMillis() < 0) {
+                long nowTimer = System.currentTimeMillis();
+                calendar.setTimeInMillis(this.dt - nowTimer);
+                if (calendar.getTimeInMillis() < 20000 && !isTicking)
+                    new SampledSound(Dictionary.path + "/sounds/timer_short.wav").play();
+                if (calendar.getTimeInMillis() < 0) {
                     tempLcd.delete(0, 7);
                     //jouer son
-                    flagtictac = true;
-                    new SampledSound(Dictionary.chemin + "/sounds/ding.wav").play();
+                    isTicking = true;
+                    new SampledSound(Dictionary.path + "/sounds/ding.wav").play();
                 }
-                if (c.get(Calendar.MINUTE) > 9) {
-                    tempLcd.append(c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+                if (calendar.get(Calendar.MINUTE) > 9) {
+                    tempLcd.append(calendar.get(Calendar.MINUTE)).append(":").append(calendar.get(Calendar.SECOND));
                     tempLcd.insert(1, ' ');
-                } else tempLcd.append("0" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
-                if (c.get(Calendar.SECOND) < 10) tempLcd.insert(3, "0");
+                } else
+                    tempLcd.append("0").append(calendar.get(Calendar.MINUTE)).append(":").append(calendar.get(Calendar.SECOND));
+                if (calendar.get(Calendar.SECOND) < 10) tempLcd.insert(3, "0");
 
-                this.lcd = tempLcd.toString();
-                if (c.getTimeInMillis() < 0) {
-                    keepCounting = false;
-                    flagtictac = false;
+                this.display = tempLcd.toString();
+                if (calendar.getTimeInMillis() < 0) {
+                    isOn = false;
+                    isTicking = false;
                 }
 
-            } else this.lcd = "  :  ";
+            } else this.display = "  :  ";
 
         }
     }
 
-    public String getLcd() {
-        return lcd;
-    }
-
-
-    public void setLcd(String lcd) {
-        this.lcd = lcd;
+    public String getDisplay() {
+        return display;
     }
 
     public void arret() {
-        if (this.keepCounting) this.keepCounting = false;
+        if (this.isOn) this.isOn = false;
     }
 
     public void reset() {
-        dt = dtreset + System.currentTimeMillis();
-        keepCounting = true;
-        flagtictac = false;
+        dt = dtReset + System.currentTimeMillis();
+        isOn = true;
+        isTicking = false;
     }
 
 }

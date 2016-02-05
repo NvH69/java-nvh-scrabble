@@ -15,7 +15,7 @@ public class FilePane extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -4105494649356150949L;
     private JPanel contentPane;
     private DefaultMutableTreeNode racine;
-    String chemin = Dictionary.chemin + "/savedgames/";
+    String chemin = Dictionary.path + "/savedgames/";
     Calendar c = Calendar.getInstance();
 
     public FilePane(Scrabble partie) {

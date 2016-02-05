@@ -20,12 +20,12 @@ import java.util.Observer;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements Observer {
-    public static JInternalFrame lblComm = new DrawingWindow();
+    public static JInternalFrame messageLabel = new DrawingWindow();
     public static JInternalFrame framePartie = new GameWindow();
-    public static JInternalFrame frameGrille = new BoardWindow();
-    public static JInternalFrame frameSolutions = new SolutionWindow();
-    public static JInternalFrame frameScores = new ScoreWindow();
-    public static JFrame frameProgress = new ProgressWindow();
+    public static JInternalFrame gridFrame = new BoardWindow();
+    public static JInternalFrame solutionsFrame = new SolutionWindow();
+    public static JInternalFrame scoreFrame = new ScoreWindow();
+    public static JFrame progressionFrame = new ProgressWindow();
     public static JTextPane lettersPane = new LettersPanel();
     public static JLabel lblChrono = new JLabel("");
     public static JButton mainBtn = new JButton();
@@ -100,7 +100,7 @@ public class MainWindow extends JFrame implements Observer {
         rdbtnmntmTirageAutomatique.setFont(new Font(mainFont, Font.PLAIN, 12));
         mnOptions.add(rdbtnmntmTirageAutomatique);
         rdbtnmntmTirageAutomatique.setSelected(false);
-        partie.setAuto(false);
+        partie.setAutoDrawing(false);
 
         initialize(partie);
     }
@@ -110,11 +110,11 @@ public class MainWindow extends JFrame implements Observer {
         setBounds(150, 50, 1200, 830);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
-        getContentPane().add(frameGrille);
-        getContentPane().add(frameSolutions);
-        getContentPane().add(frameScores);
+        getContentPane().add(gridFrame);
+        getContentPane().add(solutionsFrame);
+        getContentPane().add(scoreFrame);
         getContentPane().add(mainBtn);
-        getContentPane().add(lblComm);
+        getContentPane().add(messageLabel);
         getContentPane().add(framePartie);
         getContentPane().add(lettersPane);
         getContentPane().add(lblChrono);
@@ -133,24 +133,24 @@ public class MainWindow extends JFrame implements Observer {
         mainBtn.addActionListener(arg0 -> {
             if (Launcher.phase == 0) Launcher.phase++;
 
-            if (Launcher.phase == 2 && Solve.toutesSolutions.size() > 0) {
+            if (Launcher.phase == 2 && Solve.solutions.size() > 0) {
                 boolean controleTousJoueurs = true; //VRAI si tous les joueurs ont valid� leur coup
                 Solution temp = null;
                 //controle que tous les joueurs ont eu un score :
-                for (int i = 1; i < partie.getNbJoueurs(); i++) {
-                    if (partie.getJoueur(i).getNbCoupsJoues() < partie.getTour()) controleTousJoueurs = false;
+                for (int i = 1; i < partie.getNumberOfPlayers(); i++) {
+                    if (partie.getPlayer(i).getWordsCount() < partie.getTurn()) controleTousJoueurs = false;
                 }
                 //si non :
                 if (!controleTousJoueurs && SolutionWindow.table.getSelectedRow() != -1) {//place le coup d'un joueur autre que TOP si possible :
-                    if (SolutionWindow.table.getSelectedRow() <= Solve.toutesSolutions.size())
+                    if (SolutionWindow.table.getSelectedRow() <= Solve.solutions.size())
                         if (SolutionWindow.table.getSelectedRow() == 0)
-                            temp = partie.new Solution(0, partie.new Mot("-------", "A1"), null);
+                            temp = partie.new Solution(0, partie.new Word("-------", "A1"), null);
                         else
-                            temp = Solve.toutesSolutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            temp = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
 
-                    if (ScoreWindow.scoreTable.getSelectedRow() > 0 && ScoreWindow.scoreTable.getSelectedRow() < partie.getNbJoueurs())
+                    if (ScoreWindow.scoreTable.getSelectedRow() > 0 && ScoreWindow.scoreTable.getSelectedRow() < partie.getNumberOfPlayers())
 
-                        if (partie.getJoueur(ScoreWindow.scoreTable.getSelectedRow()).getNbCoupsJoues() < partie.getTour())
+                        if (partie.getPlayer(ScoreWindow.scoreTable.getSelectedRow()).getWordsCount() < partie.getTurn())
 
                             //si je joueur n'a pas encore eu de coup valid� � ce tour :
                             new ConfirmationPane(partie, ScoreWindow.scoreTable.getSelectedRow(), temp);
@@ -159,20 +159,20 @@ public class MainWindow extends JFrame implements Observer {
                 if (controleTousJoueurs) //si tous les joueurs ont valid� leur choix
                 {// place le TOP :
 
-                    if (partie.isAutoTop()) temp = Solve.toutesSolutions.get(0);
+                    if (partie.isAutoTop()) temp = Solve.solutions.get(0);
                     else {// v�rifie que le top choisi est bien au score max
                         if (SolutionWindow.table.getSelectedRow() > 0
-                                && Solve.toutesSolutions.get(SolutionWindow.table.getSelectedRow() - 1).getPoints()
-                                == Solve.toutesSolutions.get(0).getPoints())
+                                && Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1).getPoints()
+                                == Solve.solutions.get(0).getPoints())
 
-                            temp = Solve.toutesSolutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            temp = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
                     }
                     if (temp != null) {
-                        if (!partie.isAutoTop() || !partie.isAuto() ||
-                                partie.getNbJoueurs() > 1)
+                        if (!partie.isAutoTop() || !partie.isAutoDrawing() ||
+                                partie.getNumberOfPlayers() > 1)
                             new ConfirmationPane(partie, 0, temp);
 
-                        partie.getGrille().setSolution(partie, temp);
+                        partie.getGrid().setSolution(temp);
                     }
                 }
             }
@@ -182,7 +182,7 @@ public class MainWindow extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                partie.setPartieEncours(true);
+                partie.setRunning(true);
                 mntmLancer.setEnabled(false);
                 mntmAjouterJoueur.setEnabled(false);
             }
@@ -200,8 +200,8 @@ public class MainWindow extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (rdbtnmntmTirageAutomatique.isSelected()) partie.setAuto(true);
-                else partie.setAuto(false);
+                if (rdbtnmntmTirageAutomatique.isSelected()) partie.setAutoDrawing(true);
+                else partie.setAutoDrawing(false);
 
             }
         });
@@ -210,8 +210,8 @@ public class MainWindow extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (rdbtnmntmTirageManuel.isSelected()) partie.setAuto(false);
-                else partie.setAuto(true);
+                if (rdbtnmntmTirageManuel.isSelected()) partie.setAutoDrawing(false);
+                else partie.setAutoDrawing(true);
 
             }
         });
@@ -246,6 +246,6 @@ public class MainWindow extends JFrame implements Observer {
     @Override
     public void update(Observable obs, Object obj) {
         if (obs instanceof Solve)
-            lblChrono.setText(Launcher.partie.getMainTimer().getLcd());
+            lblChrono.setText(Launcher.game.getMainTimer().getDisplay());
     }
 }

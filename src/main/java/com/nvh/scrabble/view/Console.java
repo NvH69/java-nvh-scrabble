@@ -15,14 +15,14 @@ public  class Console
 			if (i%2==0)
 			{  
 				
-				System.out.print(Scrabble.posLettres.charAt(i/2)+"│");
+				System.out.print(Scrabble.alphabet.charAt(i/2)+"│");
 				for (int j = 0; j < 15; j++)
-					if (g.getCoor()[j][i/2]!=' '
-					//&& g.getCoor()[j][i/2]!='#'
+					if (g.getCoordinates()[j][i/2]!=' '
+					//&& g.getCoordinates()[j][i/2]!='#'
 					) {
 						if (g.getBonus()[j][i/2]==0) 
-							System.out.print(" "+g.getCoor()[j][i/2]+"*│");
-						else System.out.print(" "+g.getCoor()[j][i/2]+" │");
+							System.out.print(" "+g.getCoordinates()[j][i/2]+"*│");
+						else System.out.print(" "+g.getCoordinates()[j][i/2]+" │");
 					}
 					
 					else 		System.out.print("   "+"│");

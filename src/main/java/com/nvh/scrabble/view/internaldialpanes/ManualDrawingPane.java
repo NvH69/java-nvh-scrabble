@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 public class ManualDrawingPane extends JDialog {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    JLabel lblEntrerNouvellesLettres = new JLabel("Entrer nouvelles lettres (+) ou nouveau tirage (-)");
+    JLabel lblEntrerNouvellesLettres = new JLabel("Entrer nouvelles letters (+) ou nouveau tirage (-)");
     JTextField tf;
     JButton btnNewButton = new JButton("OK");
 
@@ -67,10 +67,10 @@ public class ManualDrawingPane extends JDialog {
                 if (toggleType.isSelected()) toggle = "-";
                 else toggle = "+";
 
-                if (partie.tirageManu(toggle + tf.getText()) == "")
+                if (partie.manualDrawing(toggle + tf.getText()) == "")
                     dispose();
 
-                else lblEntrerNouvellesLettres.setText(partie.tirageManu(tf.getText()));
+                else lblEntrerNouvellesLettres.setText(partie.manualDrawing(tf.getText()));
             }
         });
         this.setVisible(true);

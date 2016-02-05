@@ -53,7 +53,7 @@ public class PlayerDialPane extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (joueurTextField.getText().length() > 1) {
-                    partie.addJoueur(joueurTextField.getText());
+                    partie.addPlayer(joueurTextField.getText());
                     dispose();
                 }
             }

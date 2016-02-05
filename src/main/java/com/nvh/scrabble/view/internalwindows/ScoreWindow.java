@@ -40,10 +40,10 @@ public class ScoreWindow extends JInternalFrame implements Observer {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (scoreTable.getSelectedRow() > 0 &&
-                        scoreTable.getSelectedRow() < Launcher.partie.getNbJoueurs())
+                        scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
                     GameWindow.updatePlayer(scoreTable.getSelectedRow());
                 else if (scoreTable.getSelectedRow() == 0 &&
-                        scoreTable.getSelectedRow() < Launcher.partie.getNbJoueurs())
+                        scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
                     GameWindow.update();
             }
         });
@@ -52,15 +52,15 @@ public class ScoreWindow extends JInternalFrame implements Observer {
     @Override
     public void update(Observable partie, Object arg1) {
 
-        String[][] r = new String[((Scrabble) partie).getNbJoueurs()][3];
-        for (int i = 0; i < ((Scrabble) partie).getNbJoueurs(); i++) {
-            r[i][0] = ((Scrabble) partie).getJoueur(i).getNom();
-            r[i][1] = String.valueOf(((Scrabble) partie).getJoueur(i).getPoints());
-            if (((Scrabble) partie).getJoueur(0).getPoints() == 0) r[i][2] = "---";
+        String[][] r = new String[((Scrabble) partie).getNumberOfPlayers()][3];
+        for (int i = 0; i < ((Scrabble) partie).getNumberOfPlayers(); i++) {
+            r[i][0] = ((Scrabble) partie).getPlayer(i).getName();
+            r[i][1] = String.valueOf(((Scrabble) partie).getPlayer(i).getPoints());
+            if (((Scrabble) partie).getPlayer(0).getPoints() == 0) r[i][2] = "---";
             else {
-                double pct = Launcher.partie.getJoueur(i).getPoints() * 100 / ((Scrabble) partie).getJoueur(0).getPoints();
-                if (Launcher.partie.getJoueur(i).getNbCoupsJoues() >
-                        Launcher.partie.getSolutions().size()) r[i][2] = "OK !";
+                double pct = Launcher.game.getPlayer(i).getPoints() * 100 / ((Scrabble) partie).getPlayer(0).getPoints();
+                if (Launcher.game.getPlayer(i).getWordsCount() >
+                        Launcher.game.getSolutions().size()) r[i][2] = "OK !";
                 else r[i][2] = (int) (pct) + "%";
 
             }

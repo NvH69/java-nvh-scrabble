@@ -28,7 +28,7 @@ public class FileFrame extends JFrame {
     JTextArea textSave = new JTextArea();
     JButton btnAction = new JButton();
     String retour = new String("wait");
-    String chemin = Dictionary.chemin + "/savedgames/";
+    String chemin = Dictionary.path + "/savedgames/";
     Calendar c = Calendar.getInstance();
 
     public FileFrame() {
@@ -92,7 +92,7 @@ public class FileFrame extends JFrame {
         btnAction.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Serializer.ecrire(Launcher.partie, textSave.getText());
+                    Serializer.ecrire(Launcher.game, textSave.getText());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -120,23 +120,23 @@ public class FileFrame extends JFrame {
                         e1.printStackTrace();
                     }
 
-                    //red�finit la partie en cours avec les attributs de la partie charg�e
+                    //red�finit la game en cours avec les attributs de la game charg�e
                     partie.copyOf(partieChargee);
                     //dessine la grille
-                    BoardWindow.displayGrille(partie.getGrille(),
-                            MainWindow.frameGrille);
+                    BoardWindow.displayGrille(partie.getGrid(),
+                            MainWindow.gridFrame);
 
-                    //invalide les menus de d�marrage si la partie est commenc�e
-                    if (partie.isPartieEncours()) {
+                    //invalide les menus de d�marrage si la game est commenc�e
+                    if (partie.isRunning()) {
                         MainWindow.mntmAjouterJoueur.setEnabled(false);
                         MainWindow.mntmLancer.setEnabled(false);
                         if (partie.isAutoTop()) MainWindow.chckbxmntmTopAutomatique.setSelected(true);
-                        if (partie.isAuto()) MainWindow.rdbtnmntmTirageAutomatique.setSelected(true);
+                        if (partie.isAutoDrawing()) MainWindow.rdbtnmntmTirageAutomatique.setSelected(true);
                         else MainWindow.rdbtnmntmTirageManuel.setSelected(true);
 
                     }
                     Launcher.phase = 0;
-                    Launcher.currentTurn = partie.getTour();
+                    Launcher.currentTurn = partie.getTurn();
 
                     GameWindow.update();
                     dispose();

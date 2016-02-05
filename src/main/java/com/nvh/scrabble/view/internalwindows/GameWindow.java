@@ -12,7 +12,7 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class GameWindow extends JInternalFrame {
     static JTable tableP;
-    static String[] titres = {"", "Tirage", "Mot", "Pos", "Pts"};
+    static String[] titres = {"", "Tirage", "Word", "Pos", "Pts"};
     static JScrollPane scrollPaneP = new JScrollPane();
 
     public GameWindow() {
@@ -36,20 +36,20 @@ public class GameWindow extends JInternalFrame {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (tableP.getSelectedRow() > -1 && tableP.getSelectedRow() < Launcher.partie.getTour())
-                    DefinitionsWindow.affiche(Launcher.partie.getSolutions().get(tableP.getSelectedRow()).getM().getMot());
+                if (tableP.getSelectedRow() > -1 && tableP.getSelectedRow() < Launcher.game.getTurn())
+                    DefinitionsWindow.affiche(Launcher.game.getSolutions().get(tableP.getSelectedRow()).getWord().getWord());
             }
         });
     }
 
     public static void update() {
-        String[][] tabPartie = new String[Launcher.partie.getTour() - 1][5];
-        for (int i = 0; i < Launcher.partie.getTour() - 1; i++) {
+        String[][] tabPartie = new String[Launcher.game.getTurn() - 1][5];
+        for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
             tabPartie[i][0] = String.valueOf(i + 1);
-            tabPartie[i][1] = Launcher.partie.getHistoTirage().get(i);
-            tabPartie[i][2] = Launcher.partie.getSolutions().get(i).getMotJokers();
-            tabPartie[i][3] = Launcher.partie.getSolutions().get(i).getM().toCoor();
-            tabPartie[i][4] = String.valueOf(Launcher.partie.getSolutions().get(i).getPoints());
+            tabPartie[i][1] = Launcher.game.getDrawingHistory().get(i);
+            tabPartie[i][2] = Launcher.game.getSolutions().get(i).getWildcardedWord();
+            tabPartie[i][3] = Launcher.game.getSolutions().get(i).getWord().toCoordinates();
+            tabPartie[i][4] = String.valueOf(Launcher.game.getSolutions().get(i).getPoints());
         }
         DefaultTableModel m = (DefaultTableModel) tableP.getModel();
         m.setDataVector(tabPartie, titres);
@@ -71,13 +71,13 @@ public class GameWindow extends JInternalFrame {
     }
 
     public static void updatePlayer(int j) {
-        String[][] tabPartie = new String[Launcher.partie.getTour() - 1][5];
-        for (int i = 0; i < Launcher.partie.getTour() - 1; i++) {
+        String[][] tabPartie = new String[Launcher.game.getTurn() - 1][5];
+        for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
             tabPartie[i][0] = String.valueOf(i + 1);
-            tabPartie[i][1] = Launcher.partie.getHistoTirage().get(i);
-            tabPartie[i][2] = Launcher.partie.getJoueur(j).getCoupJoue(i).getMotJokers();
-            tabPartie[i][3] = Launcher.partie.getJoueur(j).getCoupJoue(i).getM().toCoor();
-            tabPartie[i][4] = String.valueOf(Launcher.partie.getJoueur(j).getCoupJoue(i).getPoints());
+            tabPartie[i][1] = Launcher.game.getDrawingHistory().get(i);
+            tabPartie[i][2] = Launcher.game.getPlayer(j).getWord(i).getWildcardedWord();
+            tabPartie[i][3] = Launcher.game.getPlayer(j).getWord(i).getWord().toCoordinates();
+            tabPartie[i][4] = String.valueOf(Launcher.game.getPlayer(j).getWord(i).getPoints());
         }
         DefaultTableModel m = (DefaultTableModel) tableP.getModel();
         m.setDataVector(tabPartie, titres);
@@ -93,7 +93,7 @@ public class GameWindow extends JInternalFrame {
         tableP.getColumnModel().getColumn(4).setResizable(false);
         tableP.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         tableP.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        MainWindow.framePartie.setTitle("Partie : " + Launcher.partie.getJoueur(j).getNom());
+        MainWindow.framePartie.setTitle("Partie : " + Launcher.game.getPlayer(j).getName());
         scrollPaneP.setViewportView(tableP);
     }
 }
