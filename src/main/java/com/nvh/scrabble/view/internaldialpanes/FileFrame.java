@@ -110,11 +110,11 @@ public class FileFrame extends JFrame {
 
                 //invalide les menus de démarrage si la game est commencée
                 if (game.isRunning()) {
-                    MainWindow.mntmAjouterJoueur.setEnabled(false);
-                    MainWindow.mntmLancer.setEnabled(false);
-                    if (game.isAutoTop()) MainWindow.chckbxmntmTopAutomatique.setSelected(true);
-                    if (game.isAutoDrawing()) MainWindow.rdbtnmntmTirageAutomatique.setSelected(true);
-                    else MainWindow.rdbtnmntmTirageManuel.setSelected(true);
+                    MainWindow.addPlayerMenuItem.setEnabled(false);
+                    MainWindow.LauncherMenuItem.setEnabled(false);
+                    if (game.isAutoTop()) MainWindow.autoTopCheckBox.setSelected(true);
+                    if (game.isAutoDrawing()) MainWindow.autoDrawingButton.setSelected(true);
+                    else MainWindow.manualDrawingButton.setSelected(true);
                 }
                 Launcher.phase = 0;
                 Launcher.currentTurn = game.getTurn();

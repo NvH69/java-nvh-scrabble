@@ -55,7 +55,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
         ((RootPaneContainer) o).getContentPane().repaint();
     }
 
-    public static void displayGrid(Grid grid, Object o) {//dessine une grille enti�re
+    public static void displayGrid(Grid grid, Object o) {//dessine une grille entière
         for (int x = 0; x < 15; x++) {
             for (int y = 0; y < 15; y++) {
                 if (Character.isLetter(grid.get(x, y)))

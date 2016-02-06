@@ -191,7 +191,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         if (!Objects.equals(drawing, "")) return drawing;
 
         backupLetters = (ArrayList<Character>) this.letters.clone();
-        if (remainingDrawing.startsWith("-") && this.turn > 1)    //remise des letters rejet�es si rejet
+        if (remainingDrawing.startsWith("-") && this.turn > 1)    //remise des letters rejetées si rejet
         {
             toBeReplaced = this.solutions.get(this.turn - 2).getRemainingDrawing();
             for (int i = 0; i < toBeReplaced.length(); i++)
@@ -276,14 +276,16 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return;
         }
         drawing = drawing.toUpperCase();
-        if (drawing.startsWith("+") && this.turn > 1) {
+        if (drawing.startsWith("+") && (this.turn > 1)) {
+            //si on joue au moins le 2ème turn et que le drawing commence par
+            // + on ajoute juste les nouvelles letters au reste précèdent
             drawing = this.solutions.get(this.turn - 2).getRemainingDrawing() + drawing;
-            //si on joue au moins le 2�me turn et que le drawing commence par + on ajoute juste les nouvelles letters au reste pr�calendar�dent
         }
 
         String newDrawing = "";
         for (int i = 0; i < drawing.length(); i++) {
-            if (Character.isLetter(drawing.charAt(i)) || drawing.charAt(i) == '*' || drawing.charAt(i) == '+' || drawing.charAt(i) == '-')
+            if (Character.isLetter(drawing.charAt(i)) || drawing.charAt(i) == '*' ||
+                    drawing.charAt(i) == '+' || drawing.charAt(i) == '-')
                 newDrawing += drawing.charAt(i);
         }
         this.drawingHistory.add(newDrawing);
@@ -349,7 +351,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             this.h = h;
         }
 
-        public Word(String word, String coordinates)                //construteur avec "vraies" coordonn�es type Scrabble
+        public Word(String word, String coordinates)   //construteur avec "vraies" coordonnées type Scrabble
         {
             this.word = word;
             Character X = coordinates.charAt(0);
@@ -510,12 +512,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 if (lettersCount < lenght) return null;
             }
 
-            grid.setWord(this); //essai du  mot test�
-            List<String> allWords = grid.placedWords(); // liste de tous les mots  + nouveaux mots form�s
+            grid.setWord(this); //essai du  mot testé
+            List<String> allWords = grid.placedWords(); // liste de tous les mots  + nouveaux mots formés
             grid.deleteWord(this);    //effacement du nouvau mot
 
             for (String s : allWords) // parcourir tous les nouveaux mots
-                if (!grid.getListOfWords().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est form�
+                if (!grid.getListOfWords().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
                     // vérif de l'isCorrectlySpelled
                     if (!Dictionary.isCorrectlySpelled(s)) return null;
             //si tous les mots sont corrects
@@ -579,7 +581,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 }
             }
             points *= bonus;
-            //2 : calcul des points des autres mots form�s
+            //2 : calcul des points des autres mots formés
             if (this.getY() == 0) isTouchingUp = true;
             if (this.getY() == 14) isTouchingDown = true;
             if (this.getX() == 0) isTouchingLeft = true;
@@ -751,15 +753,15 @@ public class Scrabble extends Observable implements Serializable, Observer {
         //si l'évènement est la mise en place d'une solution :
         if (obj instanceof Solution) {
 
-            this.addSolution((Solution) obj); //ajout de la solution � la game
+            this.addSolution((Solution) obj); //ajout de la solution à la game
             this.getPlayer(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
-            this.setTurn(this.getTurn() + 1); //avanc�e d'un turn
+            this.setTurn(this.getTurn() + 1); //avancée d'un turn
 
             setChanged();
             notifyObservers(obj); //
             setChanged();
-            notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fen�tre drawing
-        } else //pour tout autre �v�nement :
+            notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre drawing
+        } else //pour tout autre évènement :
         {
             setChanged();
             notifyObservers();

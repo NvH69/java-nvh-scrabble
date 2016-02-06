@@ -63,19 +63,19 @@ public class Launcher {
             switch (phase) {
                 case 0: //attente de l'utlisateur pour suite jeu
 
-                    MainWindow.mainBtn.setText("Tour suivant >>>");
-                    MainWindow.mntmSauvegarder.setEnabled(true);
-                    MainWindow.mntmReprendre.setEnabled(true);
+                    MainWindow.mainButton.setText("Tour suivant >>>");
+                    MainWindow.saveMenuItem.setEnabled(true);
+                    MainWindow.loadMenuItem.setEnabled(true);
                     if (!game.convenientRemainingLetters()) game.setRunning(false);
                     if (game.isAutoDrawing() && game.isAutoTop() && game.getNumberOfPlayers() == 1) phase++;
                     break;
 
                 case 1: //tirage
-                    //d�sactivation sauvegarde et ajout nvx joueurs
-                    MainWindow.mntmSauvegarder.setEnabled(false);
-                    MainWindow.mntmReprendre.setEnabled(false);
+                    //désactivation sauvegarde et ajout nvx joueurs
+                    MainWindow.saveMenuItem.setEnabled(false);
+                    MainWindow.loadMenuItem.setEnabled(false);
 
-                    //passage � auto si nb letters insuffisant pour continuer manuel
+                    //passage à auto si nb letters insuffisant pour continuer manuel
                     if (game.getTurn() > 1)
                         if (!game.isAutoDrawing() &&
                                 game.getLetters().size()
@@ -92,44 +92,42 @@ public class Launcher {
 
                     if (!game.isAutoDrawing() || !game.isAutoTop() || game.getNumberOfPlayers() > 1)
                         new ConfirmationPane(game);
-                    MainWindow.mainBtn.setText("");
-                    MainWindow.mainBtn.setEnabled(false);
+                    MainWindow.mainButton.setText("");
+                    MainWindow.mainButton.setEnabled(false);
                     new Solve(game);
                     phase++;
                     break;
 
-                case 2: //recherche termin�e
-                    MainWindow.mainBtn.setText("Choisir joueur");
-                    MainWindow.mainBtn.setEnabled(true);
-                    SolutionWindow.btnVoir.setText("Voir toutes les solutions");
+                case 2: //recherche terminée
+                    MainWindow.mainButton.setText("Choisir joueur");
+                    MainWindow.mainButton.setEnabled(true);
+                    SolutionWindow.showButton.setText("Voir toutes les solutions");
                     MainWindow.progressionFrame.dispose();
                     if (game.isAutoTop() && game.getNumberOfPlayers() == 1) {
-                        MainWindow.mainBtn.doClick();
-                        SolutionWindow.btnVoir.doClick();
+                        MainWindow.mainButton.doClick();
+                        SolutionWindow.showButton.doClick();
                     }
-
-
                     currentTurn++;
 
                     while (currentTurn != game.getTurn()) //controle de validation des coups par utilisateurs
                     {
-                        MainWindow.lblChrono.setText(game.getMainTimer().getDisplay());
+                        MainWindow.timerLabel.setText(game.getMainTimer().getDisplay());
                         boolean controleTousJoueurs = true;
                         //controle si tous les joueurs ont eu un score :
                         for (int i = 1; i < game.getNumberOfPlayers(); i++) {
                             if (game.getPlayer(i).getWordsCount() < game.getTurn()) controleTousJoueurs = false;
                         }
-                        if (controleTousJoueurs) //si tous les joueurs ont valid� leur choix
-                            if (game.isAutoTop()) MainWindow.mainBtn.doClick(); //top jou� auto
+                        if (controleTousJoueurs) //si tous les joueurs ont validé leur choix
+                            if (game.isAutoTop()) MainWindow.mainButton.doClick(); //top joué auto
                             else if (!game.isAutoTop())
-                                MainWindow.mainBtn.setText("CHOISIR TOP"); //top � choisir
+                                MainWindow.mainButton.setText("CHOISIR TOP"); //top é choisir
                         //sinon :
                         if (!controleTousJoueurs)
                             if (ScoreWindow.scoreTable.getSelectedRow() > -1 && ScoreWindow.scoreTable.getSelectedRow() < game.getNumberOfPlayers())
                                 if (SolutionWindow.table.getSelectedRow() > -1)
-                                    MainWindow.mainBtn.setText("VALIDER");
+                                    MainWindow.mainButton.setText("VALIDER");
                                 else
-                                    MainWindow.mainBtn.setText("Choisir mot");
+                                    MainWindow.mainButton.setText("Choisir mot");
                     }
                     //sauvegarde auto en fin de tour
                     try {
@@ -144,6 +142,6 @@ public class Launcher {
             }
         }
         //si game n'est plus en cours (par manque de letters)
-        MainWindow.mainBtn.setText("Partie termin�e");
+        MainWindow.mainButton.setText("Partie terminée");
     }
 }

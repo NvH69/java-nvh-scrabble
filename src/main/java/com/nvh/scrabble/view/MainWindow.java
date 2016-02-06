@@ -13,8 +13,6 @@ import com.nvh.scrabble.view.internalwindows.*;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -27,24 +25,21 @@ public class MainWindow extends JFrame implements Observer {
     public static JInternalFrame scoreFrame = new ScoreWindow();
     public static JFrame progressionFrame = new ProgressWindow();
     public static JTextPane lettersPane = new LettersPanel();
-    public static JLabel lblChrono = new JLabel("");
-    public static JButton mainBtn = new JButton();
+    public static JLabel timerLabel = new JLabel("");
+    public static JButton mainButton = new JButton();
 
-    private final ButtonGroup buttonTirageGroup = new ButtonGroup();
-    private JMenu menu = new JMenu("Partie");
-    public static JMenuItem mntmAjouterJoueur = new JMenuItem("Ajouter joueur...");
-    public static JCheckBoxMenuItem chckbxmntmTopAutomatique = new JCheckBoxMenuItem("Top automatique");
-    public static JMenuItem mntmLancer = new JMenuItem("Lancer !");
-    public static JMenuItem mntmSauvegarder = new JMenuItem("Sauvegarder...");
-    public static JMenuItem mntmReprendre = new JMenuItem("Reprendre...");
-    private JMenu mnOptions;
-    public static JCheckBoxMenuItem boxSon = new JCheckBoxMenuItem("Annonce des tirages");
-    public static JRadioButtonMenuItem rdbtnmntmTirageManuel = new JRadioButtonMenuItem("Tirage manuel");
-    public static JRadioButtonMenuItem rdbtnmntmTirageAutomatique = new JRadioButtonMenuItem("Tirage automatique");
+    public static JMenuItem addPlayerMenuItem = new JMenuItem("Ajouter joueur...");
+    public static JCheckBoxMenuItem autoTopCheckBox = new JCheckBoxMenuItem("Top automatique");
+    public static JMenuItem LauncherMenuItem = new JMenuItem("Lancer !");
+    public static JMenuItem saveMenuItem = new JMenuItem("Sauvegarder...");
+    public static JMenuItem loadMenuItem = new JMenuItem("Reprendre...");
+    public static JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Annonce des tirages");
+    public static JRadioButtonMenuItem manualDrawingButton = new JRadioButtonMenuItem("Tirage manuel");
+    public static JRadioButtonMenuItem autoDrawingButton = new JRadioButtonMenuItem("Tirage automatique");
 
     public static String mainFont = "Consolas";
 
-    public MainWindow(Scrabble partie) {
+    public MainWindow(Scrabble game) {
 
         getContentPane().setBackground(Color.BLACK);
         JMenuBar menuBar = new JMenuBar();
@@ -55,57 +50,59 @@ public class MainWindow extends JFrame implements Observer {
         menuBar.setPreferredSize(new Dimension(800, 20));
         menuBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         setJMenuBar(menuBar);
+        JMenu menu = new JMenu("Partie");
         menu.setFont(new Font(mainFont, Font.PLAIN, 12));
         menuBar.add(menu);
-        chckbxmntmTopAutomatique.setFont(new Font(mainFont, Font.PLAIN, 12));
-        boxSon.setSelected(true);
-        menu.add(chckbxmntmTopAutomatique);
-        chckbxmntmTopAutomatique.setSelected(true);
-        partie.setAutoTop(true);
-        mntmAjouterJoueur.setFont(new Font(mainFont, Font.PLAIN, 12));
-        menu.add(mntmAjouterJoueur);
-        mntmLancer.setFont(new Font(mainFont, Font.PLAIN, 12));
+        autoTopCheckBox.setFont(new Font(mainFont, Font.PLAIN, 12));
+        soundCheckBox.setSelected(true);
+        menu.add(autoTopCheckBox);
+        autoTopCheckBox.setSelected(true);
+        game.setAutoTop(true);
+        addPlayerMenuItem.setFont(new Font(mainFont, Font.PLAIN, 12));
+        menu.add(addPlayerMenuItem);
+        LauncherMenuItem.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        menu.add(mntmLancer);
+        menu.add(LauncherMenuItem);
 
         JSeparator separator_1 = new JSeparator();
         menu.add(separator_1);
-        mntmSauvegarder.setFont(new Font(mainFont, Font.PLAIN, 12));
+        saveMenuItem.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        menu.add(mntmSauvegarder);
-        mntmReprendre.setFont(new Font(mainFont, Font.PLAIN, 12));
+        menu.add(saveMenuItem);
+        loadMenuItem.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        menu.add(mntmReprendre);
-        mnOptions = new JMenu("Options");
-        mnOptions.setFont(new Font(mainFont, Font.PLAIN, 12));
+        menu.add(loadMenuItem);
+        JMenu optionMenu = new JMenu("Options");
+        optionMenu.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        menuBar.add(mnOptions);
-        boxSon.setFont(new Font(mainFont, Font.PLAIN, 12));
+        menuBar.add(optionMenu);
+        soundCheckBox.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        mnOptions.add(boxSon);
-        JMenuItem mntmRglerTemps = new JMenuItem("R�gler temps...");
+        optionMenu.add(soundCheckBox);
+        JMenuItem mntmRglerTemps = new JMenuItem("Régler temps...");
         mntmRglerTemps.setFont(new Font(mainFont, Font.PLAIN, 12));
 
-        mnOptions.add(mntmRglerTemps);
+        optionMenu.add(mntmRglerTemps);
 
         JSeparator separator = new JSeparator();
-        mnOptions.add(separator);
+        optionMenu.add(separator);
 
-        buttonTirageGroup.add(rdbtnmntmTirageManuel);
-        rdbtnmntmTirageManuel.setFont(new Font(mainFont, Font.PLAIN, 12));
-        mnOptions.add(rdbtnmntmTirageManuel);
-        rdbtnmntmTirageManuel.setSelected(true);
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(manualDrawingButton);
+        manualDrawingButton.setFont(new Font(mainFont, Font.PLAIN, 12));
+        optionMenu.add(manualDrawingButton);
+        manualDrawingButton.setSelected(true);
 
-        buttonTirageGroup.add(rdbtnmntmTirageAutomatique);
-        rdbtnmntmTirageAutomatique.setFont(new Font(mainFont, Font.PLAIN, 12));
-        mnOptions.add(rdbtnmntmTirageAutomatique);
-        rdbtnmntmTirageAutomatique.setSelected(false);
-        partie.setAutoDrawing(false);
+        buttonGroup.add(autoDrawingButton);
+        autoDrawingButton.setFont(new Font(mainFont, Font.PLAIN, 12));
+        optionMenu.add(autoDrawingButton);
+        autoDrawingButton.setSelected(false);
+        game.setAutoDrawing(false);
 
-        initialize(partie);
+        initialize(game);
     }
 
-    private void initialize(Scrabble partie) {
+    private void initialize(Scrabble game) {
 
         setBounds(150, 50, 1200, 830);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -113,139 +110,99 @@ public class MainWindow extends JFrame implements Observer {
         getContentPane().add(gridFrame);
         getContentPane().add(solutionsFrame);
         getContentPane().add(scoreFrame);
-        getContentPane().add(mainBtn);
+        getContentPane().add(mainButton);
         getContentPane().add(messageLabel);
         getContentPane().add(gameFrame);
         getContentPane().add(lettersPane);
-        getContentPane().add(lblChrono);
+        getContentPane().add(timerLabel);
 
-        mainBtn.setFont(new Font(mainFont, Font.PLAIN, 16));
-        mainBtn.setBounds(478, 689, 187, 71);
+        mainButton.setFont(new Font(mainFont, Font.PLAIN, 16));
+        mainButton.setBounds(478, 689, 187, 71);
 
-        lblChrono.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.LIGHT_GRAY));
-        lblChrono.setFont(new Font(mainFont, Font.PLAIN, 24));
-        lblChrono.setHorizontalTextPosition(SwingConstants.CENTER);
-        lblChrono.setHorizontalAlignment(SwingConstants.CENTER);
-        lblChrono.setBackground(Color.LIGHT_GRAY);
-        lblChrono.setForeground(Color.LIGHT_GRAY);
-        lblChrono.setBounds(10, 695, 187, 52);
+        timerLabel.setBorder(new MatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY));
+        timerLabel.setFont(new Font(mainFont, Font.PLAIN, 24));
+        timerLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        timerLabel.setBackground(Color.LIGHT_GRAY);
+        timerLabel.setForeground(Color.LIGHT_GRAY);
+        timerLabel.setBounds(10, 695, 187, 52);
 
-        mainBtn.addActionListener(arg0 -> {
+        mainButton.addActionListener(arg0 -> {
             if (Launcher.phase == 0) Launcher.phase++;
 
             if (Launcher.phase == 2 && Solve.solutions.size() > 0) {
-                boolean controleTousJoueurs = true; //VRAI si tous les joueurs ont valid� leur coup
-                Solution temp = null;
+                boolean areAllPlayersDone = true; //VRAI si tous les joueurs ont validé leur coup
+                Solution solution = null;
                 //controle que tous les joueurs ont eu un score :
-                for (int i = 1; i < partie.getNumberOfPlayers(); i++) {
-                    if (partie.getPlayer(i).getWordsCount() < partie.getTurn()) controleTousJoueurs = false;
+                for (int player = 1; player < game.getNumberOfPlayers(); player++) {
+                    if (game.getPlayer(player).getWordsCount() < game.getTurn()) areAllPlayersDone = false;
                 }
                 //si non :
-                if (!controleTousJoueurs && SolutionWindow.table.getSelectedRow() != -1) {//place le coup d'un joueur autre que TOP si possible :
+                if (!areAllPlayersDone && SolutionWindow.table.getSelectedRow() != -1) {//place le coup d'un joueur autre que TOP si possible :
                     if (SolutionWindow.table.getSelectedRow() <= Solve.solutions.size())
                         if (SolutionWindow.table.getSelectedRow() == 0)
-                            temp = partie.new Solution(0, partie.new Word("-------", "A1"), null);
+                            solution = game.new Solution(0, game.new Word("-------", "A1"), null);
                         else
-                            temp = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            solution = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
 
-                    if (ScoreWindow.scoreTable.getSelectedRow() > 0 && ScoreWindow.scoreTable.getSelectedRow() < partie.getNumberOfPlayers())
+                    if (ScoreWindow.scoreTable.getSelectedRow() > 0 && ScoreWindow.scoreTable.getSelectedRow() < game.getNumberOfPlayers())
 
-                        if (partie.getPlayer(ScoreWindow.scoreTable.getSelectedRow()).getWordsCount() < partie.getTurn())
+                        if (game.getPlayer(ScoreWindow.scoreTable.getSelectedRow()).getWordsCount() < game.getTurn())
 
-                            //si je joueur n'a pas encore eu de coup valid� � ce tour :
-                            new ConfirmationPane(partie, ScoreWindow.scoreTable.getSelectedRow(), temp);
+                            //si je joueur n'a pas encore eu de coup validé à ce tour :
+                            new ConfirmationPane(game, ScoreWindow.scoreTable.getSelectedRow(), solution);
                 }
 
-                if (controleTousJoueurs) //si tous les joueurs ont valid� leur choix
+                if (areAllPlayersDone) //si tous les joueurs ont validé leur choix
                 {// place le TOP :
 
-                    if (partie.isAutoTop()) temp = Solve.solutions.get(0);
-                    else {// v�rifie que le top choisi est bien au score max
+                    if (game.isAutoTop()) solution = Solve.solutions.get(0);
+                    else {// vérifie que le top choisi est bien au score max
                         if (SolutionWindow.table.getSelectedRow() > 0
                                 && Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1).getPoints()
                                 == Solve.solutions.get(0).getPoints())
 
-                            temp = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            solution = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
                     }
-                    if (temp != null) {
-                        if (!partie.isAutoTop() || !partie.isAutoDrawing() ||
-                                partie.getNumberOfPlayers() > 1)
-                            new ConfirmationPane(partie, 0, temp);
+                    if (solution != null) {
+                        if (!game.isAutoTop() || !game.isAutoDrawing() ||
+                                game.getNumberOfPlayers() > 1)
+                            new ConfirmationPane(game, 0, solution);
 
-                        partie.getGrid().setSolution(temp);
+                        game.getGrid().setSolution(solution);
                     }
                 }
             }
         });
 
-        mntmLancer.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                partie.setRunning(true);
-                mntmLancer.setEnabled(false);
-                mntmAjouterJoueur.setEnabled(false);
-            }
+        LauncherMenuItem.addActionListener(e -> {
+            game.setRunning(true);
+            LauncherMenuItem.setEnabled(false);
+            addPlayerMenuItem.setEnabled(false);
         });
-        chckbxmntmTopAutomatique.addActionListener(new ActionListener() {
+        autoTopCheckBox.addActionListener(e -> game.setAutoTop(!game.isAutoTop()));
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        autoDrawingButton.addActionListener(e -> {
+            if (autoDrawingButton.isSelected()) game.setAutoDrawing(true);
+            else game.setAutoDrawing(false);
 
-                partie.setAutoTop(!partie.isAutoTop());
-            }
         });
 
-        rdbtnmntmTirageAutomatique.addActionListener(new ActionListener() {
+        manualDrawingButton.addActionListener(e -> {
+            if (manualDrawingButton.isSelected()) game.setAutoDrawing(false);
+            else game.setAutoDrawing(true);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (rdbtnmntmTirageAutomatique.isSelected()) partie.setAutoDrawing(true);
-                else partie.setAutoDrawing(false);
-
-            }
         });
 
-        rdbtnmntmTirageManuel.addActionListener(new ActionListener() {
+        addPlayerMenuItem.addActionListener(e -> new PlayerDialPane(game));
+        saveMenuItem.addActionListener(e -> new FileFrame().writeDial());
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (rdbtnmntmTirageManuel.isSelected()) partie.setAutoDrawing(false);
-                else partie.setAutoDrawing(true);
-
-            }
-        });
-
-        mntmAjouterJoueur.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PlayerDialPane(partie);
-
-            }
-        });
-        mntmSauvegarder.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                new FileFrame().writeDial();
-            }
-        });
-
-        mntmReprendre.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FileFrame().readDial(partie);
-
-            }
-        });
+        loadMenuItem.addActionListener(e -> new FileFrame().readDial(game));
     }
 
     @Override
     public void update(Observable obs, Object obj) {
         if (obs instanceof Solve)
-            lblChrono.setText(Launcher.game.getMainTimer().getDisplay());
+            timerLabel.setText(Launcher.game.getMainTimer().getDisplay());
     }
 }

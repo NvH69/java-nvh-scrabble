@@ -126,9 +126,9 @@ public class Grid extends Observable implements Serializable {
         } else {
             for (int i = 0; i < word.lenght(); i++) {
                 this.set(x, y + i, word.charAt(i));    //remplissage
-                //si un joker est utilis�, les points de la case sont annul�s, la case est identifi�e joker
+                //si un joker est utilisé, les points de la case sont annulés, la case est identifiée joker
                 if (information[0].charAt(i) == '*') this.setBonus(x, y + i, 0);
-                else this.setBonus(x, y + i, 1);        //mat�rialise les cases bonus occup�es
+                else this.setBonus(x, y + i, 1);        //matérialise les cases bonus occupées
             }
         }
         // mise à jour des fittings
@@ -199,7 +199,7 @@ public class Grid extends Observable implements Serializable {
     }
 
 
-    public static String toCoordinates(int x, int y, boolean h) {//renvoie les coordonn�es de type Scrabble
+    public static String toCoordinates(int x, int y, boolean h) {//renvoie les coordonnées de type Scrabble
         String coordinates = "";
         if (h) {
             coordinates += xAxisLetters.charAt(y);
@@ -212,7 +212,7 @@ public class Grid extends Observable implements Serializable {
         return coordinates;
     }
 
-    public List<String> placedWords() {//renvoie la liste de tous les mots pr�sents dans une grille
+    public List<String> placedWords() {//renvoie la liste de tous les mots présents dans une grille
         List<String> placedWords = new ArrayList<>();
 
         String horizontalAnswers = "";

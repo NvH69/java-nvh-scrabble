@@ -42,7 +42,7 @@ public class Solve extends Observable {
                 String[] information;
                 //1er filtre : trouver séquence manquante sur grille : si NON : pas possible
                 if (!drawingArray.contains('*') && partie.getGrid().getPresentSequence() != null) {
-                    for (int i = 0; i < word.length(); i++) // pour chaque lettre du mot � tester
+                    for (int i = 0; i < word.length(); i++) // pour chaque lettre du mot à tester
                     {
                         for (int j = 0; j < drawingArray.size(); j++) {
                             if (word.charAt(i) == drawingArray.get(j)) {

@@ -13,7 +13,7 @@ public class DefinitionsWindow extends JFrame {
     public DefinitionsWindow() {
         this.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 11));
         this.setBounds(0, 0, 300, 500);
-        this.setTitle("D�fintion");
+        this.setTitle("Défintion");
         getContentPane().setLayout(null);
 
         definitionText.setBounds(0, 0, 300, 500);

@@ -43,15 +43,15 @@ public class ScoreWindow extends JInternalFrame implements Observer {
     }
 
     @Override
-    public void update(Observable partie, Object arg1) {
+    public void update(Observable game, Object arg1) {
 
-        String[][] r = new String[((Scrabble) partie).getNumberOfPlayers()][3];
-        for (int i = 0; i < ((Scrabble) partie).getNumberOfPlayers(); i++) {
-            r[i][0] = ((Scrabble) partie).getPlayer(i).getName();
-            r[i][1] = String.valueOf(((Scrabble) partie).getPlayer(i).getPoints());
-            if (((Scrabble) partie).getPlayer(0).getPoints() == 0) r[i][2] = "---";
+        String[][] r = new String[((Scrabble) game).getNumberOfPlayers()][3];
+        for (int i = 0; i < ((Scrabble) game).getNumberOfPlayers(); i++) {
+            r[i][0] = ((Scrabble) game).getPlayer(i).getName();
+            r[i][1] = String.valueOf(((Scrabble) game).getPlayer(i).getPoints());
+            if (((Scrabble) game).getPlayer(0).getPoints() == 0) r[i][2] = "---";
             else {
-                double pct = Launcher.game.getPlayer(i).getPoints() * 100 / ((Scrabble) partie).getPlayer(0).getPoints();
+                double pct = Launcher.game.getPlayer(i).getPoints() * 100 / ((Scrabble) game).getPlayer(0).getPoints();
                 if (Launcher.game.getPlayer(i).getWordsCount() >
                         Launcher.game.getSolutions().size()) r[i][2] = "OK !";
                 else r[i][2] = (int) (pct) + "%";
