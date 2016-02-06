@@ -4,16 +4,14 @@ import com.nvh.scrabble.Launcher;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 @SuppressWarnings("serial")
 public class GameWindow extends JInternalFrame {
-    static JTable tableP;
-    static String[] titres = {"", "Tirage", "Mot", "Pos", "Pts"};
-    static JScrollPane scrollPaneP = new JScrollPane();
+    static JTable gameTable;
+    static String[] titles = {"", "Tirage", "Word", "Pos", "Pts"};
+    static JScrollPane gameScrollPane = new JScrollPane();
 
     public GameWindow() {
         setTitle("Joueur : TOP");
@@ -22,78 +20,74 @@ public class GameWindow extends JInternalFrame {
         getContentPane().setLayout(null);
         getContentPane().setLayout(new BorderLayout());
 
-        scrollPaneP.setBounds(0, 0, 291, 350);
-        getContentPane().add(scrollPaneP);
-        tableP = new JTable() {
+        gameScrollPane.setBounds(0, 0, 291, 350);
+        getContentPane().add(gameScrollPane);
+        gameTable = new JTable() {
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
         };
-        tableP.setAlignmentX(RIGHT_ALIGNMENT);
+        gameTable.setAlignmentX(RIGHT_ALIGNMENT);
 
 
-        tableP.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (tableP.getSelectedRow() > -1 && tableP.getSelectedRow() < Launcher.partie.getTour())
-                    DefinitionsWindow.affiche(Launcher.partie.getSolutions().get(tableP.getSelectedRow()).getM().getMot());
-            }
+        gameTable.getSelectionModel().addListSelectionListener(e -> {
+            if (gameTable.getSelectedRow() > -1 && gameTable.getSelectedRow() < Launcher.game.getTurn())
+                DefinitionsWindow.display(Launcher.game.getSolutions().get(gameTable.getSelectedRow()).getWord().getWord());
         });
     }
 
     public static void update() {
-        String[][] tabPartie = new String[Launcher.partie.getTour() - 1][5];
-        for (int i = 0; i < Launcher.partie.getTour() - 1; i++) {
-            tabPartie[i][0] = String.valueOf(i + 1);
-            tabPartie[i][1] = Launcher.partie.getHistoTirage().get(i);
-            tabPartie[i][2] = Launcher.partie.getSolutions().get(i).getMotJokers();
-            tabPartie[i][3] = Launcher.partie.getSolutions().get(i).getM().toCoor();
-            tabPartie[i][4] = String.valueOf(Launcher.partie.getSolutions().get(i).getPoints());
+        String[][] gameTable = new String[Launcher.game.getTurn() - 1][5];
+        for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
+            gameTable[i][0] = String.valueOf(i + 1);
+            gameTable[i][1] = Launcher.game.getDrawingHistory().get(i);
+            gameTable[i][2] = Launcher.game.getSolutions().get(i).getWildcardedWord();
+            gameTable[i][3] = Launcher.game.getSolutions().get(i).getWord().toCoordinates();
+            gameTable[i][4] = String.valueOf(Launcher.game.getSolutions().get(i).getPoints());
         }
-        DefaultTableModel m = (DefaultTableModel) tableP.getModel();
-        m.setDataVector(tabPartie, titres);
+        DefaultTableModel m = (DefaultTableModel) GameWindow.gameTable.getModel();
+        m.setDataVector(gameTable, titles);
 
-        tableP.getColumnModel().getColumn(0).setPreferredWidth(20);
-        tableP.getColumnModel().getColumn(0).setResizable(false);
-        tableP.getColumnModel().getColumn(1).setPreferredWidth(58);
-        tableP.getColumnModel().getColumn(1).setResizable(false);
-        tableP.getColumnModel().getColumn(2).setPreferredWidth(80);
-        tableP.getColumnModel().getColumn(2).setResizable(false);
-        tableP.getColumnModel().getColumn(3).setPreferredWidth(22);
-        tableP.getColumnModel().getColumn(3).setResizable(false);
-        tableP.getColumnModel().getColumn(4).setPreferredWidth(30);
-        tableP.getColumnModel().getColumn(4).setResizable(false);
-        tableP.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        tableP.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        MainWindow.framePartie.setTitle("Partie : TOP");
-        scrollPaneP.setViewportView(tableP);
+        GameWindow.gameTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+        GameWindow.gameTable.getColumnModel().getColumn(0).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(1).setPreferredWidth(58);
+        GameWindow.gameTable.getColumnModel().getColumn(1).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+        GameWindow.gameTable.getColumnModel().getColumn(2).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(3).setPreferredWidth(22);
+        GameWindow.gameTable.getColumnModel().getColumn(3).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(4).setPreferredWidth(30);
+        GameWindow.gameTable.getColumnModel().getColumn(4).setResizable(false);
+        GameWindow.gameTable.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
+        GameWindow.gameTable.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
+        MainWindow.gameFrame.setTitle("Partie : TOP");
+        gameScrollPane.setViewportView(GameWindow.gameTable);
     }
 
-    public static void updatePlayer(int j) {
-        String[][] tabPartie = new String[Launcher.partie.getTour() - 1][5];
-        for (int i = 0; i < Launcher.partie.getTour() - 1; i++) {
-            tabPartie[i][0] = String.valueOf(i + 1);
-            tabPartie[i][1] = Launcher.partie.getHistoTirage().get(i);
-            tabPartie[i][2] = Launcher.partie.getJoueur(j).getCoupJoue(i).getMotJokers();
-            tabPartie[i][3] = Launcher.partie.getJoueur(j).getCoupJoue(i).getM().toCoor();
-            tabPartie[i][4] = String.valueOf(Launcher.partie.getJoueur(j).getCoupJoue(i).getPoints());
+    public static void updatePlayer(int player) {
+        String[][] gameTable = new String[Launcher.game.getTurn() - 1][5];
+        for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
+            gameTable[i][0] = String.valueOf(i + 1);
+            gameTable[i][1] = Launcher.game.getDrawingHistory().get(i);
+            gameTable[i][2] = Launcher.game.getPlayer(player).getWord(i).getWildcardedWord();
+            gameTable[i][3] = Launcher.game.getPlayer(player).getWord(i).getWord().toCoordinates();
+            gameTable[i][4] = String.valueOf(Launcher.game.getPlayer(player).getWord(i).getPoints());
         }
-        DefaultTableModel m = (DefaultTableModel) tableP.getModel();
-        m.setDataVector(tabPartie, titres);
-        tableP.getColumnModel().getColumn(0).setPreferredWidth(20);
-        tableP.getColumnModel().getColumn(0).setResizable(false);
-        tableP.getColumnModel().getColumn(1).setPreferredWidth(58);
-        tableP.getColumnModel().getColumn(1).setResizable(false);
-        tableP.getColumnModel().getColumn(2).setPreferredWidth(80);
-        tableP.getColumnModel().getColumn(2).setResizable(false);
-        tableP.getColumnModel().getColumn(3).setPreferredWidth(22);
-        tableP.getColumnModel().getColumn(3).setResizable(false);
-        tableP.getColumnModel().getColumn(4).setPreferredWidth(30);
-        tableP.getColumnModel().getColumn(4).setResizable(false);
-        tableP.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        tableP.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        MainWindow.framePartie.setTitle("Partie : " + Launcher.partie.getJoueur(j).getNom());
-        scrollPaneP.setViewportView(tableP);
+        DefaultTableModel m = (DefaultTableModel) GameWindow.gameTable.getModel();
+        m.setDataVector(gameTable, titles);
+        GameWindow.gameTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+        GameWindow.gameTable.getColumnModel().getColumn(0).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(1).setPreferredWidth(58);
+        GameWindow.gameTable.getColumnModel().getColumn(1).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(2).setPreferredWidth(80);
+        GameWindow.gameTable.getColumnModel().getColumn(2).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(3).setPreferredWidth(22);
+        GameWindow.gameTable.getColumnModel().getColumn(3).setResizable(false);
+        GameWindow.gameTable.getColumnModel().getColumn(4).setPreferredWidth(30);
+        GameWindow.gameTable.getColumnModel().getColumn(4).setResizable(false);
+        GameWindow.gameTable.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
+        GameWindow.gameTable.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
+        MainWindow.gameFrame.setTitle("Partie : " + Launcher.game.getPlayer(player).getName());
+        gameScrollPane.setViewportView(GameWindow.gameTable);
     }
 }

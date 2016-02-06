@@ -22,9 +22,9 @@ public class DrawingWindow extends JInternalFrame implements Observer {
             this.getContentPane().removeAll();
             this.repaint();
             for (int i = 0; i < ((String) t).length(); i++) {
-                if (((String) t).charAt(i) == '*') BoardWindow.drawLettre('0', i + 1, 0, false, this);
+                if (((String) t).charAt(i) == '*') BoardWindow.drawLetter('0', i + 1, 0, false, this);
                 else if (Character.isAlphabetic(((String) t).charAt(i)))
-                    BoardWindow.drawLettre(((String) t).charAt(i), i + 1, 0, false, this);
+                    BoardWindow.drawLetter(((String) t).charAt(i), i + 1, 0, false, this);
             }
         }
     }

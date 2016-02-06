@@ -6,20 +6,20 @@ import java.io.IOException;
 
 public class Definitions {
 
-    private static String line;
-    public static final String[] dicoDef = new String[400000];
+    public static final String[] definitionsDictionary = new String[400000];
 
     public Definitions() {
 
         int i = 0;
-        System.out.println(Dictionary.chemin + "/dictionaries/definitions");
+        System.out.println(Dictionary.path + "/dictionaries/definitions");
 
         try {
-            BufferedReader in = new BufferedReader(new FileReader(Dictionary.chemin + "/dictionaries/definitions.txt"));
+            BufferedReader in = new BufferedReader(new FileReader(Dictionary.path + "/dictionaries/definitions.txt"));
 
-            while ((line = in.readLine()).equals("*") != true) {
+            String line;
+            while (!(line = in.readLine()).equals("*")) {
 
-                dicoDef[i] = line;
+                definitionsDictionary[i] = line;
                 i++;
             }
             in.close();
@@ -127,13 +127,13 @@ public class Definitions {
         while (x[j] != null) {
             if (x[j].length() < 2) j++;
             int i = 0;
-            while (dicoDef[i] != null && x[j] != null) {
-                if (x[j].regionMatches(true, 0, dicoDef[i], 0, x[j].length()) && dicoDef[i].indexOf(" ") == x[j].length())
-                    return dicoDef[i];
+            while (definitionsDictionary[i] != null && x[j] != null) {
+                if (x[j].regionMatches(true, 0, definitionsDictionary[i], 0, x[j].length()) && definitionsDictionary[i].indexOf(" ") == x[j].length())
+                    return definitionsDictionary[i];
                 i++;
             }
             j++;
         }
-        return x[0] + " D�finition inconnue";
+        return x[0] + " Définition inconnue";
     }
 }

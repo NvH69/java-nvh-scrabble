@@ -2,113 +2,110 @@ package com.nvh.scrabble.model;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Scrabble extends Observable implements Serializable, Observer {
     private static final long serialVersionUID = 1L;
     private ArrayList<Player> players;
-    private String tirage;
+    private String drawing;
 
-    private ArrayList<Solution> Solutions;
-    private ArrayList<String> histoTirage = new ArrayList<String>();
-    private Grid g;
-    private int tour;
-    private boolean auto, autoTop, partieEncours;
-    private long temps;
+    private ArrayList<Solution> solutions;
+    private ArrayList<String> drawingHistory = new ArrayList<>();
+    private Grid grid;
+    private int turn;
+    private boolean autoDrawing, autoTop, running;
+    private long timer;
     private com.nvh.scrabble.service.Timer mainTimer;
 
 
-    public static final String posLettres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
-    public final static int[] pointsLettres = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
+    public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
+    public final static int[] letterValues = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
 
-    public ArrayList<Character> lettres = new ArrayList<Character>(102);
-    String tabLettres = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
+    public ArrayList<Character> letters = new ArrayList<>(102);
+    String allLetters = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
             + "GGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRR"
             + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
     // * : joker    # : raccord possible
 
-    public Scrabble(Grid g, ArrayList<Player> players, boolean auto, boolean autoTop, long temps, ArrayList<Character> lettres,
-                    int tour, String tirage, ArrayList<String> histoTirage, ArrayList<Solution> Solutions, boolean partieEncours, com.nvh.scrabble.service.Timer mainTimer) {
-        this.g = g;
+    public Scrabble(Grid grid, ArrayList<Player> players, boolean autoDrawing, boolean autoTop, long timer,
+                    boolean running) {
+        this.grid = grid;
         this.players = players;
-        this.auto = auto;
-        this.temps = temps;
-        this.tour = 1;
-        this.tirage = "";
-        this.histoTirage = new ArrayList<String>();
-        this.Solutions = new ArrayList<Solution>();
-        this.partieEncours = partieEncours;
+        this.autoDrawing = autoDrawing;
+        this.timer = timer;
+        this.turn = 1;
+        this.drawing = "";
+        this.drawingHistory = new ArrayList<>();
+        this.solutions = new ArrayList<>();
+        this.running = running;
         this.autoTop = autoTop;
-        this.mainTimer = new com.nvh.scrabble.service.Timer(temps);
+        this.mainTimer = new com.nvh.scrabble.service.Timer(timer);
 
-        g.addObserver(this);
+        grid.addObserver(this);
 
-        //init lettres
-        for (int i = 0; i < tabLettres.length(); i++)
-            this.lettres.add(tabLettres.charAt(i));
+        //init letters
+        for (int i = 0; i < allLetters.length(); i++)
+            this.letters.add(allLetters.charAt(i));
     }
 
     @SuppressWarnings("unchecked")
-    public void copyOf(Scrabble aCopier) {
-        this.partieEncours = true;
-        this.setGrille(aCopier.g);
-        this.setPlayers(aCopier.players);
-        this.auto = aCopier.auto;
-        this.autoTop = aCopier.autoTop;
-        this.temps = aCopier.temps;
-        this.lettres = (ArrayList<Character>) aCopier.getLettres().clone();
-        this.histoTirage = (ArrayList<String>) aCopier.getHistoTirage().clone();
-        this.Solutions = aCopier.getSolutions();
-        if (aCopier.tour > 1)
-            this.tirage = this.Solutions.get(aCopier.tour - 2).getTirageRestant();
+    public void copyOf(Scrabble toCopy) {
+        this.running = true;
+        this.setGrid(toCopy.grid);
+        this.setPlayers(toCopy.players);
+        this.autoDrawing = toCopy.autoDrawing;
+        this.autoTop = toCopy.autoTop;
+        this.timer = toCopy.timer;
+        this.letters = (ArrayList<Character>) toCopy.getLetters().clone();
+        this.drawingHistory = (ArrayList<String>) toCopy.getDrawingHistory().clone();
+        this.solutions = toCopy.getSolutions();
+        if (toCopy.turn > 1)
+            this.drawing = this.solutions.get(toCopy.turn - 2).getRemainingDrawing();
         else
-            this.tirage = "";
-        this.tour = aCopier.tour;
-        this.g.raccords();
+            this.drawing = "";
+        this.turn = toCopy.turn;
+        this.grid.fittings();
 
         setChanged();
         notifyObservers();
     }
 
-    public Grid getGrille() {
-        return this.g;
+    public Grid getGrid() {
+        return this.grid;
     }
 
-    public void setGrille(Grid aCopier) {
+    public void setGrid(Grid toBeCopied) {
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++) {
-                this.g.set(x, y, aCopier.get(x, y));
-                this.g.setBonus(x, y, aCopier.getBonus()[x][y]);
+                this.grid.set(x, y, toBeCopied.get(x, y));
+                this.grid.setBonus(x, y, toBeCopied.getBonus()[x][y]);
             }
     }
 
-    public Player getJoueur(int i) {
+    public Player getPlayer(int i) {
         return players.get(i);
     }
 
-    public ArrayList<Player> getAllJoueurs() {
-        return this.players;
-    }
 
-    public void addJoueur(String name) {
-        this.players.add(new Player(name.toUpperCase(), 0, new ArrayList<Solution>()));
+    public void addPlayer(String name) {
+        this.players.add(new Player(name.toUpperCase(), 0, new ArrayList<>()));
         setChanged();
         notifyObservers();
     }
 
     public void setPlayers(ArrayList<Player> j) {
-        this.players = new ArrayList<Player>();
-        for (Player nj : j)
-            this.players.add(nj);
+        this.players = new ArrayList<>();
+        this.players.addAll(j.stream().collect(Collectors.toList()));
         setChanged();
         notifyObservers();
     }
 
-    public boolean isAuto() {
-        return auto;
+    public boolean isAutoDrawing() {
+        return autoDrawing;
     }
 
-    public void setAuto(boolean auto) {
-        this.auto = auto;
+    public void setAutoDrawing(boolean autoDrawing) {
+        this.autoDrawing = autoDrawing;
     }
 
     public boolean isAutoTop() {
@@ -119,302 +116,260 @@ public class Scrabble extends Observable implements Serializable, Observer {
         this.autoTop = autoTop;
     }
 
-    public long getTemps() {
-        return temps;
+    public ArrayList<Character> getLetters() {
+        return letters;
     }
 
-    public void setTemps(long temps) {
-        this.temps = temps;
-        this.mainTimer = new com.nvh.scrabble.service.Timer(temps);
+    public int getTurn() {
+        return turn;
     }
 
-    public ArrayList<Character> getLettres() {
-        return lettres;
-    }
-
-    public int getTour() {
-        return tour;
-    }
-
-    public void setTour(int tour) {
-        this.tour = tour;
+    public void setTurn(int turn) {
+        this.turn = turn;
     }
 
 
     public ArrayList<Solution> getSolutions() {
-        return Solutions;
+        return solutions;
     }
 
     public void addSolution(Solution solution) {
-        Solutions.add(solution);
+        solutions.add(solution);
         setChanged();
         notifyObservers();
     }
 
-    public void setAllSolutions(ArrayList<Solution> s) {
-        this.Solutions = new ArrayList<Solution>();
-        for (Solution ls : s)
-            this.Solutions.add(ls);
-        setChanged();
-        notifyObservers();
-    }
-
-    public int getNbJoueurs() {
+    public int getNumberOfPlayers() {
         return this.players.size();
     }
 
-
-    public ArrayList<String> getHistoTirage() {
-        return histoTirage;
+    public ArrayList<String> getDrawingHistory() {
+        return drawingHistory;
     }
 
-    public void setHistoTirage(ArrayList<String> t) {
-        this.histoTirage = new ArrayList<String>();
-        for (String lt : t)
-            this.histoTirage.add(lt);
-        setChanged();
-        notifyObservers();
+    public boolean isRunning() {
+        return running;
     }
 
-    public boolean isPartieEncours() {
-        return partieEncours;
-    }
-
-    public void setPartieEncours(boolean partieEncours) {
-        this.partieEncours = partieEncours;
-
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     public com.nvh.scrabble.service.Timer getMainTimer() {
         return mainTimer;
     }
 
-    public void setMainTimer(com.nvh.scrabble.service.Timer mainTimer) {
-        this.mainTimer = mainTimer;
-    }
-
-    public String getNombreLettres() {
-        String reponse = "";
-        for (int i = 0; i < posLettres.length(); i++) {
+    public String getCountOfRemainingLetters() {
+        String letter = "";
+        for (int i = 0; i < alphabet.length(); i++) {
             int count = 0;
-            for (Character c : this.lettres) {
-                if (c == posLettres.charAt(i)) count++;
+            for (Character c : this.letters) {
+                if (c == alphabet.charAt(i)) count++;
             }
-            reponse += posLettres.charAt(i) + " : " + count;
-            if ((i + 1) % 3 == 0) reponse += "\n";
-            else reponse += "\t";
+            letter += alphabet.charAt(i) + " : " + count;
+            if ((i + 1) % 3 == 0) letter += "\n";
+            else letter += "\t";
         }
-        return reponse;
+        return letter;
     }
 
     @SuppressWarnings("unchecked")
-    public String tirageManu(String u)
-    //place le tirage et renvoie "" si possible, sinon renvoie msg d'erreur et ne place rien
+    public String manualDrawing(String remainingDrawing)
+    //place le drawing et renvoie "" si possible, sinon renvoie msg d'erreur et ne place rien
     {
-        String reponse = "", aReplacer;
-        ArrayList<Character> backupLettres;
-        u = u.toUpperCase();
+        String drawing = "", toBeReplaced;
+        ArrayList<Character> backupLetters;
+        remainingDrawing = remainingDrawing.toUpperCase();
 
-        if (!u.startsWith("+") && !u.startsWith("-")) reponse = "Le nouveau tirage doit d�buter par + ou -";
+        if (!remainingDrawing.startsWith("+") && !remainingDrawing.startsWith("-"))
+            drawing = "Le nouveau drawing doit débuter par + ou -";
         else
-            for (int i = 1; i < u.length(); i++)
-                if (!Character.isLetter(u.charAt(i)) && u.charAt(i) != '*')
-                    reponse = "Le nouveau tirage ne doit contenir que des lettres ou des jokers";
+            for (int i = 1; i < remainingDrawing.length(); i++)
+                if (!Character.isLetter(remainingDrawing.charAt(i)) && remainingDrawing.charAt(i) != '*')
+                    drawing = "Le nouveau drawing ne doit contenir que des letters ou des jokers";
 
-        if (reponse != "") return reponse;
+        if (!Objects.equals(drawing, "")) return drawing;
 
-        backupLettres = (ArrayList<Character>) this.lettres.clone();
-        if (u.startsWith("-") && this.tour > 1)    //remise des lettres rejet�es si rejet
+        backupLetters = (ArrayList<Character>) this.letters.clone();
+        if (remainingDrawing.startsWith("-") && this.turn > 1)    //remise des letters rejetées si rejet
         {
-            aReplacer = new String(this.Solutions.get(this.tour - 2).getTirageRestant());
-            for (int i = 0; i < aReplacer.length(); i++)
-                this.lettres.add(aReplacer.charAt(i));
+            toBeReplaced = this.solutions.get(this.turn - 2).getRemainingDrawing();
+            for (int i = 0; i < toBeReplaced.length(); i++)
+                this.letters.add(toBeReplaced.charAt(i));
         }
-        //controle des lettres : sont-elles encore disponibles ?
-        for (int i = 1; i < u.length(); i++) {
+        //controle des letters : sont-elles encore disponibles ?
+        for (int i = 1; i < remainingDrawing.length(); i++) {
             int index = 0;
-            if (this.lettres.contains(u.charAt(i)))
-                for (Character c : this.lettres) {
-                    if (u.charAt(i) == c) {
-                        this.lettres.remove(index);
+            if (this.letters.contains(remainingDrawing.charAt(i)))
+                for (Character c : this.letters) {
+                    if (remainingDrawing.charAt(i) == c) {
+                        this.letters.remove(index);
                         break;
                     }
                     index++;
                 }
-            else reponse = "Les lettres demand�es ne sont plus disponibles";
+            else drawing = "Les letters demandées ne sont plus disponibles";
         }
-        if ((this.tour > 1 && u.startsWith("+") &&
-                this.getSolutions().get(this.tour - 2).getTirageRestant().length() + u.length() != 8) ||
-                (this.tour == 1 && u.length() != 8) || (u.startsWith("-") && u.length() != 8))
-            reponse = "Le tirage doit contenir 7 lettres";
-        if (reponse == "") this.setTirage(u);
-        else this.lettres = (ArrayList<Character>) backupLettres.clone();
+        if ((this.turn > 1 && remainingDrawing.startsWith("+") &&
+                this.getSolutions().get(this.turn - 2).getRemainingDrawing().length() + remainingDrawing.length() != 8) ||
+                (this.turn == 1 && remainingDrawing.length() != 8) || (remainingDrawing.startsWith("-") && remainingDrawing.length() != 8))
+            drawing = "Le drawing doit contenir 7 letters";
+        if (Objects.equals(drawing, "")) this.setDrawing(remainingDrawing);
+        else this.letters = (ArrayList<Character>) backupLetters.clone();
 
-        return reponse;
+        return drawing;
     }
 
-    public void tirageAuto(String depart) {
-        String reponse = depart;
-        //si des lettres sont restantes : on ajoute juste de quoi compl�ter (avec +)
-        if (depart == "-") depart = "";
-        else if (this.lettres.size() > 0) reponse += "+";
+    public void autoDrawing(String remainingDrawing) {
+        String drawing = remainingDrawing;
+        //si des letters sont restantes : on ajoute juste de quoi compléter (avec +)
+        if (Objects.equals(remainingDrawing, "-")) remainingDrawing = "";
+        else if (this.letters.size() > 0) drawing += "+";
 
-        int d = depart.length();
+        int length = remainingDrawing.length();
         int max = 7;
 
         Random random = new java.util.Random(System.currentTimeMillis());
 
-        if (d + this.lettres.size() < 7) max = d + this.lettres.size();
+        if (length + this.letters.size() < 7) max = length + this.letters.size();
 
-        for (int i = d; i < max; i++) {
-            int nouvelleL = random.nextInt(this.lettres.size());
-            reponse += this.lettres.get(nouvelleL);
-            this.lettres.remove(nouvelleL);
+        for (int i = length; i < max; i++) {
+            int nouvelleL = random.nextInt(this.letters.size());
+            drawing += this.letters.get(nouvelleL);
+            this.letters.remove(nouvelleL);
         }
-        //contr�le de la validit� du tirage (au moins 2 V et 2 C pour les 15 premiers tours, 1 ensuite)
-        int countV = 0, countC = 0;
-        for (int i = 0; i < reponse.length(); i++) {
-            char c = reponse.charAt(i);
-            if (c == '*') {
-                countV++;
-                countC++;
-            } else if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'Y') countV++;
-            else if (Character.isLetter(c)) countC++;
+        //contrôle de la validité du drawing (au moins 2 V et 2 C pour les 15 premiers tours, 1 ensuite)
+        int voyelCount = 0, consonantCount = 0;
+        for (int i = 0; i < drawing.length(); i++) {
+            char letter = drawing.charAt(i);
+            if (letter == '*') {
+                voyelCount++;
+                consonantCount++;
+            } else if (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
+                voyelCount++;
+            else if (Character.isLetter(letter)) consonantCount++;
         }
 
-        if ((this.tour < 16 && countV > 1 && countC > 1) || (this.tour > 15 && countV > 0 && countC > 0))
-            this.setTirage(reponse); // <--- si le tirage convient
-        else {//sinon remise des lettres dans le sac et nouveau tirage si possible
-            for (int i = 0; i < reponse.length(); i++) {
-                if (Character.isLetter(reponse.charAt(i)) || reponse.charAt(i) == '*')
-                    this.lettres.add(reponse.charAt(i));
+        if ((this.turn < 16 && voyelCount > 1 && consonantCount > 1) || (this.turn > 15 && voyelCount > 0 && consonantCount > 0))
+            this.setDrawing(drawing); // <--- si le drawing convient
+        else {//sinon remise des letters dans le sac et nouveau drawing si possible
+            for (int i = 0; i < drawing.length(); i++) {
+                if (Character.isLetter(drawing.charAt(i)) || drawing.charAt(i) == '*')
+                    this.letters.add(drawing.charAt(i));
             }
-            if (lettresSuffisantes()) tirageAuto("-");
+            if (convenientRemainingLetters()) autoDrawing("-");
             else {
-                this.partieEncours = false;
-                return;
+                this.running = false;
             }
         }
     }
 
-    public String getTirage() {
-        if (this.tirage == null) return "";
+    public String getDrawing() {
+        if (this.drawing == null) return "";
         else
-            return this.tirage;
+            return this.drawing;
     }
 
-    public void setTirage(String t) {
-        if (t == "") {
-            this.tirage = "";
+    public void setDrawing(String drawing) {
+        if (Objects.equals(drawing, "")) {
+            this.drawing = "";
             return;
         }
-        t = t.toUpperCase();
-        if (t.startsWith("+") && this.tour > 1) {
-            t = this.Solutions.get(this.tour - 2).getTirageRestant() + t;
-            //si on joue au moins le 2�me tour et que le tirage commence par + on ajoute juste les nouvelles lettres au reste pr�c�dent
+        drawing = drawing.toUpperCase();
+        if (drawing.startsWith("+") && (this.turn > 1)) {
+            //si on joue au moins le 2ème turn et que le drawing commence par
+            // + on ajoute juste les nouvelles letters au reste précèdent
+            drawing = this.solutions.get(this.turn - 2).getRemainingDrawing() + drawing;
         }
 
-        String rep = "";
-        for (int i = 0; i < t.length(); i++) {
-            if (Character.isLetter(t.charAt(i)) || t.charAt(i) == '*' || t.charAt(i) == '+' || t.charAt(i) == '-')
-                rep += t.charAt(i);
+        String newDrawing = "";
+        for (int i = 0; i < drawing.length(); i++) {
+            if (Character.isLetter(drawing.charAt(i)) || drawing.charAt(i) == '*' ||
+                    drawing.charAt(i) == '+' || drawing.charAt(i) == '-')
+                newDrawing += drawing.charAt(i);
         }
-        this.histoTirage.add(rep);
+        this.drawingHistory.add(newDrawing);
         setChanged();
-        notifyObservers(rep);
-        rep = rep.replace("+", "");
-        rep = rep.replace("-", "");
-        this.tirage = rep;
-
-
+        notifyObservers(newDrawing);
+        newDrawing = newDrawing.replace("+", "");
+        newDrawing = newDrawing.replace("-", "");
+        this.drawing = newDrawing;
     }
 
-    public boolean lettresSuffisantes() { //if (this.lettres.size()<1) return false;
-        int countV = 0, countC = 0;
-        for (Character c : this.lettres) {
+    public boolean convenientRemainingLetters() { //if (this.letters.size()<1) return false;
+        int voyelCount = 0, consonantCount = 0;
+        for (Character letter : this.letters) {
 
-            if (c == '*') {
-                countV++;
-                countC++;
-            } else if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' || c == 'Y') countV++;
+            if (letter == '*') {
+                voyelCount++;
+                consonantCount++;
+            } else if (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
+                voyelCount++;
             else
-                countC++;
+                consonantCount++;
         }
-        if (this.tour > 1) {
-            String tr = this.getSolutions().get(this.tour - 2).getTirageRestant();
+        if (this.turn > 1) {
+            String tr = this.getSolutions().get(this.turn - 2).getRemainingDrawing();
             for (int i = 0; i < tr.length(); i++) {
                 if (tr.charAt(i) == '*') {
-                    countV++;
-                    countC++;
+                    voyelCount++;
+                    consonantCount++;
                 } else if (tr.charAt(i) == 'A' || tr.charAt(i) == 'E' || tr.charAt(i) == 'I'
-                        || tr.charAt(i) == 'O' || tr.charAt(i) == 'U' || tr.charAt(i) == 'Y') countV++;
+                        || tr.charAt(i) == 'O' || tr.charAt(i) == 'U' || tr.charAt(i) == 'Y') voyelCount++;
                 else
-                    countC++;
+                    consonantCount++;
             }
         }
-        if (countC > 0 && countV > 0) return true;
-        else return false;
+        return consonantCount > 0 && voyelCount > 0;
     }
 
-    public class Mot implements Serializable {
-        /**
-         *
-         */
-        private static final long serialVersionUID = 6044242150909210877L;
+    public class Word implements Serializable {
 
+        private static final long serialVersionUID = 6044242150909210877L;
 
         public int getX() {
             return x;
-        }
-
-        public void setX(int x) {
-            this.x = x;
         }
 
         public int getY() {
             return y;
         }
 
-        public void setY(int y) {
-            this.y = y;
+        public String getWord() {
+            return word;
         }
 
-        public String getMot() {
-            return nom;
-        }
-
-
-        private String nom;
+        private String word;
         private int x, y;
         private boolean h;
 
 
-        public Mot(String nom, int x, int y, boolean h) {
-            this.nom = nom;
+        public Word(String word, int x, int y, boolean h) {
+            this.word = word;
             this.x = x;
             this.y = y;
             this.h = h;
         }
 
-        public Mot(String nom, String coord)                //construteur avec "vraies" coordonn�es type Scrabble
+        public Word(String word, String coordinates)   //construteur avec "vraies" coordonnées type Scrabble
         {
-            this.nom = nom;
-            Character X = coord.charAt(0);
-            Character Y = coord.charAt(coord.length() - 1);
+            this.word = word;
+            Character X = coordinates.charAt(0);
+            Character Y = coordinates.charAt(coordinates.length() - 1);
 
             if (Character.isLetter(X)) {
                 this.h = true;
-                this.y = posLettres.indexOf(X);
-                this.x = Integer.parseInt(onlyDigits(coord)) - 1;
+                this.y = alphabet.indexOf(X);
+                this.x = Integer.parseInt(onlyDigits(coordinates)) - 1;
             } else {
                 this.h = false;
-                this.x = Integer.parseInt(onlyDigits(coord)) - 1;
-                this.y = posLettres.indexOf(Y);
+                this.x = Integer.parseInt(onlyDigits(coordinates)) - 1;
+                this.y = alphabet.indexOf(Y);
             }
         }
 
-        public int lettrePoints(char c) {
-            return pointsLettres[posLettres.indexOf(c)];
+        public int letterValue(char c) {
+            return letterValues[alphabet.indexOf(c)];
         }
 
 
@@ -422,378 +377,367 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return this.h;
         }
 
-        public String[] motPossible(String t, Grid g)
-        // Teste un Mot plac� : renvoie les lettres utilis�es (index 0) et le tirage restant (index1)
+        public String[] isMatchingWord(String drawing, Grid grid)
+        // Teste un Word placé : renvoie les letters utilisées (index 0) et le drawing restant (index1)
         // OU null si impossible
-
         {
-            String m = this.nom;
+            String word = this.word;
 
             int x = this.x;
             int y = this.y;
-            int l = this.longueur();
-            int countL = 0;
-            boolean raccord = false;
-            String[] retour = new String[2];
-            StringBuffer temp = new StringBuffer(m);
-            ArrayList<Character> tirageBase = new ArrayList<Character>();
-            for (int i = 0; i < t.length(); i++) {
-                tirageBase.add(t.charAt(i));
+            int lenght = this.lenght();
+            int lettersCount = 0;
+            boolean isFitting = false;
+            String[] information = new String[2];
+            StringBuilder wordToTest = new StringBuilder(word);
+            ArrayList<Character> drawingArray = new ArrayList<>();
+            for (int i = 0; i < drawing.length(); i++) {
+                drawingArray.add(drawing.charAt(i));
             }
 
-            if (this.h) {//si le mot d�passe, s'il est suivi ou pr�c�d� d'une lettre d�j� plac�e, on renvoie FAUX
-                if ((x + l) > 15) return null;
-                if ((x + l) < 15) if (g.getCoor()[x + l][y] != ' ' && g.getCoor()[x + l][y] != '#') return null;
-                if (x > 0) if (g.getCoor()[x - 1][y] != ' ' && g.getCoor()[x - 1][y] != '#') return null;
+            if (this.h) {//si le mot dépasse, s'il est suivi ou précédé d'une lettre déjà placée, on renvoie FAUX
+                if ((x + lenght) > 15) return null;
+                if ((x + lenght) < 15)
+                    if (grid.getCoordinates()[x + lenght][y] != ' ' && grid.getCoordinates()[x + lenght][y] != '#')
+                        return null;
+                if (x > 0)
+                    if (grid.getCoordinates()[x - 1][y] != ' ' && grid.getCoordinates()[x - 1][y] != '#') return null;
 
-                for (int i = 0; i < l; i++) {
-                    if (g.getCoor()[x + i][y] == '#') {
-                        raccord = true;
+                for (int i = 0; i < lenght; i++) {
+                    if (grid.getCoordinates()[x + i][y] == '#') {
+                        isFitting = true;
                         break;
                     }
                 }
-                if (!raccord) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
+                if (!isFitting) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
 
-                for (int i = 0; i < l; i++) {
-                    if (g.getCoor()[x + i][y] == m.charAt(i)) countL++;
-                    else if (g.getCoor()[x + i][y] != ' ' && g.getCoor()[x + i][y] != '#') return null;
-                    else if (tirageBase.contains(m.charAt(i))) {
-                        countL++;
+                for (int i = 0; i < lenght; i++) {
+                    if (grid.getCoordinates()[x + i][y] == word.charAt(i)) lettersCount++;
+                    else if (grid.getCoordinates()[x + i][y] != ' ' && grid.getCoordinates()[x + i][y] != '#')
+                        return null;
+                    else if (drawingArray.contains(word.charAt(i))) {
+                        lettersCount++;
                         int index = 0;
-                        for (Character c : tirageBase) {
-                            if (c == m.charAt(i)) {
-                                tirageBase.remove(index);
+                        for (Character c : drawingArray) {
+                            if (c == word.charAt(i)) {
+                                drawingArray.remove(index);
                                 break;
                             }
                             index++;
                         }
-                    } else if (tirageBase.contains('*')) {
-                        countL++;
+                    } else if (drawingArray.contains('*')) {
+                        lettersCount++;
                         int index = 0;
-                        temp.setCharAt(i, '*');
+                        wordToTest.setCharAt(i, '*');
                         //insertion choix de la position du joker
-                        //si le joker est plac� sur case bonus ET le tirage
-                        //contient d�j� la lettre cherch�e
-                        if (g.getBonus()[x + i][y] > 1 && t.contains(Character.toString(m.charAt(i)))) {
-                            //�change de position entre le joker et la lettre d�j� plac�e
-                            //si le bonus est inf�rieur
+                        //si le joker est placé sur case bonus ET le drawing
+                        //contient déjà la lettre cherchée
+                        if (grid.getBonus()[x + i][y] > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
+                            //échange de position entre le joker et la lettre déjà placée
+                            //si le bonus est inférieur
                             for (int j = 0; j < i; j++)
-                                if (m.charAt(j) == m.charAt(i) && g.getBonus()[x + j][y] != 3) {
-                                    temp.setCharAt(i, m.charAt(i));
-                                    temp.setCharAt(j, '*');
+                                if (word.charAt(j) == word.charAt(i) && grid.getBonus()[x + j][y] != 3) {
+                                    wordToTest.setCharAt(i, word.charAt(i));
+                                    wordToTest.setCharAt(j, '*');
                                     break;
                                 }
-
                         }
-                        for (Character c : tirageBase) {
-                            if (c == '*') {
-                                tirageBase.remove(index);
+                        for (Character letter : drawingArray) {
+                            if (letter == '*') {
+                                drawingArray.remove(index);
                                 break;
                             }
                             index++;
                         }
                     }
                 }
-                if (countL < l) return null;
+                if (lettersCount < lenght) return null;
             }
 
-            if (!this.h) {//si le mot d�passe, s'il est suivi et pr�c�d� d'une lettre d�j� plac�e, renvoie null
-                if ((y + l) > 15) return null;
-                if ((y + l) < 15) if (g.getCoor()[x][y + l] != ' ' && g.getCoor()[x][y + l] != '#') return null;
-                if (y > 0) if (g.getCoor()[x][y - 1] != ' ' && g.getCoor()[x][y - 1] != '#') return null;
-                for (int i = 0; i < l; i++) {
-                    if (g.getCoor()[x][y + i] == '#') {
-                        raccord = true;
+            if (!this.h) {//si le mot dépasse, s'il est suivi et précédé d'une lettre déjà placée, renvoie null
+                if ((y + lenght) > 15) return null;
+                if ((y + lenght) < 15)
+                    if (grid.getCoordinates()[x][y + lenght] != ' ' && grid.getCoordinates()[x][y + lenght] != '#')
+                        return null;
+                if (y > 0)
+                    if (grid.getCoordinates()[x][y - 1] != ' ' && grid.getCoordinates()[x][y - 1] != '#') return null;
+                for (int i = 0; i < lenght; i++) {
+                    if (grid.getCoordinates()[x][y + i] == '#') {
+                        isFitting = true;
                         break;
                     }
                 }
-                if (!raccord) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
+                if (!isFitting) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
 
-                for (int i = 0; i < l; i++) {
-                    if (g.getCoor()[x][y + i] == m.charAt(i)) countL++;
-                    else if (g.getCoor()[x][y + i] != ' ' && g.getCoor()[x][y + i] != '#') return null;
-                    else if (tirageBase.contains(m.charAt(i))) {
-                        countL++;
+                for (int i = 0; i < lenght; i++) {
+                    if (grid.getCoordinates()[x][y + i] == word.charAt(i)) lettersCount++;
+                    else if (grid.getCoordinates()[x][y + i] != ' ' && grid.getCoordinates()[x][y + i] != '#')
+                        return null;
+                    else if (drawingArray.contains(word.charAt(i))) {
+                        lettersCount++;
                         int index = 0;
-                        for (Character c : tirageBase) {
-                            if (c == m.charAt(i)) {
-                                tirageBase.remove(index);
+                        for (Character c : drawingArray) {
+                            if (c == word.charAt(i)) {
+                                drawingArray.remove(index);
                                 break;
                             }
                             index++;
                         }
-                    } else if (tirageBase.contains('*')) {
-                        countL++;
+                    } else if (drawingArray.contains('*')) {
+                        lettersCount++;
                         int index = 0;
-                        temp.setCharAt(i, '*');
+                        wordToTest.setCharAt(i, '*');
                         //insertion choix de la position du joker
-                        //si le joker est plac� sur case bonus ET le tirage
-                        //contient d�j� la lettre cherch�e
-                        if (g.getBonus()[x][y + i] > 1 && t.contains(Character.toString(m.charAt(i)))) {
-                            //�change de position entre le joker et la lettre d�j� plac�e
-                            //si le bonus est inf�rieur
+                        //si le joker est placé sur case bonus ET le drawing
+                        //contient déjà la lettre cherchée
+                        if (grid.getBonus()[x][y + i] > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
+                            //échange de position entre le joker et la lettre déjà placée
+                            //si le bonus est inférieur
                             for (int j = 0; j < i; j++)
-                                if (m.charAt(j) == m.charAt(i) && g.getBonus()[x][y + j] != 3) {
-                                    temp.setCharAt(i, m.charAt(i));
-                                    temp.setCharAt(j, '*');
+                                if (word.charAt(j) == word.charAt(i) && grid.getBonus()[x][y + j] != 3) {
+                                    wordToTest.setCharAt(i, word.charAt(i));
+                                    wordToTest.setCharAt(j, '*');
                                     break;
                                 }
-
                         }
-                        for (Character c : tirageBase) {
-                            if (c == '*') {
-                                tirageBase.remove(index);
+                        for (Character letter : drawingArray) {
+                            if (letter == '*') {
+                                drawingArray.remove(index);
                                 break;
                             }
                             index++;
                         }
                     }
                 }
-                if (countL < l) return null;
-
+                if (lettersCount < lenght) return null;
             }
 
-            g.setMot(this); //essai du  mot test�
-            List<String> tousMots = g.listeMotsPlaces(); // liste de tous les mots  + nouveaux mots form�s
-            g.deleteMot(this);    //effacement du nouvau mot
+            grid.setWord(this); //essai du  mot testé
+            List<String> allWords = grid.placedWords(); // liste de tous les mots  + nouveaux mots formés
+            grid.deleteWord(this);    //effacement du nouvau mot
 
-            for (String s : tousMots) // parcourir tous les nouveaux mots
-                if (!g.getListeMots().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est form�
-                    // v�rif de l'orthographe
-                    if (!Dictionary.orthographe(s)) return null;
+            for (String s : allWords) // parcourir tous les nouveaux mots
+                if (!grid.getListOfWords().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
+                    // vérif de l'isCorrectlySpelled
+                    if (!Dictionary.isCorrectlySpelled(s)) return null;
             //si tous les mots sont corrects
-            retour[0] = temp.toString();
-            retour[1] = tirageBase.toString();
-            return retour;
+            information[0] = wordToTest.toString();
+            information[1] = drawingArray.toString();
+            return information;
         }
 
-        public int longueur() {
-            if (nom != null) return nom.length();
+        public int lenght() {
+            if (word != null) return word.length();
             return 0;
         }
 
         public char charAt(int i) {
-            return nom.charAt(i);
+            return word.charAt(i);
         }
 
         public String onlyDigits(String s) {
-            String reponse = "";
+            String digits = "";
             for (int i = 0; i < s.length(); i++) {
-                Character ctest = s.charAt(i);
-                if (Character.isDigit(ctest)) reponse += ctest;
+                Character toTest = s.charAt(i);
+                if (Character.isDigit(toTest)) digits += toTest;
             }
-            return reponse;
+            return digits;
         }
 
-        public String toCoor() {
-            if (this.nom == "-------") return "---";
+        public String toCoordinates() {
+            if (Objects.equals(this.word, "-------")) return "---";
             int x = this.getX();
             int y = this.getY();
             boolean h = this.isHorizontal();
             String reponse = "";
             if (h) {
-                reponse += Grid.coorLettres.charAt(y);
+                reponse += Grid.xAxisLetters.charAt(y);
                 reponse += x + 1;
             } else {
                 reponse += x + 1;
-                reponse += Grid.coorLettres.charAt(y);
+                reponse += Grid.xAxisLetters.charAt(y);
             }
-
             return reponse;
         }
 
-        public int getScore(Grid g, String[] sequence) {
-            int pts = 0, pts2 = 0, multi = 1, multi2 = 1;
-            int[][] bonusT = g.getBonus();
-            boolean bordSup = false, bordInf = false, bordG = false, bordD = false, sensUnique;
-            //1 : calcul des points du mot plac�
-            for (int i = 0; i < this.longueur(); i++) {
+        public int getScore(Grid grid, String[] wordSequence) {
+            int points = 0, alternativePoints = 0, bonus = 1, alternativeBonus = 1;
+            int[][] bonusGrid = grid.getBonus();
+            boolean isTouchingUp = false, isTouchingDown = false, isTouchingLeft = false, isTouchingRight = false, direction;
+            //1 : calcul des points du mot placé
+            for (int i = 0; i < this.lenght(); i++) {
                 if (this.h) {
-                    if (bonusT[x + i][y] > 9) {
-                        multi *= (bonusT[x + i][y]) / 10;
-                        pts += lettrePoints(sequence[0].charAt(i));
+                    if (bonusGrid[x + i][y] > 9) {
+                        bonus *= (bonusGrid[x + i][y]) / 10;
+                        points += letterValue(wordSequence[0].charAt(i));
                     } else
-                        pts += lettrePoints(sequence[0].charAt(i)) * bonusT[x + i][y];
+                        points += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
                 } else {
-                    if (bonusT[x][y + i] > 9) {
-                        multi *= (bonusT[x][y + i]) / 10;
-                        pts += lettrePoints(sequence[0].charAt(i));
+                    if (bonusGrid[x][y + i] > 9) {
+                        bonus *= (bonusGrid[x][y + i]) / 10;
+                        points += letterValue(wordSequence[0].charAt(i));
                     } else
-                        pts += lettrePoints(sequence[0].charAt(i)) * bonusT[x][y + i];
+                        points += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
                 }
             }
-            pts *= multi;
-            //2 : calcul des points des autres mots form�s
-            if (this.getY() == 0) bordSup = true;
-            if (this.getY() == 14) bordInf = true;
-            if (this.getX() == 0) bordG = true;
-            if (this.getX() == 14) bordD = true;
-            for (int i = 0; i < this.longueur(); i++) {
-                sensUnique = true;
+            points *= bonus;
+            //2 : calcul des points des autres mots formés
+            if (this.getY() == 0) isTouchingUp = true;
+            if (this.getY() == 14) isTouchingDown = true;
+            if (this.getX() == 0) isTouchingLeft = true;
+            if (this.getX() == 14) isTouchingRight = true;
+            for (int i = 0; i < this.lenght(); i++) {
+                direction = true;
                 if (this.h) {
-                    if (g.getCoor()[x + i][y] == '#') {
-                        if (!bordSup) {
-                            if (Character.isLetter(g.getCoor()[x + i][y - 1])) {
-                                sensUnique = false;
-                                if (bonusT[x + i][y] > 9) {
-                                    multi2 *= (bonusT[x + i][y]) / 10;
-                                    pts2 += lettrePoints(sequence[0].charAt(i));
+                    if (grid.getCoordinates()[x + i][y] == '#') {
+                        if (!isTouchingUp) {
+                            if (Character.isLetter(grid.getCoordinates()[x + i][y - 1])) {
+                                direction = false;
+                                if (bonusGrid[x + i][y] > 9) {
+                                    alternativeBonus *= (bonusGrid[x + i][y]) / 10;
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    pts2 += lettrePoints(sequence[0].charAt(i)) * bonusT[x + i][y];
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
                                 for (int j = 1; j <= this.getY(); j++) {
-                                    if (Character.isLetter(g.getCoor()[x + i][y - j]))
-                                        pts2 += lettrePoints(g.getCoor()[x + i][y - j]) * bonusT[x + i][y - j];
+                                    if (Character.isLetter(grid.getCoordinates()[x + i][y - j]))
+                                        alternativePoints += letterValue(grid.getCoordinates()[x + i][y - j]) * bonusGrid[x + i][y - j];
                                     else break;
                                 }
                             }
-                            pts += (pts2 * multi2);
-                            pts2 = 0;
-                            multi2 = 1;
+                            points += (alternativePoints * alternativeBonus);
+                            alternativePoints = 0;
+                            alternativeBonus = 1;
                         }
-                        if (!bordInf) {
-                            if (Character.isLetter(g.getCoor()[x + i][y + 1])) {
-                                if (bonusT[x + i][y] > 9 && sensUnique) {
-                                    multi2 *= (bonusT[x + i][y]) / 10;
-                                    pts2 += lettrePoints(sequence[0].charAt(i));
+                        if (!isTouchingDown) {
+                            if (Character.isLetter(grid.getCoordinates()[x + i][y + 1])) {
+                                if (bonusGrid[x + i][y] > 9 && direction) {
+                                    alternativeBonus *= (bonusGrid[x + i][y]) / 10;
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
-                                if (bonusT[x + i][y] < 9 && sensUnique)
-                                    pts2 += lettrePoints(sequence[0].charAt(i)) * bonusT[x + i][y];
+                                if (bonusGrid[x + i][y] < 9 && direction)
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
                                 for (int j = 1; j <= 14 - this.getY(); j++) {
-                                    if (Character.isLetter(g.getCoor()[x + i][y + j]))
-                                        pts2 += lettrePoints(g.getCoor()[x + i][y + j]) * bonusT[x + i][y + j];
+                                    if (Character.isLetter(grid.getCoordinates()[x + i][y + j]))
+                                        alternativePoints += letterValue(grid.getCoordinates()[x + i][y + j]) * bonusGrid[x + i][y + j];
                                     else break;
                                 }
                             }
-                            pts += (pts2 * multi2);
-                            pts2 = 0;
-                            multi2 = 1;
+                            points += (alternativePoints * alternativeBonus);
+                            alternativePoints = 0;
+                            alternativeBonus = 1;
                         }
                     }
                 }
                 if (!this.h) {
-                    if (g.getCoor()[x][y + i] == '#') {
-                        if (!bordG) {
-                            if (Character.isLetter(g.getCoor()[x - 1][y + i])) {
-                                sensUnique = false;
-                                if (bonusT[x][y + i] > 9) {
-                                    multi2 *= (bonusT[x][y + i]) / 10;
-                                    pts2 += lettrePoints(sequence[0].charAt(i));
+                    if (grid.getCoordinates()[x][y + i] == '#') {
+                        if (!isTouchingLeft) {
+                            if (Character.isLetter(grid.getCoordinates()[x - 1][y + i])) {
+                                direction = false;
+                                if (bonusGrid[x][y + i] > 9) {
+                                    alternativeBonus *= (bonusGrid[x][y + i]) / 10;
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    pts2 += lettrePoints(sequence[0].charAt(i)) * bonusT[x][y + i];
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
                                 for (int j = 1; j <= this.getX(); j++) {
-                                    if (Character.isLetter(g.getCoor()[x - j][y + i]))
-                                        pts2 += lettrePoints(g.getCoor()[x - j][y + i]) * bonusT[x - j][y + i];//ajout
+                                    if (Character.isLetter(grid.getCoordinates()[x - j][y + i]))
+                                        alternativePoints += letterValue(grid.getCoordinates()[x - j][y + i]) * bonusGrid[x - j][y + i];//ajout
                                     else break;
                                 }
                             }
-                            pts += (pts2 * multi2);
-                            pts2 = 0;
-                            multi2 = 1;
+                            points += (alternativePoints * alternativeBonus);
+                            alternativePoints = 0;
+                            alternativeBonus = 1;
                         }
 
-                        if (!bordD) {
-                            if (Character.isLetter(g.getCoor()[x + 1][y + i])) {
-                                if (bonusT[x][y + i] > 9 && sensUnique) {
-                                    multi2 *= (bonusT[x][y + i]) / 10;
-                                    pts2 += lettrePoints(sequence[0].charAt(i));
+                        if (!isTouchingRight) {
+                            if (Character.isLetter(grid.getCoordinates()[x + 1][y + i])) {
+                                if (bonusGrid[x][y + i] > 9 && direction) {
+                                    alternativeBonus *= (bonusGrid[x][y + i]) / 10;
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
-                                if (bonusT[x][y + i] < 9 && sensUnique)
-                                    pts2 += lettrePoints(sequence[0].charAt(i)) * bonusT[x][y + i];
+                                if (bonusGrid[x][y + i] < 9 && direction)
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
                                 for (int j = 1; j <= 14 - this.getX(); j++) {
-                                    if (Character.isLetter(g.getCoor()[x + j][y + i]))
-                                        pts2 += lettrePoints(g.getCoor()[x + j][y + i]) * bonusT[x + j][y + i];//ajout
+                                    if (Character.isLetter(grid.getCoordinates()[x + j][y + i]))
+                                        alternativePoints += letterValue(grid.getCoordinates()[x + j][y + i]) * bonusGrid[x + j][y + i];//ajout
                                     else break;
                                 }
                             }
-                            pts += (pts2 * multi2);
-                            pts2 = 0;
-                            multi2 = 1;
+                            points += (alternativePoints * alternativeBonus);
+                            alternativePoints = 0;
+                            alternativeBonus = 1;
                         }
 
                     }
                 }
 
             }
-            if (sequence[1] == "[]" && getTirage().length() > 6) pts += 50;
-            return pts;
+            if (Objects.equals(wordSequence[1], "[]") && getDrawing().length() > 6) points += 50;
+            return points;
         }
-    }//Mot
+    }
 
     public class Solution implements Comparable<Solution>, Serializable {
-        /**
-         *
-         */
+
         private static final long serialVersionUID = 1943115288116173821L;
-        private Mot m;
+        private Word m;
         private int points;
-        private String[] retour = new String[2];
+        private String[] information = new String[2];
 
 
-        public Solution(int points, Mot m, String[] retour) {
-            this.m = m;
+        public Solution(int points, Word word, String[] information) {
+            this.m = word;
             this.points = points;
-            this.retour = retour;
+            this.information = information;
         }
 
-        public Mot getM() {
+        public Word getWord() {
             return m;
-        }
-
-        public void setM(Mot m) {
-            this.m = m;
         }
 
         public int getPoints() {
             return points;
         }
 
-        public void setPoints(int points) {
-            this.points = points;
+        public String[] getInformation() {
+            return information;
         }
 
-        public String[] getRetour() {
-            return retour;
-        }
-
-        public void setRetour(String[] retour) {
-            this.retour = retour;
-        }
-
+        @Override
         public String toString() {
             String scr1, scr2;
-            scr1 = retour[0];
+            scr1 = information[0];
 
-            if (retour[1] == "[]" && getTirage().length() > 6) scr2 = "Scrabble !";
+            if (Objects.equals(information[1], "[]") && getDrawing().length() > 6) scr2 = "Scrabble !";
             else scr2 = "";
-            if (m.longueur() > 6)
-                return m.nom + " \t| " + "\t" + Grid.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
-            return m.nom + "\t \t| " + "\t" + Grid.toCoor(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
+            if (m.lenght() > 6)
+                return m.word + " \t| " + "\t" + Grid.toCoordinates(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
+            return m.word + "\t \t| " + "\t" + Grid.toCoordinates(m.getX(), m.getY(), m.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
         }
 
-        public String getTirageRestant() {
-            String reponse = new String("");
-            for (int i = 0; i < this.retour[1].length(); i++) {
-                if (Character.isLetter(this.retour[1].charAt(i)) || this.retour[1].charAt(i) == '*')
-                    reponse += this.retour[1].charAt(i);
+        public String getRemainingDrawing() {
+            String remainingDrawing = "";
+            for (int i = 0; i < this.information[1].length(); i++) {
+                if (Character.isLetter(this.information[1].charAt(i)) || this.information[1].charAt(i) == '*')
+                    remainingDrawing += this.information[1].charAt(i);
             }
-            return reponse;
+            return remainingDrawing;
         }
 
         public String getSequence() {
-            return this.retour[0];
+            return this.information[0];
         }
 
-        public String getMotJokers() //renvoie le mot solution avec la lettre remplac�e par un joker entre ( )
+        public String getWildcardedWord() //renvoie le mot solution avec la lettre remplacée par un joker entre ( )
         {
             String reponse = "";
-            if (this.getM().getMot() == "-------") return "-------";
+            if (Objects.equals(this.getWord().getWord(), "-------")) return "-------";
             for (int c = 0; c < this.getSequence().length(); c++) {
                 if (this.getSequence().charAt(c) != '*') reponse += this.getSequence().charAt(c);
-                else reponse += "(" + this.m.getMot().charAt(c) + ")";
+                else reponse += "(" + this.m.getWord().charAt(c) + ")";
             }
             return reponse;
         }
-
 
         @Override
         public int compareTo(Solution o) {
@@ -801,27 +745,26 @@ public class Scrabble extends Observable implements Serializable, Observer {
                     Integer.compare(points, o.points) :
                     Integer.compare(o.points, points);
         }
-    }//solution
+    }
 
     @Override
     public void update(Observable obs, Object obj) {
 
-        //si l'�v�nement est la mise en place d'une solution :
+        //si l'évènement est la mise en place d'une solution :
         if (obj instanceof Solution) {
 
-            this.addSolution((Solution) obj); //ajout de la solution � la partie
-            this.getJoueur(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
-            this.setTour(this.getTour() + 1); //avanc�e d'un tour
+            this.addSolution((Solution) obj); //ajout de la solution à la game
+            this.getPlayer(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
+            this.setTurn(this.getTurn() + 1); //avancée d'un turn
 
             setChanged();
-            notifyObservers(((Solution) obj)); //
+            notifyObservers(obj); //
             setChanged();
-            notifyObservers(((Solution) obj).getTirageRestant()); //notification pour la fen�tre tirage
-        } else //pour tout autre �v�nement :
+            notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre drawing
+        } else //pour tout autre évènement :
         {
             setChanged();
             notifyObservers();
         }
     }
-
 }

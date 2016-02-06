@@ -4,18 +4,18 @@ import java.io.*;
 
 public class Serializer {
 
-    public static void ecrire(Scrabble partie, String nom) throws FileNotFoundException, IOException {
+    public static void write(Scrabble game, String name) throws IOException {
 
         ObjectOutputStream oos;
-        oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(Dictionary.chemin + "/savedgames/" + nom)));
-        oos.writeObject(partie);
+        oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(Dictionary.path + "/savedgames/" + name)));
+        oos.writeObject(game);
         oos.close();
     }
 
     @SuppressWarnings("resource")
-    public static Scrabble lire(String nom) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public static Scrabble read(String name) throws IOException, ClassNotFoundException {
         ObjectInputStream ois;
-        ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(Dictionary.chemin + "/savedgames/" + nom)));
+        ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(Dictionary.path + "/savedgames/" + name)));
 
         return (Scrabble) ois.readObject();
     }

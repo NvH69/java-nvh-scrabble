@@ -1,7 +1,7 @@
 package com.nvh.scrabble.view.internalwindows;
 
-import com.nvh.scrabble.model.Scrabble.Solution;
 import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.model.Scrabble.Solution;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
@@ -9,31 +9,32 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
 @SuppressWarnings("serial")
 public class SolutionWindow extends JInternalFrame implements Observer {
     public static JTable table;
-    static String[] titres = {"N�", "Mot", "Pos", "Score", ""};
-    public static JScrollPane scrollPane;
-    public static JButton btnVoir = new JButton("Voir toutes les solutions");
-    private final Action action = new SwingAction();
+    static String[] titles = {"N°", "Word", "Pos", "Score", ""};
+    public static JScrollPane solutionScrollPane;
+    public static JButton showButton = new JButton("Voir toutes les solutions");
 
     public SolutionWindow() {
-        scrollPane = new JScrollPane();
-        scrollPane.setBounds(0, 23, 483, 297);
-        scrollPane.setVisible(false);
+        solutionScrollPane = new JScrollPane();
+        solutionScrollPane.setBounds(0, 23, 483, 297);
+        solutionScrollPane.setVisible(false);
         setVisible(true);
 
         setBounds(675, 400, 499, 359);
-        btnVoir.setAction(action);
-        btnVoir.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 16));
-        btnVoir.setBounds(10, 0, 463, 23);
+        Action action = new SwingAction();
+        showButton.setAction(action);
+        showButton.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 16));
+        showButton.setBounds(10, 0, 463, 23);
 
         getContentPane().setLayout(null);
-        getContentPane().add(scrollPane);
-        getContentPane().add(btnVoir);
+        getContentPane().add(solutionScrollPane);
+        getContentPane().add(showButton);
         getContentPane().setLayout(new BorderLayout());
 
         table = new JTable() {
@@ -45,8 +46,6 @@ public class SolutionWindow extends JInternalFrame implements Observer {
         table.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
         table.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
         table.setSelectionMode(0);
-
-
     }
 
     private class SwingAction extends AbstractAction {
@@ -58,9 +57,9 @@ public class SolutionWindow extends JInternalFrame implements Observer {
 
         public void actionPerformed(ActionEvent e) {
 
-            scrollPane.setVisible(!scrollPane.isVisible());
-            if (scrollPane.isVisible()) btnVoir.setText("Masquer les solutions");
-            else btnVoir.setText("Afficher les solutions");
+            solutionScrollPane.setVisible(!solutionScrollPane.isVisible());
+            if (solutionScrollPane.isVisible()) showButton.setText("Masquer les solutions");
+            else showButton.setText("Afficher les solutions");
         }
     }
 
@@ -69,24 +68,24 @@ public class SolutionWindow extends JInternalFrame implements Observer {
 
         if (arg instanceof List<?>) {
 
-            DefaultTableModel m = (DefaultTableModel) table.getModel();
-            Object[][] sol = new Object[((List<?>) arg).size() + 1][5];
+            DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
+            Object[][] solutions = new Object[((List<?>) arg).size() + 1][5];
 
             int index = 0;
-            sol[index++][1] = "-------";
-            sol[index][3] = "0";
-            for (Object s : (List<?>) arg) {
-                sol[index][0] = index;
-                sol[index][1] = ((Solution) s).getMotJokers();
-                sol[index][2] = ((Solution) s).getM().toCoor();
-                sol[index][3] = ((Solution) s).getPoints();
-                if (((Solution) s).getRetour()[1] == "[]" && Launcher.partie.getTirage().length() > 6)
-                    sol[index][4] = "Scrabble!";
-                else sol[index][4] = "";
+            solutions[index++][1] = "-------";
+            solutions[index][3] = "0";
+            for (Object solution : (List<?>) arg) {
+                solutions[index][0] = index;
+                solutions[index][1] = ((Solution) solution).getWildcardedWord();
+                solutions[index][2] = ((Solution) solution).getWord().toCoordinates();
+                solutions[index][3] = ((Solution) solution).getPoints();
+                if (Objects.equals(((Solution) solution).getInformation()[1], "[]") && Launcher.game.getDrawing().length() > 6)
+                    solutions[index][4] = "Scrabble!";
+                else solutions[index][4] = "";
                 index++;
             }
 
-            m.setDataVector(sol, titres);
+            defaultTableModel.setDataVector(solutions, titles);
             table.getColumnModel().getColumn(0).setPreferredWidth(20);
             table.getColumnModel().getColumn(0).setResizable(false);
             table.getColumnModel().getColumn(1).setPreferredWidth(100);
@@ -99,8 +98,8 @@ public class SolutionWindow extends JInternalFrame implements Observer {
             table.getColumnModel().getColumn(4).setResizable(false);
             table.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
             table.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
-            scrollPane.setViewportView(table);
-            scrollPane.setVisible(false);
+            solutionScrollPane.setViewportView(table);
+            solutionScrollPane.setVisible(false);
         }
     }
 }
