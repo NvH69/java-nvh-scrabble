@@ -83,5 +83,4 @@ public class Timer extends Thread implements Serializable {
         isOn = true;
         isTicking = false;
     }
-
 }

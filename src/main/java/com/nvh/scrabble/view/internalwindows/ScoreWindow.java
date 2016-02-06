@@ -1,12 +1,10 @@
 package com.nvh.scrabble.view.internalwindows;
 
+import com.nvh.scrabble.Launcher;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.view.MainWindow;
-import com.nvh.scrabble.Launcher;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Observable;
@@ -15,8 +13,8 @@ import java.util.Observer;
 @SuppressWarnings("serial")
 public class ScoreWindow extends JInternalFrame implements Observer {
     public static JTable scoreTable;
-    static String[] titres = {"Nom", "Score", "%"};
-    static JScrollPane scrollPaneS;
+    static String[] titles = {"Nom", "Score", "%"};
+    static JScrollPane scoreScrollPane;
 
 
     public ScoreWindow() {
@@ -24,28 +22,23 @@ public class ScoreWindow extends JInternalFrame implements Observer {
         setBounds(675, 11, 190, 209);
         setVisible(true);
 
-
         getContentPane().setLayout(new BorderLayout());
-        scrollPaneS = new JScrollPane();
-        scrollPaneS.setBounds(0, 0, 230, 350);
-        getContentPane().add(scrollPaneS);
+        scoreScrollPane = new JScrollPane();
+        scoreScrollPane.setBounds(0, 0, 230, 350);
+        getContentPane().add(scoreScrollPane);
         scoreTable = new JTable() {
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
         };
         scoreTable.setAlignmentX(CENTER_ALIGNMENT);
-        scoreTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (scoreTable.getSelectedRow() > 0 &&
-                        scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
-                    GameWindow.updatePlayer(scoreTable.getSelectedRow());
-                else if (scoreTable.getSelectedRow() == 0 &&
-                        scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
-                    GameWindow.update();
-            }
+        scoreTable.getSelectionModel().addListSelectionListener(e -> {
+            if (scoreTable.getSelectedRow() > 0 &&
+                    scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
+                GameWindow.updatePlayer(scoreTable.getSelectedRow());
+            else if (scoreTable.getSelectedRow() == 0 &&
+                    scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
+                GameWindow.update();
         });
     }
 
@@ -65,8 +58,8 @@ public class ScoreWindow extends JInternalFrame implements Observer {
 
             }
         }
-        DefaultTableModel m = (DefaultTableModel) scoreTable.getModel();
-        m.setDataVector(r, titres);
+        DefaultTableModel defaultTableModel = (DefaultTableModel) scoreTable.getModel();
+        defaultTableModel.setDataVector(r, titles);
         scoreTable.getColumnModel().getColumn(0).setPreferredWidth(50);
         scoreTable.getColumnModel().getColumn(0).setResizable(false);
         scoreTable.getColumnModel().getColumn(1).setPreferredWidth(30);
@@ -75,6 +68,6 @@ public class ScoreWindow extends JInternalFrame implements Observer {
         scoreTable.getColumnModel().getColumn(1).setResizable(false);
         scoreTable.getTableHeader().setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
         scoreTable.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 14));
-        scrollPaneS.setViewportView(scoreTable);
+        scoreScrollPane.setViewportView(scoreTable);
     }
 }

@@ -1,7 +1,7 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
-import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.model.Dictionary;
+import com.nvh.scrabble.model.Scrabble;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,14 +13,12 @@ import java.util.Calendar;
 
 public class FilePane extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -4105494649356150949L;
-    private JPanel contentPane;
-    private DefaultMutableTreeNode racine;
-    String chemin = Dictionary.path + "/savedgames/";
-    Calendar c = Calendar.getInstance();
+    String path = Dictionary.path + "/savedgames/";
+    Calendar calendar = Calendar.getInstance();
 
-    public FilePane(Scrabble partie) {
+    public FilePane(Scrabble game) {
         setBounds(600, 460, 410, 200);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
@@ -29,34 +27,31 @@ public class FilePane extends JFrame implements TreeSelectionListener {
         setVisible(true);
     }
 
-    public void dialAfficher() {
-        this.racine = new DefaultMutableTreeNode();
+    public void displayDial() {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         for (File file : File.listRoots()) {
             String f = file.getAbsolutePath();
             DefaultMutableTreeNode lecteur = new DefaultMutableTreeNode(f);
             System.out.println(f);
-            if (f.equals(chemin)) {
+            if (f.equals(path)) {
 
                 try {
                     for (File nom : file.listFiles()) {
                         DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName() + "\\");
                         lecteur.add(this.listFile(nom, node));
                     }
-                } catch (NullPointerException e) {
+                } catch (NullPointerException ignored) {
                 }
-
-                this.racine.add(lecteur);
+                root.add(lecteur);
             }
         }
     }
 
-    public String dateActuelle() {
-        int jour = c.get(Calendar.DAY_OF_MONTH);
-        int mois = c.get(Calendar.MONTH);
-        int annee = c.get(Calendar.YEAR);
-        String reponse = String.valueOf(jour) + "_" + String.valueOf(mois) + "_" + String.valueOf(annee);
-        return reponse;
-
+    public String actualDate() {
+        int jour = calendar.get(Calendar.DAY_OF_MONTH);
+        int mois = calendar.get(Calendar.MONTH);
+        int annee = calendar.get(Calendar.YEAR);
+        return String.valueOf(jour) + "_" + String.valueOf(mois) + "_" + String.valueOf(annee);
     }
 
     private DefaultMutableTreeNode listFile(File file, DefaultMutableTreeNode node) {
@@ -82,6 +77,5 @@ public class FilePane extends JFrame implements TreeSelectionListener {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-        // TODO Auto-generated method stub
     }
 }

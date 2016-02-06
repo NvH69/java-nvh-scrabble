@@ -37,7 +37,6 @@ public class SampledSound implements Serializable {
         return samples;
     }
 
-
     public void play() {
         InputStream source = new ByteArrayInputStream(this.getSamples());
 

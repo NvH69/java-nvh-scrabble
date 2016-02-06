@@ -21,7 +21,7 @@ import java.util.Observer;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame implements Observer {
     public static JInternalFrame messageLabel = new DrawingWindow();
-    public static JInternalFrame framePartie = new GameWindow();
+    public static JInternalFrame gameFrame = new GameWindow();
     public static JInternalFrame gridFrame = new BoardWindow();
     public static JInternalFrame solutionsFrame = new SolutionWindow();
     public static JInternalFrame scoreFrame = new ScoreWindow();
@@ -115,7 +115,7 @@ public class MainWindow extends JFrame implements Observer {
         getContentPane().add(scoreFrame);
         getContentPane().add(mainBtn);
         getContentPane().add(messageLabel);
-        getContentPane().add(framePartie);
+        getContentPane().add(gameFrame);
         getContentPane().add(lettersPane);
         getContentPane().add(lblChrono);
 
@@ -229,7 +229,7 @@ public class MainWindow extends JFrame implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                new FileFrame().dialEcrire();
+                new FileFrame().writeDial();
             }
         });
 
@@ -237,7 +237,7 @@ public class MainWindow extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new FileFrame().dialLire(partie);
+                new FileFrame().readDial(partie);
 
             }
         });

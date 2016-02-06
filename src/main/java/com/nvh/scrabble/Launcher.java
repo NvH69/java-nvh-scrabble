@@ -133,7 +133,7 @@ public class Launcher {
                     }
                     //sauvegarde auto en fin de tour
                     try {
-                        Serializer.ecrire(game, "autosave.dat");
+                        Serializer.write(game, "autosave.dat");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
