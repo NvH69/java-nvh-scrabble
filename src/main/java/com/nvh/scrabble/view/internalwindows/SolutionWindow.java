@@ -8,10 +8,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
 
 @SuppressWarnings("serial")
 public class SolutionWindow extends JInternalFrame implements Observer {
@@ -66,7 +64,7 @@ public class SolutionWindow extends JInternalFrame implements Observer {
     @Override
     public void update(Observable o, Object arg) {
 
-        if (arg instanceof List<?>) {
+        if (arg instanceof ArrayList) {
 
             DefaultTableModel defaultTableModel = (DefaultTableModel) table.getModel();
             Object[][] solutions = new Object[((List<?>) arg).size() + 1][5];

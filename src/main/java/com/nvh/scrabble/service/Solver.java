@@ -22,6 +22,7 @@ public class Solver extends Observable {
         String drawing = game.getDrawing();
         addObserver((Observer) MainWindow.progressionFrame);
         addObserver((Observer) Launcher.gameFrame);
+        addObserver((Observer) MainWindow.solutionsFrame);
 
         MainWindow.progressionFrame.setVisible(true);
 
@@ -35,7 +36,7 @@ public class Solver extends Observable {
         for (String word : com.nvh.scrabble.model.Dictionary.dictionary) {
             setChanged();
             notifyObservers(dictionaryIndex /
-                    com.nvh.scrabble.model.Dictionary.dictionary.size()*100); //notifie à la barre de progression
+                    com.nvh.scrabble.model.Dictionary.dictionary.size() * 100); //notifie à la barre de progression
 
             Scrabble.Word horizontalWordToTest, verticalWordToTest;
             StringBuffer testWord = new StringBuffer(word);
@@ -68,10 +69,6 @@ public class Solver extends Observable {
             allSolutions.clear();
             dictionaryIndex++;
         }
-        notifyDone();
-    }
-
-    private void notifyDone() {
         MainWindow.progressionFrame.setVisible(true);
 
         Collections.sort(solutions);
