@@ -3,7 +3,7 @@ package com.nvh.scrabble.view.internaldialpanes;
 import com.nvh.scrabble.Launcher;
 import com.nvh.scrabble.model.Dictionary;
 import com.nvh.scrabble.model.Scrabble;
-import com.nvh.scrabble.model.Serializer;
+import com.nvh.scrabble.service.Serializer;
 import com.nvh.scrabble.view.MainWindow;
 import com.nvh.scrabble.view.internalwindows.BoardWindow;
 import com.nvh.scrabble.view.internalwindows.GameWindow;

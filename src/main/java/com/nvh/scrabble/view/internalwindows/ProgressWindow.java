@@ -1,7 +1,7 @@
 package com.nvh.scrabble.view.internalwindows;
 
 import com.nvh.scrabble.model.Dictionary;
-import com.nvh.scrabble.service.Solve;
+import com.nvh.scrabble.service.Solver;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class ProgressWindow extends JFrame implements Observer {
         contentPane.setLayout(null);
 
         progressBar.setMinimum(0);
-        progressBar.setMaximum(Dictionary.dictionary.length - 30000);
+        progressBar.setMaximum(Dictionary.dictionary.size() - 30000);
 
         progressBar.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         progressBar.setBounds(0, 0, 270, 35);
@@ -41,8 +41,8 @@ public class ProgressWindow extends JFrame implements Observer {
 
     @Override
     public void update(Observable obs, Object obj) {
-        if (obs instanceof Solve)
-            progressBar.setValue(Solve.dictionaryIndex);
+        if (obs instanceof Solver)
+            progressBar.setValue(Solver.dictionaryIndex);
 
     }
 }

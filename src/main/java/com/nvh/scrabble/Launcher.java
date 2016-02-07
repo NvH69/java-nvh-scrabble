@@ -1,12 +1,13 @@
 package com.nvh.scrabble;
 
 import com.nvh.scrabble.model.*;
+import com.nvh.scrabble.service.Serializer;
+import com.nvh.scrabble.service.Solver;
 import com.nvh.scrabble.view.MainWindow;
-import com.nvh.scrabble.view.internalwindows.ScoreWindow;
-import com.nvh.scrabble.service.Solve;
 import com.nvh.scrabble.view.internaldialpanes.ConfirmationPane;
 import com.nvh.scrabble.view.internaldialpanes.ManualDrawingPane;
 import com.nvh.scrabble.view.internalwindows.GameWindow;
+import com.nvh.scrabble.view.internalwindows.ScoreWindow;
 import com.nvh.scrabble.view.internalwindows.SolutionWindow;
 
 import javax.swing.*;
@@ -15,13 +16,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observer;
 
-
 public class Launcher {
     static ArrayList<Player> players = new ArrayList<>();
     public static int phase = 0;
     public static int currentTurn = 1;
     public static Scrabble game;
     public static JFrame gameFrame;
+    public static Solver solver = new Solver();
 
     public static void main(String[] args) {
 
@@ -54,7 +55,6 @@ public class Launcher {
         game.addObserver((Observer) MainWindow.lettersPane);
         game.addObserver((Observer) MainWindow.progressionFrame);
 
-
         while (!game.isRunning())
             game.notifyObservers();
 
@@ -66,7 +66,7 @@ public class Launcher {
                     MainWindow.mainButton.setText("Tour suivant >>>");
                     MainWindow.saveMenuItem.setEnabled(true);
                     MainWindow.loadMenuItem.setEnabled(true);
-                    if (!game.convenientRemainingLetters()) game.setRunning(false);
+                    if (!game.isStillDrawable()) game.setRunning(false);
                     if (game.isAutoDrawing() && game.isAutoTop() && game.getNumberOfPlayers() == 1) phase++;
                     break;
 
@@ -94,8 +94,7 @@ public class Launcher {
                         new ConfirmationPane(game);
                     MainWindow.mainButton.setText("");
                     MainWindow.mainButton.setEnabled(false);
-                    new Solve(game);
-                    phase++;
+                    solver.solve(game);
                     break;
 
                 case 2: //recherche terminée
@@ -123,7 +122,8 @@ public class Launcher {
                                 MainWindow.mainButton.setText("CHOISIR TOP"); //top é choisir
                         //sinon :
                         if (!controleTousJoueurs)
-                            if (ScoreWindow.scoreTable.getSelectedRow() > -1 && ScoreWindow.scoreTable.getSelectedRow() < game.getNumberOfPlayers())
+                            if (ScoreWindow.scoreTable.getSelectedRow() > -1 && ScoreWindow.scoreTable.getSelectedRow()
+                                    < game.getNumberOfPlayers())
                                 if (SolutionWindow.table.getSelectedRow() > -1)
                                     MainWindow.mainButton.setText("VALIDER");
                                 else
@@ -138,7 +138,6 @@ public class Launcher {
                     GameWindow.update();
                     phase = 0;
                     break;
-
             }
         }
         //si game n'est plus en cours (par manque de letters)

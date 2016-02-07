@@ -1,4 +1,7 @@
-package com.nvh.scrabble.model;
+package com.nvh.scrabble.service;
+
+import com.nvh.scrabble.model.Dictionary;
+import com.nvh.scrabble.model.Scrabble;
 
 import java.io.*;
 
