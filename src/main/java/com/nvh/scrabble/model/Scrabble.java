@@ -181,8 +181,9 @@ public class Scrabble extends Observable implements Serializable, Observer {
         ArrayList<Character> backupLetters;
         remainingDrawing = remainingDrawing.toUpperCase();
 
-        if (!remainingDrawing.startsWith("+") && !remainingDrawing.startsWith("-"))
-            drawing = "Le nouveau drawing doit débuter par + ou -";
+        if (!remainingDrawing.startsWith("+") && !remainingDrawing.startsWith("-")) {
+            drawing = "Le nouveau tirage doit débuter par + ou -";
+        }
         else
             for (int i = 1; i < remainingDrawing.length(); i++)
                 if (!Character.isLetter(remainingDrawing.charAt(i)) && remainingDrawing.charAt(i) != '*')
@@ -213,7 +214,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         if ((this.turn > 1 && remainingDrawing.startsWith("+") &&
                 this.getSolutions().get(this.turn - 2).getRemainingDrawing().length() + remainingDrawing.length() != 8) ||
                 (this.turn == 1 && remainingDrawing.length() != 8) || (remainingDrawing.startsWith("-") && remainingDrawing.length() != 8))
-            drawing = "Le drawing doit contenir 7 letters";
+            drawing = "Le tirage doit contenir 7 letters";
         if (Objects.equals(drawing, "")) this.setDrawing(remainingDrawing);
         else this.letters = (ArrayList<Character>) backupLetters.clone();
 
@@ -257,7 +258,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 if (Character.isLetter(drawing.charAt(i)) || drawing.charAt(i) == '*')
                     this.letters.add(drawing.charAt(i));
             }
-            if (convenientRemainingLetters()) autoDrawing("-");
+            if (isStillDrawable()) autoDrawing("-");
             else {
                 this.running = false;
             }
@@ -296,7 +297,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         this.drawing = newDrawing;
     }
 
-    public boolean convenientRemainingLetters() { //if (this.letters.size()<1) return false;
+    public boolean isStillDrawable() { //if (this.letters.size()<1) return false;
         int voyelCount = 0, consonantCount = 0;
         for (Character letter : this.letters) {
 

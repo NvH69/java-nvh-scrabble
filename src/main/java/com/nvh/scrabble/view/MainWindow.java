@@ -3,7 +3,7 @@ package com.nvh.scrabble.view;
 import com.nvh.scrabble.Launcher;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.model.Scrabble.Solution;
-import com.nvh.scrabble.service.Solve;
+import com.nvh.scrabble.service.Solver;
 import com.nvh.scrabble.view.internaldialpanes.ConfirmationPane;
 import com.nvh.scrabble.view.internaldialpanes.FileFrame;
 import com.nvh.scrabble.view.internaldialpanes.LettersPanel;
@@ -37,7 +37,7 @@ public class MainWindow extends JFrame implements Observer {
     public static JRadioButtonMenuItem manualDrawingButton = new JRadioButtonMenuItem("Tirage manuel");
     public static JRadioButtonMenuItem autoDrawingButton = new JRadioButtonMenuItem("Tirage automatique");
 
-    public static String mainFont = "Consolas";
+    public static String mainFont = "DejaVu Sans Mono";
 
     public MainWindow(Scrabble game) {
 
@@ -130,7 +130,7 @@ public class MainWindow extends JFrame implements Observer {
         mainButton.addActionListener(arg0 -> {
             if (Launcher.phase == 0) Launcher.phase++;
 
-            if (Launcher.phase == 2 && Solve.solutions.size() > 0) {
+            if (Launcher.phase == 2 && Solver.solutions.size() > 0) {
                 boolean areAllPlayersDone = true; //VRAI si tous les joueurs ont validé leur coup
                 Solution solution = null;
                 //controle que tous les joueurs ont eu un score :
@@ -139,11 +139,11 @@ public class MainWindow extends JFrame implements Observer {
                 }
                 //si non :
                 if (!areAllPlayersDone && SolutionWindow.table.getSelectedRow() != -1) {//place le coup d'un joueur autre que TOP si possible :
-                    if (SolutionWindow.table.getSelectedRow() <= Solve.solutions.size())
+                    if (SolutionWindow.table.getSelectedRow() <= Solver.solutions.size())
                         if (SolutionWindow.table.getSelectedRow() == 0)
                             solution = game.new Solution(0, game.new Word("-------", "A1"), null);
                         else
-                            solution = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            solution = Solver.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
 
                     if (ScoreWindow.scoreTable.getSelectedRow() > 0 && ScoreWindow.scoreTable.getSelectedRow() < game.getNumberOfPlayers())
 
@@ -156,13 +156,13 @@ public class MainWindow extends JFrame implements Observer {
                 if (areAllPlayersDone) //si tous les joueurs ont validé leur choix
                 {// place le TOP :
 
-                    if (game.isAutoTop()) solution = Solve.solutions.get(0);
+                    if (game.isAutoTop()) solution = Solver.solutions.get(0);
                     else {// vérifie que le top choisi est bien au score max
                         if (SolutionWindow.table.getSelectedRow() > 0
-                                && Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1).getPoints()
-                                == Solve.solutions.get(0).getPoints())
+                                && Solver.solutions.get(SolutionWindow.table.getSelectedRow() - 1).getPoints()
+                                == Solver.solutions.get(0).getPoints())
 
-                            solution = Solve.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
+                            solution = Solver.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
                     }
                     if (solution != null) {
                         if (!game.isAutoTop() || !game.isAutoDrawing() ||
@@ -202,7 +202,7 @@ public class MainWindow extends JFrame implements Observer {
 
     @Override
     public void update(Observable obs, Object obj) {
-        if (obs instanceof Solve)
+        if (obs instanceof Solver)
             timerLabel.setText(Launcher.game.getMainTimer().getDisplay());
     }
 }

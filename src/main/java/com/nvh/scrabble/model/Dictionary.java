@@ -4,17 +4,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dictionary {
 
     public static final String path = new File("Scrabble.jar").getAbsoluteFile().getParent() + "/src/main/resources/";
     public static final String finalPath = path + "dictionaries/ODS6.txt";
 
-    public static final String[] dictionary = new String[400000];
-
+    public static final List<String> dictionary = new ArrayList<>();
 
     public Dictionary() {
-        int i = 0;
 
         for (byte j = 2; j <= 15; j++) {
             try {
@@ -24,8 +24,7 @@ public class Dictionary {
                 while (!(line = in.readLine()).equals("*")) {
 
                     if (line.length() == j) {
-                        dictionary[i] = line;
-                        i++;
+                        dictionary.add(line);
                     }
                 }
                 in.close();
@@ -38,8 +37,8 @@ public class Dictionary {
     public static boolean isCorrectlySpelled(String s) {
 
         int i = 0;
-        while (Dictionary.dictionary[i] != null) {
-            if (s.equals(Dictionary.dictionary[i])) return true;
+        for (String word : dictionary) {
+            if (s.equals(word)) return true;
             i++;
         }
         return false;
