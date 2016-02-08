@@ -119,7 +119,7 @@ public class Launcher {
                         if (controleTousJoueurs) //si tous les joueurs ont validé leur choix
                             if (game.isAutoTop()) MainWindow.mainButton.doClick(); //top joué auto
                             else if (!game.isAutoTop())
-                                MainWindow.mainButton.setText("CHOISIR TOP"); //top é choisir
+                                MainWindow.mainButton.setText("CHOISIR TOP"); //top à choisir
                         //sinon :
                         if (!controleTousJoueurs)
                             if (ScoreWindow.scoreTable.getSelectedRow() > -1 && ScoreWindow.scoreTable.getSelectedRow()
@@ -140,7 +140,7 @@ public class Launcher {
                     break;
             }
         }
-        //si game n'est plus en cours (par manque de letters)
+        //si la partie n'est plus en cours (par manque de lettres)
         MainWindow.mainButton.setText("Partie terminée");
     }
 }

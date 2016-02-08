@@ -16,7 +16,6 @@ public class Grid extends Observable implements Serializable {
     private ArrayList<ArrayList<Character>> coordinates;
     private ArrayList<ArrayList<Integer>> bonus;
     private int[] filledCoordinates = new int[]{7, 7, 7, 7};
-    private String presentSequence;
     private String listOfWords = "";
 
     public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
@@ -24,7 +23,6 @@ public class Grid extends Observable implements Serializable {
     public Grid() {
         this.coordinates = new ArrayList<>(15);
         this.bonus = new ArrayList<>(15);
-        this.presentSequence = "";
     }
 
 
@@ -39,13 +37,12 @@ public class Grid extends Observable implements Serializable {
         else
             this.bonus = bonus;
 
-        this.presentSequence = presentSequence;
     }
 
     private ArrayList<ArrayList<Character>> resetGrid() {
         ArrayList<ArrayList<Character>> newGrid = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
-            if (i != 8)
+            if (i != 7)
                 newGrid.add(new ArrayList<>
                         (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
             else
@@ -56,7 +53,7 @@ public class Grid extends Observable implements Serializable {
     }
 
     private ArrayList<ArrayList<Integer>> resetBonus() {
-        ArrayList<ArrayList<Integer>> newBonus = new ArrayList<>(15);
+        ArrayList<ArrayList<Integer>> newBonus = new ArrayList<>();
         newBonus.add(new ArrayList<>
                 (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30)));
         newBonus.add(new ArrayList<>
@@ -73,15 +70,9 @@ public class Grid extends Observable implements Serializable {
                 (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
         newBonus.add(new ArrayList<>
                 (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30)));
-        newBonus.add(newBonus.get(7));
-        newBonus.add(newBonus.get(6));
-        newBonus.add(newBonus.get(5));
-        newBonus.add(newBonus.get(4));
-        newBonus.add(newBonus.get(3));
-        newBonus.add(newBonus.get(2));
-        newBonus.add(newBonus.get(1));
-        newBonus.add(newBonus.get(0));
-
+        for (int i=6; i>=0; i--) {
+            newBonus.add(newBonus.get(i));
+        }
         return newBonus;
     }
 
@@ -120,10 +111,6 @@ public class Grid extends Observable implements Serializable {
 
     public void setWordList(String m) {
         this.listOfWords += "_" + m + "_";
-    }
-
-    public String getPresentSequence() {
-        return presentSequence;
     }
 
     public int[] getFilledCoordinates() {
@@ -256,7 +243,6 @@ public class Grid extends Observable implements Serializable {
         Grid cloned = new Grid();
         cloned.coordinates.addAll(this.coordinates.stream().map(x -> (ArrayList<Character>) x.clone()).collect(Collectors.toList()));
         cloned.bonus.addAll(this.bonus.stream().map(x -> (ArrayList<Integer>) x.clone()).collect(Collectors.toList()));
-        cloned.presentSequence = this.presentSequence;
 
         return cloned;
     }
