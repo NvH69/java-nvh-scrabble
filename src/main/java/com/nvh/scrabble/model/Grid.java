@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
+import java.util.stream.Collectors;
 
 
 public class Grid extends Observable implements Serializable {
@@ -20,10 +21,18 @@ public class Grid extends Observable implements Serializable {
 
     public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
 
+    public Grid() {
+        this.coordinates = new ArrayList<>(15);
+        this.bonus = new ArrayList<>(15);
+        this.presentSequence = "";
+    }
+
+
     public Grid(ArrayList<ArrayList<Character>> coordinates, ArrayList<ArrayList<Integer>> bonus, String presentSequence) {
         if (coordinates == null)
             this.coordinates = resetGrid();
-        this.coordinates = coordinates;
+        else
+            this.coordinates = coordinates;
 
         if (bonus == null)
             this.bonus = resetBonus();
@@ -35,8 +44,8 @@ public class Grid extends Observable implements Serializable {
 
     private ArrayList<ArrayList<Character>> resetGrid() {
         ArrayList<ArrayList<Character>> newGrid = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            if (i != 7)
+        for (int i = 0; i < 16; i++) {
+            if (i != 8)
                 newGrid.add(new ArrayList<>
                         (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
             else
@@ -75,7 +84,6 @@ public class Grid extends Observable implements Serializable {
 
         return newBonus;
     }
-
 
     public ArrayList<ArrayList<Character>> getCoordinates() {
         return this.coordinates;
@@ -164,7 +172,7 @@ public class Grid extends Observable implements Serializable {
     public void setWord(Word word) {// place un word "test" : pour placer véritablement un word : setSolution
         int x = word.getX();
         int y = word.getY();
-        //écriture du word dans la grille (H et V)
+                //écriture du word dans la grille (H et V)
         if (word.isHorizontal()) {
             for (int i = 0; i < word.lenght(); i++) {
                 this.set(x + i, y, word.charAt(i));    //remplissage
@@ -244,4 +252,12 @@ public class Grid extends Observable implements Serializable {
         return placedWords;
     }
 
+    public Grid cloneGrid() {
+        Grid cloned = new Grid();
+        cloned.coordinates.addAll(this.coordinates.stream().map(x -> (ArrayList<Character>) x.clone()).collect(Collectors.toList()));
+        cloned.bonus.addAll(this.bonus.stream().map(x -> (ArrayList<Integer>) x.clone()).collect(Collectors.toList()));
+        cloned.presentSequence = this.presentSequence;
+
+        return cloned;
+    }
 }

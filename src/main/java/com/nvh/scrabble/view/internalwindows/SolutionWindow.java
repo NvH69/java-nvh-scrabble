@@ -74,7 +74,7 @@ public class SolutionWindow extends JInternalFrame implements Observer {
             solutions[index][3] = "0";
             for (Object solution : (List<?>) arg) {
                 solutions[index][0] = index;
-                solutions[index][1] = ((Solution) solution).getWildcardedWord();
+                solutions[index][1] = ((Solution) solution).getWordWithJokers();
                 solutions[index][2] = ((Solution) solution).getWord().toCoordinates();
                 solutions[index][3] = ((Solution) solution).getPoints();
                 if (Objects.equals(((Solution) solution).getInformation()[1], "[]") && Launcher.game.getDrawing().length() > 6)
