@@ -14,7 +14,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class SolutionWindow extends JInternalFrame implements Observer {
     public static JTable table;
-    static String[] titles = {"N°", "Word", "Pos", "Score", ""};
+    static String[] titles = {"N°", "Mot", "Pos", "Score", ""};
     public static JScrollPane solutionScrollPane;
     public static JButton showButton = new JButton("Voir toutes les solutions");
 

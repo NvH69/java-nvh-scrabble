@@ -10,7 +10,7 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class GameWindow extends JInternalFrame {
     static JTable gameTable;
-    static String[] titles = {"", "Tirage", "Word", "Pos", "Pts"};
+    static String[] titles = {"", "Tirage", "Mot", "Pos", "Pts"};
     static JScrollPane gameScrollPane = new JScrollPane();
 
     public GameWindow() {
