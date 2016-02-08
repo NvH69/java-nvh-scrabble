@@ -5,4 +5,9 @@
 *.iml
 *.swp
 *.jar
+/target/*
+/classes/production/*
+
+
+
 

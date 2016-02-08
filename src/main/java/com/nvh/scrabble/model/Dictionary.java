@@ -1,5 +1,8 @@
 package com.nvh.scrabble.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +16,7 @@ public class Dictionary {
     public static final String finalPath = path + "dictionaries/ODS6.txt";
 
     public static final List<String> dictionary = new ArrayList<>();
+    private static final Logger logger = LoggerFactory.getLogger(Dictionary.class);
 
     public Dictionary() {
 
@@ -29,7 +33,7 @@ public class Dictionary {
                 }
                 in.close();
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                logger.error(e.getMessage());
             }
         }
     }

@@ -9,6 +9,7 @@ import com.nvh.scrabble.view.internaldialpanes.ManualDrawingPane;
 import com.nvh.scrabble.view.internalwindows.GameWindow;
 import com.nvh.scrabble.view.internalwindows.ScoreWindow;
 import com.nvh.scrabble.view.internalwindows.SolutionWindow;
+import org.slf4j.Logger;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -24,6 +25,8 @@ public class Launcher {
     public static JFrame gameFrame;
     public static Solver solver = new Solver();
 
+    static Logger logger;
+
     public static void main(String[] args) {
 
         try {
@@ -35,7 +38,7 @@ public class Launcher {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
         game = new Scrabble(new Grid(null, null, ""), players, false, false, 180000,
                 false);
