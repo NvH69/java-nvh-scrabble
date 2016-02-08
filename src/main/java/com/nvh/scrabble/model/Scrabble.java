@@ -78,7 +78,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++) {
                 this.grid.set(x, y, toBeCopied.get(x, y));
-                this.grid.setBonus(x, y, toBeCopied.getBonus()[x][y]);
+                this.grid.setBonus(x, y, toBeCopied.getBonus(x, y));
             }
     }
 
@@ -183,8 +183,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
         if (!remainingDrawing.startsWith("+") && !remainingDrawing.startsWith("-")) {
             drawing = "Le nouveau tirage doit débuter par + ou -";
-        }
-        else
+        } else
             for (int i = 1; i < remainingDrawing.length(); i++)
                 if (!Character.isLetter(remainingDrawing.charAt(i)) && remainingDrawing.charAt(i) != '*')
                     drawing = "Le nouveau drawing ne doit contenir que des letters ou des jokers";
@@ -399,13 +398,13 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (this.h) {//si le mot dépasse, s'il est suivi ou précédé d'une lettre déjà placée, on renvoie FAUX
                 if ((x + lenght) > 15) return null;
                 if ((x + lenght) < 15)
-                    if (grid.getCoordinates()[x + lenght][y] != ' ' && grid.getCoordinates()[x + lenght][y] != '#')
+                    if (grid.getCoordinates(x + lenght, y) != ' ' && grid.getCoordinates(x + lenght, y) != '#')
                         return null;
                 if (x > 0)
-                    if (grid.getCoordinates()[x - 1][y] != ' ' && grid.getCoordinates()[x - 1][y] != '#') return null;
+                    if (grid.getCoordinates(x - 1, y) != ' ' && grid.getCoordinates(x - 1, y) != '#') return null;
 
                 for (int i = 0; i < lenght; i++) {
-                    if (grid.getCoordinates()[x + i][y] == '#') {
+                    if (grid.getCoordinates(x + i, y) == '#') {
                         isFitting = true;
                         break;
                     }
@@ -413,8 +412,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 if (!isFitting) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
 
                 for (int i = 0; i < lenght; i++) {
-                    if (grid.getCoordinates()[x + i][y] == word.charAt(i)) lettersCount++;
-                    else if (grid.getCoordinates()[x + i][y] != ' ' && grid.getCoordinates()[x + i][y] != '#')
+                    if (grid.getCoordinates(x + i, y) == word.charAt(i)) lettersCount++;
+                    else if (grid.getCoordinates(x + i, y) != ' ' && grid.getCoordinates(x + i, y) != '#')
                         return null;
                     else if (drawingArray.contains(word.charAt(i))) {
                         lettersCount++;
@@ -433,11 +432,11 @@ public class Scrabble extends Observable implements Serializable, Observer {
                         //insertion choix de la position du joker
                         //si le joker est placé sur case bonus ET le drawing
                         //contient déjà la lettre cherchée
-                        if (grid.getBonus()[x + i][y] > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
+                        if (grid.getBonus(x + i, y) > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
                             //échange de position entre le joker et la lettre déjà placée
                             //si le bonus est inférieur
                             for (int j = 0; j < i; j++)
-                                if (word.charAt(j) == word.charAt(i) && grid.getBonus()[x + j][y] != 3) {
+                                if (word.charAt(j) == word.charAt(i) && grid.getBonus(x + j, y) != 3) {
                                     wordToTest.setCharAt(i, word.charAt(i));
                                     wordToTest.setCharAt(j, '*');
                                     break;
@@ -458,12 +457,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (!this.h) {//si le mot dépasse, s'il est suivi et précédé d'une lettre déjà placée, renvoie null
                 if ((y + lenght) > 15) return null;
                 if ((y + lenght) < 15)
-                    if (grid.getCoordinates()[x][y + lenght] != ' ' && grid.getCoordinates()[x][y + lenght] != '#')
+                    if (grid.getCoordinates(x, y + lenght) != ' ' && grid.getCoordinates(x, y + lenght) != '#')
                         return null;
                 if (y > 0)
-                    if (grid.getCoordinates()[x][y - 1] != ' ' && grid.getCoordinates()[x][y - 1] != '#') return null;
+                    if (grid.getCoordinates(x, y - 1) != ' ' && grid.getCoordinates(x, y - 1) != '#') return null;
                 for (int i = 0; i < lenght; i++) {
-                    if (grid.getCoordinates()[x][y + i] == '#') {
+                    if (grid.getCoordinates(x, y + i) == '#') {
                         isFitting = true;
                         break;
                     }
@@ -471,8 +470,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 if (!isFitting) return null; //s'il n'existe pas de point d'ancrage, on renvoie FAUX
 
                 for (int i = 0; i < lenght; i++) {
-                    if (grid.getCoordinates()[x][y + i] == word.charAt(i)) lettersCount++;
-                    else if (grid.getCoordinates()[x][y + i] != ' ' && grid.getCoordinates()[x][y + i] != '#')
+                    if (grid.getCoordinates(x, y + i) == word.charAt(i)) lettersCount++;
+                    else if (grid.getCoordinates(x, y + i) != ' ' && grid.getCoordinates(x, y + i) != '#')
                         return null;
                     else if (drawingArray.contains(word.charAt(i))) {
                         lettersCount++;
@@ -491,11 +490,11 @@ public class Scrabble extends Observable implements Serializable, Observer {
                         //insertion choix de la position du joker
                         //si le joker est placé sur case bonus ET le drawing
                         //contient déjà la lettre cherchée
-                        if (grid.getBonus()[x][y + i] > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
+                        if (grid.getBonus(x, y + i) > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
                             //échange de position entre le joker et la lettre déjà placée
                             //si le bonus est inférieur
                             for (int j = 0; j < i; j++)
-                                if (word.charAt(j) == word.charAt(i) && grid.getBonus()[x][y + j] != 3) {
+                                if (word.charAt(j) == word.charAt(i) && grid.getBonus(x, y + j) != 3) {
                                     wordToTest.setCharAt(i, word.charAt(i));
                                     wordToTest.setCharAt(j, '*');
                                     break;
@@ -562,22 +561,21 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
         public int getScore(Grid grid, String[] wordSequence) {
             int points = 0, alternativePoints = 0, bonus = 1, alternativeBonus = 1;
-            int[][] bonusGrid = grid.getBonus();
             boolean isTouchingUp = false, isTouchingDown = false, isTouchingLeft = false, isTouchingRight = false, direction;
             //1 : calcul des points du mot placé
             for (int i = 0; i < this.lenght(); i++) {
                 if (this.h) {
-                    if (bonusGrid[x + i][y] > 9) {
-                        bonus *= (bonusGrid[x + i][y]) / 10;
+                    if (grid.getBonus(x + i, y) > 9) {
+                        bonus *= (grid.getBonus(x + i, y)) / 10;
                         points += letterValue(wordSequence[0].charAt(i));
                     } else
-                        points += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
+                        points += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
                 } else {
-                    if (bonusGrid[x][y + i] > 9) {
-                        bonus *= (bonusGrid[x][y + i]) / 10;
+                    if (grid.getBonus(x, y + i) > 9) {
+                        bonus *= (grid.getBonus(x, y + i) / 10);
                         points += letterValue(wordSequence[0].charAt(i));
                     } else
-                        points += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
+                        points += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x, y + i);
                 }
             }
             points *= bonus;
@@ -589,18 +587,18 @@ public class Scrabble extends Observable implements Serializable, Observer {
             for (int i = 0; i < this.lenght(); i++) {
                 direction = true;
                 if (this.h) {
-                    if (grid.getCoordinates()[x + i][y] == '#') {
+                    if (grid.getCoordinates(x + i, y) == '#') {
                         if (!isTouchingUp) {
-                            if (Character.isLetter(grid.getCoordinates()[x + i][y - 1])) {
+                            if (Character.isLetter(grid.getCoordinates(x + i, y - 1))) {
                                 direction = false;
-                                if (bonusGrid[x + i][y] > 9) {
-                                    alternativeBonus *= (bonusGrid[x + i][y]) / 10;
+                                if (grid.getBonus(x + i, y) > 9) {
+                                    alternativeBonus *= (grid.getBonus(x + i, y) / 10);
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
                                 for (int j = 1; j <= this.getY(); j++) {
-                                    if (Character.isLetter(grid.getCoordinates()[x + i][y - j]))
-                                        alternativePoints += letterValue(grid.getCoordinates()[x + i][y - j]) * bonusGrid[x + i][y - j];
+                                    if (Character.isLetter(grid.getCoordinates(x + i, y - j)))
+                                        alternativePoints += letterValue(grid.getCoordinates(x + i, y - j)) * grid.getBonus(x + i, y - j);
                                     else break;
                                 }
                             }
@@ -609,16 +607,16 @@ public class Scrabble extends Observable implements Serializable, Observer {
                             alternativeBonus = 1;
                         }
                         if (!isTouchingDown) {
-                            if (Character.isLetter(grid.getCoordinates()[x + i][y + 1])) {
-                                if (bonusGrid[x + i][y] > 9 && direction) {
-                                    alternativeBonus *= (bonusGrid[x + i][y]) / 10;
+                            if (Character.isLetter(grid.getCoordinates(x + i, y + 1))) {
+                                if (grid.getBonus(x + i, y) > 9 && direction) {
+                                    alternativeBonus *= (grid.getBonus(x + i, y)) / 10;
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
-                                if (bonusGrid[x + i][y] < 9 && direction)
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x + i][y];
+                                if (grid.getBonus(x + i, y) < 9 && direction)
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
                                 for (int j = 1; j <= 14 - this.getY(); j++) {
-                                    if (Character.isLetter(grid.getCoordinates()[x + i][y + j]))
-                                        alternativePoints += letterValue(grid.getCoordinates()[x + i][y + j]) * bonusGrid[x + i][y + j];
+                                    if (Character.isLetter(grid.getCoordinates(x + i, y + j)))
+                                        alternativePoints += letterValue(grid.getCoordinates(x + i, y + j)) * grid.getBonus(x + i, y + j);
                                     else break;
                                 }
                             }
@@ -629,18 +627,18 @@ public class Scrabble extends Observable implements Serializable, Observer {
                     }
                 }
                 if (!this.h) {
-                    if (grid.getCoordinates()[x][y + i] == '#') {
+                    if (grid.getCoordinates(x, y + i) == '#') {
                         if (!isTouchingLeft) {
-                            if (Character.isLetter(grid.getCoordinates()[x - 1][y + i])) {
+                            if (Character.isLetter(grid.getCoordinates(x - 1, y + i))) {
                                 direction = false;
-                                if (bonusGrid[x][y + i] > 9) {
-                                    alternativeBonus *= (bonusGrid[x][y + i]) / 10;
+                                if (grid.getBonus(x, y + i) > 9) {
+                                    alternativeBonus *= (grid.getBonus(x, y + i)) / 10;
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x, y + i);
                                 for (int j = 1; j <= this.getX(); j++) {
-                                    if (Character.isLetter(grid.getCoordinates()[x - j][y + i]))
-                                        alternativePoints += letterValue(grid.getCoordinates()[x - j][y + i]) * bonusGrid[x - j][y + i];//ajout
+                                    if (Character.isLetter(grid.getCoordinates(x - j, y + i)))
+                                        alternativePoints += letterValue(grid.getCoordinates(x - j, y + i)) * grid.getBonus(x - j, y + i);//ajout
                                     else break;
                                 }
                             }
@@ -650,16 +648,16 @@ public class Scrabble extends Observable implements Serializable, Observer {
                         }
 
                         if (!isTouchingRight) {
-                            if (Character.isLetter(grid.getCoordinates()[x + 1][y + i])) {
-                                if (bonusGrid[x][y + i] > 9 && direction) {
-                                    alternativeBonus *= (bonusGrid[x][y + i]) / 10;
+                            if (Character.isLetter(grid.getCoordinates(x + 1, y + i))) {
+                                if (grid.getBonus(x, y + i) > 9 && direction) {
+                                    alternativeBonus *= (grid.getBonus(x, y + i)) / 10;
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
-                                if (bonusGrid[x][y + i] < 9 && direction)
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * bonusGrid[x][y + i];
+                                if (grid.getBonus(x, y + i) < 9 && direction)
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x, y + i);
                                 for (int j = 1; j <= 14 - this.getX(); j++) {
-                                    if (Character.isLetter(grid.getCoordinates()[x + j][y + i]))
-                                        alternativePoints += letterValue(grid.getCoordinates()[x + j][y + i]) * bonusGrid[x + j][y + i];//ajout
+                                    if (Character.isLetter(grid.getCoordinates(x + j, y + i)))
+                                        alternativePoints += letterValue(grid.getCoordinates(x + j, y + i)) * grid.getBonus(x + j, y + i);//ajout
                                     else break;
                                 }
                             }

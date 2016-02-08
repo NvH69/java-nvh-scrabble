@@ -19,56 +19,70 @@ public class Grid extends Observable implements Serializable {
     private String listOfWords = "";
 
     public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
-    public static final ArrayList<ArrayList<Character>> resetGrid = new char[][]{
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}};
-
-    private static final ArrayList<ArrayList<Integer>> resetBonus = new int[][]{
-            {30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30},
-            {1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1},
-            {1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1},
-            {2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2},
-            {1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1},
-            {1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1},
-            {1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1},
-            {30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30},
-            {1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1},
-            {1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1},
-            {1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1},
-            {2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2},
-            {1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1},
-            {1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1},
-            {30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30}};
-
 
     public Grid(ArrayList<ArrayList<Character>> coordinates, ArrayList<ArrayList<Integer>> bonus, String presentSequence) {
         if (coordinates == null)
-
+            this.coordinates = resetGrid();
         this.coordinates = coordinates;
 
         if (bonus == null)
-            this.bonus = resetBonus;
+            this.bonus = resetBonus();
         else
             this.bonus = bonus;
 
         this.presentSequence = presentSequence;
     }
 
+    private ArrayList<ArrayList<Character>> resetGrid() {
+        ArrayList<ArrayList<Character>> newGrid = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            if (i != 7)
+                newGrid.add(new ArrayList<>
+                        (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
+            else
+                newGrid.add(new ArrayList<>
+                        (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
+        }
+        return newGrid;
+    }
+
+    private ArrayList<ArrayList<Integer>> resetBonus() {
+        ArrayList<ArrayList<Integer>> newBonus = new ArrayList<>(15);
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30)));
+        newBonus.add(newBonus.get(7));
+        newBonus.add(newBonus.get(6));
+        newBonus.add(newBonus.get(5));
+        newBonus.add(newBonus.get(4));
+        newBonus.add(newBonus.get(3));
+        newBonus.add(newBonus.get(2));
+        newBonus.add(newBonus.get(1));
+        newBonus.add(newBonus.get(0));
+
+        return newBonus;
+    }
+
+
     public ArrayList<ArrayList<Character>> getCoordinates() {
         return this.coordinates;
+    }
+
+    public Character getCoordinates(int x, int y) {
+        return this.coordinates.get(x).get(y);
     }
 
 
@@ -82,6 +96,10 @@ public class Grid extends Observable implements Serializable {
 
     public ArrayList<ArrayList<Integer>> getBonus() {
         return this.bonus;
+    }
+
+    public Integer getBonus(int x, int y) {
+        return this.bonus.get(x).get(y);
     }
 
     public void setBonus(int x, int y, int pts) {
@@ -166,13 +184,13 @@ public class Grid extends Observable implements Serializable {
                 for (int deltaX = -1; deltaX < 2; deltaX++)
                     for (int deltaY = -1; deltaY < 2; deltaY++)
                         if (x + deltaX >= 0 && y + deltaY >= 0 && x + deltaX <= 14 && y + deltaY <= 14)
-                            if (Character.isLetter((coordinates.get(x+deltaX).get(y+deltaY)))
+                            if (Character.isLetter((coordinates.get(x + deltaX).get(y + deltaY)))
                                     && (deltaX == 0 || deltaY == 0) && (coordinates.get(x).get(y) == ' '))
                                 this.coordinates.get(x).set(y, '#');
 
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++)
-                if (this.coordinates.get(x).get(y)==('#')) {
+                if (this.coordinates.get(x).get(y) == ('#')) {
                     if (x < getFilledCoordinates()[0]) getFilledCoordinates()[0] = x;
                     if (x > getFilledCoordinates()[1]) getFilledCoordinates()[1] = x;
                     if (y < getFilledCoordinates()[2]) getFilledCoordinates()[2] = y;
