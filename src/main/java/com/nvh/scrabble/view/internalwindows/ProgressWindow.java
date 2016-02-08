@@ -28,11 +28,10 @@ public class ProgressWindow extends JFrame implements Observer {
 
         progressBar.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         progressBar.setBounds(0, 0, 45, 620);
+        this.setBackground(Color.black);
         progressBar.setBackground(Color.black);
         contentPane.add(progressBar, BorderLayout.CENTER);
         setResizable(false);
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
         contentPane.setVisible(true);
     }
 

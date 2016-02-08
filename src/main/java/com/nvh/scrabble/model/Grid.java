@@ -5,89 +5,113 @@ import com.nvh.scrabble.model.Scrabble.Word;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
+import java.util.stream.Collectors;
 
 
 public class Grid extends Observable implements Serializable {
     private static final long serialVersionUID = 6143259766902247495L;
-    private char[][] coordinates;
-    private int[][] bonus;
-    private char[][] undo;
+    private ArrayList<ArrayList<Character>> coordinates;
+    private ArrayList<ArrayList<Integer>> bonus;
     private int[] filledCoordinates = new int[]{7, 7, 7, 7};
     private String presentSequence;
     private String listOfWords = "";
 
     public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
-    public static final char[][] resetGrid = new char[][]{
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}};
 
-    private static final int[][] resetBonus = new int[][]{
-            {30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30},
-            {1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1},
-            {1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1},
-            {2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2},
-            {1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1},
-            {1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1},
-            {1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1},
-            {30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30},
-            {1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1},
-            {1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1},
-            {1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1},
-            {2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2},
-            {1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1},
-            {1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1},
-            {30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30}};
+    public Grid() {
+        this.coordinates = new ArrayList<>(15);
+        this.bonus = new ArrayList<>(15);
+        this.presentSequence = "";
+    }
 
 
-    public Grid(char[][] coordinates, int[][] bonus, String presentSequence) {
-        this.presentSequence = presentSequence;
+    public Grid(ArrayList<ArrayList<Character>> coordinates, ArrayList<ArrayList<Integer>> bonus, String presentSequence) {
         if (coordinates == null)
-            coordinates = resetGrid;
-
-        this.coordinates = coordinates;
+            this.coordinates = resetGrid();
+        else
+            this.coordinates = coordinates;
 
         if (bonus == null)
-            this.bonus = resetBonus;
+            this.bonus = resetBonus();
         else
             this.bonus = bonus;
 
-
+        this.presentSequence = presentSequence;
     }
 
-    public char[][] getCoordinates() {
+    private ArrayList<ArrayList<Character>> resetGrid() {
+        ArrayList<ArrayList<Character>> newGrid = new ArrayList<>();
+        for (int i = 0; i < 16; i++) {
+            if (i != 8)
+                newGrid.add(new ArrayList<>
+                        (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
+            else
+                newGrid.add(new ArrayList<>
+                        (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
+        }
+        return newGrid;
+    }
+
+    private ArrayList<ArrayList<Integer>> resetBonus() {
+        ArrayList<ArrayList<Integer>> newBonus = new ArrayList<>(15);
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30)));
+        newBonus.add(newBonus.get(7));
+        newBonus.add(newBonus.get(6));
+        newBonus.add(newBonus.get(5));
+        newBonus.add(newBonus.get(4));
+        newBonus.add(newBonus.get(3));
+        newBonus.add(newBonus.get(2));
+        newBonus.add(newBonus.get(1));
+        newBonus.add(newBonus.get(0));
+
+        return newBonus;
+    }
+
+    public ArrayList<ArrayList<Character>> getCoordinates() {
         return this.coordinates;
+    }
+
+    public Character getCoordinates(int x, int y) {
+        return this.coordinates.get(x).get(y);
     }
 
 
     public char get(int x, int y) {
-        return this.coordinates[x][y];
+        return this.coordinates.get(x).get(y);
     }
 
     public void set(int x, int y, char c) {
-        this.coordinates[x][y] = c;
+        this.coordinates.get(x).set(y, c);
     }
 
-    public int[][] getBonus() {
+    public ArrayList<ArrayList<Integer>> getBonus() {
         return this.bonus;
     }
 
+    public Integer getBonus(int x, int y) {
+        return this.bonus.get(x).get(y);
+    }
+
     public void setBonus(int x, int y, int pts) {
-        this.bonus[x][y] = pts;
+        this.bonus.get(x).set(y, pts);
     }
 
     public String getListOfWords() {
@@ -148,31 +172,15 @@ public class Grid extends Observable implements Serializable {
     public void setWord(Word word) {// place un word "test" : pour placer véritablement un word : setSolution
         int x = word.getX();
         int y = word.getY();
-        undo = new char[15][15];
-        //écriture du word dans la grille (H et V)
+                //écriture du word dans la grille (H et V)
         if (word.isHorizontal()) {
             for (int i = 0; i < word.lenght(); i++) {
-                undo[x + i][y] = this.get(x + i, y);    //pour retour en arrière (utile pour le test)
                 this.set(x + i, y, word.charAt(i));    //remplissage
             }
         } else {
             for (int i = 0; i < word.lenght(); i++) {
-                undo[x][y + i] = this.get(x, y + i);    //pour retour en arrière (utile pour le test)
                 this.set(x, y + i, word.charAt(i));    //remplissage
             }
-        }
-    }
-
-
-    public void deleteWord(Word word) {
-        int x = word.getX();
-        int y = word.getY();
-        if (word.isHorizontal()) {
-            for (int i = 0; i < word.lenght(); i++) {
-                this.coordinates[x + i][y] = undo[x + i][y];
-            }
-        } else {
-            System.arraycopy(undo[x], y, this.coordinates[x], y, word.lenght());
         }
     }
 
@@ -184,13 +192,13 @@ public class Grid extends Observable implements Serializable {
                 for (int deltaX = -1; deltaX < 2; deltaX++)
                     for (int deltaY = -1; deltaY < 2; deltaY++)
                         if (x + deltaX >= 0 && y + deltaY >= 0 && x + deltaX <= 14 && y + deltaY <= 14)
-                            if (Character.isLetter((coordinates[x + deltaX][y + deltaY]))
-                                    && (deltaX == 0 || deltaY == 0) && (coordinates[x][y] == ' '))
-                                this.coordinates[x][y] = '#';
+                            if (Character.isLetter((coordinates.get(x + deltaX).get(y + deltaY)))
+                                    && (deltaX == 0 || deltaY == 0) && (coordinates.get(x).get(y) == ' '))
+                                this.coordinates.get(x).set(y, '#');
 
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++)
-                if (this.coordinates[x][y] == '#') {
+                if (this.coordinates.get(x).get(y) == ('#')) {
                     if (x < getFilledCoordinates()[0]) getFilledCoordinates()[0] = x;
                     if (x > getFilledCoordinates()[1]) getFilledCoordinates()[1] = x;
                     if (y < getFilledCoordinates()[2]) getFilledCoordinates()[2] = y;
@@ -224,8 +232,8 @@ public class Grid extends Observable implements Serializable {
             horizontalAnswers = "";
             verticalAnswers = "";
             for (int j = 0; j < 15; j++) {
-                Character h = this.coordinates[j][i];
-                Character v = this.coordinates[i][j];
+                Character h = this.coordinates.get(j).get(i);
+                Character v = this.coordinates.get(i).get(j);
                 if (Character.isLetter(h)) horizontalAnswers += h;
                 else if (horizontalAnswers.length() > 1 && !placedWords.contains(horizontalAnswers)) {
                     placedWords.add(horizontalAnswers);
@@ -244,4 +252,12 @@ public class Grid extends Observable implements Serializable {
         return placedWords;
     }
 
+    public Grid cloneGrid() {
+        Grid cloned = new Grid();
+        cloned.coordinates.addAll(this.coordinates.stream().map(x -> (ArrayList<Character>) x.clone()).collect(Collectors.toList()));
+        cloned.bonus.addAll(this.bonus.stream().map(x -> (ArrayList<Integer>) x.clone()).collect(Collectors.toList()));
+        cloned.presentSequence = this.presentSequence;
+
+        return cloned;
+    }
 }

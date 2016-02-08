@@ -15,7 +15,6 @@ public class Solver extends Observable {
 
     public void solve(Scrabble game) {
 
-        ArrayList<Character> drawingArray = new ArrayList<>();
         List<Scrabble.Solution> allSolutions = new ArrayList<>();
 
         Grid grid = game.getGrid();
@@ -26,9 +25,6 @@ public class Solver extends Observable {
 
         MainWindow.progressionFrame.setVisible(true);
 
-        for (int i = 0; i < drawing.length(); i++) {
-            drawingArray.add(drawing.charAt(i));
-        }
         game.getMainTimer().reset();
         dictionaryIndex = 0; //pour barre de progression
         solutions = new ArrayList<>();
@@ -39,13 +35,12 @@ public class Solver extends Observable {
                     com.nvh.scrabble.model.Dictionary.dictionary.size() * 100); //notifie à la barre de progression
 
             Scrabble.Word horizontalWordToTest, verticalWordToTest;
-            StringBuffer testWord = new StringBuffer(word);
             String[] information;
 
             for (int x = 0; x < 15; x++)
                 for (int y = 0; y < 15; y++) {
-                    horizontalWordToTest = Launcher.game.new Word(word, x, y, true);
-                    verticalWordToTest = Launcher.game.new Word(word, x, y, false);
+                    horizontalWordToTest = game.new Word(word, x, y, true);
+                    verticalWordToTest = game.new Word(word, x, y, false);
 
                     if (y >= grid.getFilledCoordinates()[2] && y <= grid.getFilledCoordinates()[3]) {
                         information = horizontalWordToTest.isMatchingWord(drawing, grid);

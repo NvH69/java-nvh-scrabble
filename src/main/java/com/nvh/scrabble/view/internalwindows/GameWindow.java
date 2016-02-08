@@ -41,7 +41,7 @@ public class GameWindow extends JInternalFrame {
         for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
             gameTable[i][0] = String.valueOf(i + 1);
             gameTable[i][1] = Launcher.game.getDrawingHistory().get(i);
-            gameTable[i][2] = Launcher.game.getSolutions().get(i).getWildcardedWord();
+            gameTable[i][2] = Launcher.game.getSolutions().get(i).getWordWithJokers();
             gameTable[i][3] = Launcher.game.getSolutions().get(i).getWord().toCoordinates();
             gameTable[i][4] = String.valueOf(Launcher.game.getSolutions().get(i).getPoints());
         }
@@ -69,7 +69,7 @@ public class GameWindow extends JInternalFrame {
         for (int i = 0; i < Launcher.game.getTurn() - 1; i++) {
             gameTable[i][0] = String.valueOf(i + 1);
             gameTable[i][1] = Launcher.game.getDrawingHistory().get(i);
-            gameTable[i][2] = Launcher.game.getPlayer(player).getWord(i).getWildcardedWord();
+            gameTable[i][2] = Launcher.game.getPlayer(player).getWord(i).getWordWithJokers();
             gameTable[i][3] = Launcher.game.getPlayer(player).getWord(i).getWord().toCoordinates();
             gameTable[i][4] = String.valueOf(Launcher.game.getPlayer(player).getWord(i).getPoints());
         }

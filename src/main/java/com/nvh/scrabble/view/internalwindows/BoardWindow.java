@@ -59,7 +59,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
         for (int x = 0; x < 15; x++) {
             for (int y = 0; y < 15; y++) {
                 if (Character.isLetter(grid.get(x, y)))
-                    if (grid.getBonus()[x][y] != 0) // si lettre normale
+                    if (grid.getBonus(x, y) != 0) // si lettre normale
                         drawLetter(grid.get(x, y), x + 1, y + 1, false, o);
                     else // si joker
                         drawLetter(grid.get(x, y), x + 1, y + 1, true, o);
