@@ -512,10 +512,9 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 }
                 if (lettersCount < lenght) return null;
             }
-
-            grid.setWord(this); //essai du  mot testé
-            List<String> allWords = grid.placedWords(); // liste de tous les mots  + nouveaux mots formés
-            grid.deleteWord(this);    //effacement du nouvau mot
+            Grid tempGrid = new Grid(grid.getCoordinates(), grid.getBonus(), grid.getPresentSequence());
+            tempGrid.setWord(this); //essai du  mot testé
+            List<String> allWords = tempGrid.placedWords(); // liste de tous les mots  + nouveaux mots formés
 
             for (String s : allWords) // parcourir tous les nouveaux mots
                 if (!grid.getListOfWords().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
