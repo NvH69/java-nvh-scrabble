@@ -1,5 +1,8 @@
 package com.nvh.scrabble.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,8 +14,8 @@ public class Definitions {
     public Definitions() {
 
         int i = 0;
-        System.out.println(Dictionary.path + "/dictionaries/definitions");
-
+        Logger logger = LoggerFactory.getLogger(Definitions.class);
+        logger.info(Dictionary.path + "/dictionaries/definitions");
         try {
             BufferedReader in = new BufferedReader(new FileReader(Dictionary.path + "/dictionaries/definitions.txt"));
 
@@ -24,7 +27,7 @@ public class Definitions {
             }
             in.close();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 

@@ -2,6 +2,8 @@ package com.nvh.scrabble.view.internaldialpanes;
 
 import com.nvh.scrabble.model.Dictionary;
 import com.nvh.scrabble.model.Scrabble;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,6 +15,7 @@ import java.util.Calendar;
 
 public class FilePane extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -4105494649356150949L;
+    private static final Logger logger = LoggerFactory.getLogger(FilePane.class);
     String path = Dictionary.path + "/savedgames/";
     Calendar calendar = Calendar.getInstance();
 
@@ -30,10 +33,10 @@ public class FilePane extends JFrame implements TreeSelectionListener {
     public void displayDial() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         for (File file : File.listRoots()) {
-            String f = file.getAbsolutePath();
-            DefaultMutableTreeNode lecteur = new DefaultMutableTreeNode(f);
-            System.out.println(f);
-            if (f.equals(path)) {
+            String absolutePath = file.getAbsolutePath();
+            DefaultMutableTreeNode lecteur = new DefaultMutableTreeNode(absolutePath);
+            logger.info("Chemin du fichier : " + absolutePath);
+            if (absolutePath.equals(path)) {
 
                 try {
                     for (File nom : file.listFiles()) {

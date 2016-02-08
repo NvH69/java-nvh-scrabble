@@ -5,7 +5,9 @@
 *.iml
 *.swp
 *.jar
-/target/generated-sources/*
+/target/*
+/classes/production/*
+
 
 
 

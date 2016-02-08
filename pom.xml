@@ -18,8 +18,8 @@
 <dependencies>
     <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${logger.version}</version>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.6.2</version>
     </dependency>
     <!-- commons librairies -->
     <dependency>
