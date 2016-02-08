@@ -12,21 +12,20 @@ import java.util.stream.Collectors;
 
 
 public class Grid extends Observable implements Serializable {
+    public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
     private static final long serialVersionUID = 6143259766902247495L;
     private ArrayList<ArrayList<Character>> coordinates;
     private ArrayList<ArrayList<Integer>> bonus;
     private int[] filledCoordinates = new int[]{7, 7, 7, 7};
     private String listOfWords = "";
 
-    public static final String xAxisLetters = "ABCDEFGHIJKLMNO";
-
     public Grid() {
         this.coordinates = new ArrayList<>(15);
         this.bonus = new ArrayList<>(15);
     }
 
-
-    public Grid(ArrayList<ArrayList<Character>> coordinates, ArrayList<ArrayList<Integer>> bonus, String presentSequence) {
+    public Grid(ArrayList<ArrayList<Character>> coordinates,
+                ArrayList<ArrayList<Integer>> bonus, String presentSequence) {
         if (coordinates == null)
             this.coordinates = resetGrid();
         else
@@ -36,7 +35,19 @@ public class Grid extends Observable implements Serializable {
             this.bonus = resetBonus();
         else
             this.bonus = bonus;
+    }
 
+    public static String toCoordinates(int x, int y, boolean h) {//renvoie les coordonnées de type Scrabble
+        String coordinates = "";
+        if (h) {
+            coordinates += xAxisLetters.charAt(y);
+            coordinates += x + 1;
+        } else {
+            coordinates += x + 1;
+            coordinates += xAxisLetters.charAt(y);
+        }
+
+        return coordinates;
     }
 
     private ArrayList<ArrayList<Character>> resetGrid() {
@@ -70,7 +81,7 @@ public class Grid extends Observable implements Serializable {
                 (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
         newBonus.add(new ArrayList<>
                 (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30)));
-        for (int i=6; i>=0; i--) {
+        for (int i = 6; i >= 0; i--) {
             newBonus.add(newBonus.get(i));
         }
         return newBonus;
@@ -83,7 +94,6 @@ public class Grid extends Observable implements Serializable {
     public Character getCoordinates(int x, int y) {
         return this.coordinates.get(x).get(y);
     }
-
 
     public char get(int x, int y) {
         return this.coordinates.get(x).get(y);
@@ -149,7 +159,8 @@ public class Grid extends Observable implements Serializable {
         //String motsPresents = this.allCells();
 
         // ajouter le nouveau mot à la liste des mots de la game
-        placedWords.stream().filter(tm -> !this.getListOfWords().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
+        placedWords.stream().filter
+                (tm -> !this.getListOfWords().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
         this.setChanged();
         this.notifyObservers(solution); //notification nouvelle solution à game
         this.fittings(); //mise à jour de la grille avec les nouveaux fittings
@@ -159,7 +170,7 @@ public class Grid extends Observable implements Serializable {
     public void setWord(Word word) {// place un word "test" : pour placer véritablement un word : setSolution
         int x = word.getX();
         int y = word.getY();
-                //écriture du word dans la grille (H et V)
+        //écriture du word dans la grille (H et V)
         if (word.isHorizontal()) {
             for (int i = 0; i < word.lenght(); i++) {
                 this.set(x + i, y, word.charAt(i));    //remplissage
@@ -191,20 +202,6 @@ public class Grid extends Observable implements Serializable {
                     if (y < getFilledCoordinates()[2]) getFilledCoordinates()[2] = y;
                     if (y > getFilledCoordinates()[3]) getFilledCoordinates()[3] = y;
                 }
-    }
-
-
-    public static String toCoordinates(int x, int y, boolean h) {//renvoie les coordonnées de type Scrabble
-        String coordinates = "";
-        if (h) {
-            coordinates += xAxisLetters.charAt(y);
-            coordinates += x + 1;
-        } else {
-            coordinates += x + 1;
-            coordinates += xAxisLetters.charAt(y);
-        }
-
-        return coordinates;
     }
 
     public List<String> placedWords() {//renvoie la liste de tous les mots présents dans une grille
@@ -241,8 +238,10 @@ public class Grid extends Observable implements Serializable {
 
     public Grid cloneGrid() {
         Grid cloned = new Grid();
-        cloned.coordinates.addAll(this.coordinates.stream().map(x -> (ArrayList<Character>) x.clone()).collect(Collectors.toList()));
-        cloned.bonus.addAll(this.bonus.stream().map(x -> (ArrayList<Integer>) x.clone()).collect(Collectors.toList()));
+        cloned.coordinates.addAll
+                (this.coordinates.stream().map(x -> (ArrayList<Character>) x.clone()).collect(Collectors.toList()));
+        cloned.bonus.addAll
+                (this.bonus.stream().map(x -> (ArrayList<Integer>) x.clone()).collect(Collectors.toList()));
 
         return cloned;
     }
