@@ -1,27 +1,21 @@
 package com.nvh.scrabble.service;
 
-import com.nvh.scrabble.model.Dictionary;
-
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Calendar;
 
 public class Timer extends Thread implements Serializable {
+
     private static final long serialVersionUID = -6290616549583735992L;
-    private boolean isOn;
-
-    public boolean isOn() {
-        return isOn;
-    }
-
-    private long dt;
-    private final long dtReset;
-
     public static boolean isTicking = false;
-    public String display;
-
     public static StringBuffer tempLcd = new StringBuffer("");
     public static Calendar calendar;
-
+    final URL timerShort = Timer.class.getResource("/sounds/timer_short.wav");
+    final URL ding = Timer.class.getResource("/sounds/ding.wav");
+    private final long dtReset;
+    public String display;
+    private boolean isOn;
+    private long dt;
     public Timer(long dt) {
         this.dt = dt + 1000 + System.currentTimeMillis();
         this.dtReset = dt + 1000;
@@ -31,6 +25,10 @@ public class Timer extends Thread implements Serializable {
         calendar = Calendar.getInstance();
 
         start();
+    }
+
+    public boolean isOn() {
+        return isOn;
     }
 
     public void run() {
@@ -45,12 +43,12 @@ public class Timer extends Thread implements Serializable {
                 long nowTimer = System.currentTimeMillis();
                 calendar.setTimeInMillis(this.dt - nowTimer);
                 if (calendar.getTimeInMillis() < 20000 && !isTicking)
-                    new SampledSound(Dictionary.path + "/sounds/timer_short.wav").play();
+                    new SampledSound(timerShort.getFile()).play();
                 if (calendar.getTimeInMillis() < 0) {
                     tempLcd.delete(0, 7);
                     //jouer son
                     isTicking = true;
-                    new SampledSound(Dictionary.path + "/sounds/ding.wav").play();
+                    new SampledSound(ding.getFile()).play();
                 }
                 if (calendar.get(Calendar.MINUTE) > 9) {
                     tempLcd.append(calendar.get(Calendar.MINUTE)).append(":").append(calendar.get(Calendar.SECOND));

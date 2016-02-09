@@ -11,12 +11,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
+import java.net.URL;
 import java.util.Calendar;
 
 public class FilePane extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -4105494649356150949L;
     private static final Logger logger = LoggerFactory.getLogger(FilePane.class);
-    String path = Dictionary.path + "/savedgames/";
+    static final URL directory = FileFrame.class.getResource("/savedgames/");
     Calendar calendar = Calendar.getInstance();
 
     public FilePane(Scrabble game) {
@@ -36,7 +37,7 @@ public class FilePane extends JFrame implements TreeSelectionListener {
             String absolutePath = file.getAbsolutePath();
             DefaultMutableTreeNode lecteur = new DefaultMutableTreeNode(absolutePath);
             logger.info("Chemin du fichier : " + absolutePath);
-            if (absolutePath.equals(path)) {
+            if (absolutePath.equals(directory.getPath())) {
 
                 try {
                     for (File nom : file.listFiles()) {
