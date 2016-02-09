@@ -6,18 +6,20 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 public class Definitions {
 
     public static final String[] definitionsDictionary = new String[400000];
+    public static final URL definitionsFile = Dictionary.class.getResource("/dictionaries/definitions.txt");
 
     public Definitions() {
 
         int i = 0;
         Logger logger = LoggerFactory.getLogger(Definitions.class);
-        logger.info(Dictionary.path + "/dictionaries/definitions");
+        logger.info(definitionsFile.getFile());
         try {
-            BufferedReader in = new BufferedReader(new FileReader(Dictionary.path + "/dictionaries/definitions.txt"));
+            BufferedReader in = new BufferedReader(new FileReader(definitionsFile.getFile()));
 
             String line;
             while (!(line = in.readLine()).equals("*")) {

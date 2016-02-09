@@ -6,6 +6,7 @@ import com.nvh.scrabble.model.Scrabble;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,7 +17,8 @@ public class BoardWindow extends JInternalFrame implements Observer {
     static String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0";
     static ImageIcon[] letterImages = new ImageIcon[27];
     static ImageIcon[] jokerImages = new ImageIcon[27];
-    String path = Dictionary.path + "/letters/wood/";
+    static final URL woodFiles = BoardWindow.class.getResource("/letters/wood/");
+    static final URL boardPath = BoardWindow.class.getResource("/boards/boardr0.jpg");
 
     public BoardWindow() {
 
@@ -26,7 +28,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
         setVisible(true);
         setBounds(10, 11, 655, 673);
 
-        ImagePanel boardIcon = new ImagePanel(new ImageIcon(Dictionary.path + "/boards/boardr0.jpg").getImage(), 0, 0);
+        ImagePanel boardIcon = new ImagePanel(new ImageIcon(boardPath.getFile()).getImage(), 0, 0);
         this.getContentPane().add(boardIcon);
         setContentPane(boardIcon);
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -37,8 +39,8 @@ public class BoardWindow extends JInternalFrame implements Observer {
         getContentPane().setLayout(gridBagLayout);
 
         for (int i = 0; i < letterImages.length; i++) {
-            letterImages[i] = new ImageIcon(path + letters.charAt(i) + ".jpg");
-            jokerImages[i] = new ImageIcon(path + letters.charAt(i) + "0.jpg");
+            letterImages[i] = new ImageIcon(woodFiles.getPath() + letters.charAt(i) + ".jpg");
+            jokerImages[i] = new ImageIcon(woodFiles.getPath() + letters.charAt(i) + "0.jpg");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
 import com.nvh.scrabble.Launcher;
-import com.nvh.scrabble.model.Dictionary;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.service.Serializer;
 import com.nvh.scrabble.view.MainWindow;
@@ -13,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Calendar;
 
 public class FileFrame extends JFrame {
@@ -22,7 +22,7 @@ public class FileFrame extends JFrame {
     JTextArea textArea = new JTextArea();
     JButton actionButton = new JButton();
     String response = "wait";
-    String path = Dictionary.path + "/savedgames/";
+    static final URL directory = FileFrame.class.getResource("/savedgames/");
     Calendar calendar = Calendar.getInstance();
 
     public FileFrame() {
@@ -53,7 +53,7 @@ public class FileFrame extends JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Scrabble");
         DefaultMutableTreeNode savedgames = new DefaultMutableTreeNode("savedgames");
         try {
-            for (File nom : new File(path).listFiles()) {
+            for (File nom : new File(directory.getPath()).listFiles()) {
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName());
                 savedgames.add(this.listFile(nom, node));
             }

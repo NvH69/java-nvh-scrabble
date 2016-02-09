@@ -4,16 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Dictionary {
 
-    public static final String path = new File("Scrabble.jar").getAbsoluteFile().getParent() + "/src/main/resources/";
-    public static final String finalPath = path + "dictionaries/ODS6.txt";
+    public static final URL dictionaryFile = Dictionary.class.getResource("/dictionaries/ODS6.txt");
 
     public static final List<String> dictionary = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Dictionary.class);
@@ -22,7 +21,7 @@ public class Dictionary {
 
         for (byte j = 2; j <= 15; j++) {
             try {
-                BufferedReader in = new BufferedReader(new FileReader(finalPath));
+                BufferedReader in = new BufferedReader(new FileReader(dictionaryFile.getFile()));
 
                 String line;
                 while (!(line = in.readLine()).equals("*")) {
