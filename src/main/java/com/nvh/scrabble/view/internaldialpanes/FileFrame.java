@@ -2,6 +2,7 @@ package com.nvh.scrabble.view.internaldialpanes;
 
 import com.nvh.scrabble.Launcher;
 import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.service.ResourceLoader;
 import com.nvh.scrabble.service.Serializer;
 import com.nvh.scrabble.view.MainWindow;
 import com.nvh.scrabble.view.internalwindows.BoardWindow;
@@ -12,7 +13,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Calendar;
 
 public class FileFrame extends JFrame {
@@ -22,7 +22,8 @@ public class FileFrame extends JFrame {
     JTextArea textArea = new JTextArea();
     JButton actionButton = new JButton();
     String response = "wait";
-    static final URL directory = FileFrame.class.getResource("/savedgames/");
+    private static ResourceLoader resourceLoader = new ResourceLoader();
+    static final String directory = "/savedgames/";
     Calendar calendar = Calendar.getInstance();
 
     public FileFrame() {
@@ -53,7 +54,7 @@ public class FileFrame extends JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Scrabble");
         DefaultMutableTreeNode savedgames = new DefaultMutableTreeNode("savedgames");
         try {
-            for (File nom : new File(directory.getPath()).listFiles()) {
+            for (File nom : new File(resourceLoader.getFileFromResource(directory).getPath()).listFiles()) {
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName());
                 savedgames.add(this.listFile(nom, node));
             }
@@ -70,7 +71,7 @@ public class FileFrame extends JFrame {
                 e -> textArea.setText(tree.getLastSelectedPathComponent().toString()));
     }
 
-    public void writeDial() {
+    public void writeDialogBox() {
         textArea.setVisible(true);
         textArea.setText(actualDate() + ".dat");
         actionButton.setText("Sauvegarder");
@@ -85,7 +86,7 @@ public class FileFrame extends JFrame {
 
     }
 
-    public void readDial(Scrabble game) {
+    public void readDialogBox(Scrabble game) {
         textArea.setVisible(false);
         actionButton.setText("Reprendre");
         actionButton.addActionListener(e -> {
@@ -98,7 +99,6 @@ public class FileFrame extends JFrame {
                         e1.printStackTrace();
                     }
                 } catch (ClassNotFoundException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 

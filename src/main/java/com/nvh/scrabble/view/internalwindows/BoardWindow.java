@@ -28,7 +28,7 @@ public class BoardWindow extends JInternalFrame implements Observer {
         setVisible(true);
         setBounds(10, 11, 655, 673);
         ImageIcon boardIcon = new ImageIcon(resourceLoader.getFileFromResource(boardPath).getPath());
-        ImagePanel boardPanel = new ImagePanel(boardIcon.getImage(),0,0);
+        ImagePanel boardPanel = new ImagePanel(boardIcon.getImage(), 0, 0);
         this.getContentPane().add(boardPanel);
         setContentPane(boardPanel);
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -40,8 +40,8 @@ public class BoardWindow extends JInternalFrame implements Observer {
 
         for (int i = 0; i < letterImages.length; i++) {
             letterImages[i] = new ImageIcon(resourceLoader.getFileFromResource(woodFiles + letters.charAt(i) + ".jpg").getAbsolutePath());
-            if (letters.charAt(i)!='0')
-            jokerImages[i] = new ImageIcon(resourceLoader.getFileFromResource(woodFiles + letters.charAt(i) + "0.jpg").getAbsolutePath());
+            if (letters.charAt(i) != '0')
+                jokerImages[i] = new ImageIcon(resourceLoader.getFileFromResource(woodFiles + letters.charAt(i) + "0.jpg").getAbsolutePath());
         }
     }
 

@@ -3,25 +3,25 @@ package com.nvh.scrabble.service;
 import com.nvh.scrabble.model.Scrabble;
 
 import java.io.*;
-import java.net.URL;
 
 public class Serializer {
 
+    private static ResourceLoader resourceLoader = new ResourceLoader();
 
     public static void write(Scrabble game, String name) throws IOException {
 
         ObjectOutputStream oos;
-        final URL savingPath = Serializer.class.getResource("/savedgames/" + name);
-        oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(savingPath.getFile())));
+        final String savingName = "/savedgames/" + name;
+        oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(resourceLoader.getFileFromResource(savingName))));
         oos.writeObject(game);
         oos.close();
     }
 
-    @SuppressWarnings("resource")
     public static Scrabble read(String name) throws IOException, ClassNotFoundException {
         ObjectInputStream ois;
-        final URL savingPath = Serializer.class.getResource("/savedgames/");
-        ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(savingPath.getPath() + name)));
+        final String saveName = "/savedgames/" + name;
+        FileInputStream fileInputStream = new FileInputStream(resourceLoader.getFileFromResource(saveName));
+        ois = new ObjectInputStream(new BufferedInputStream(fileInputStream));
 
         return (Scrabble) ois.readObject();
     }

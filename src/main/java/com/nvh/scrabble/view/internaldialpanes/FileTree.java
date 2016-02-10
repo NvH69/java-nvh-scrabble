@@ -1,6 +1,7 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
 import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.service.ResourceLoader;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -8,13 +9,13 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
-import java.net.URL;
 import java.util.Calendar;
 
 public class FileTree extends JFrame implements TreeSelectionListener {
+    //    private static final Logger logger = LoggerFactory.getLogger(FileTree.class);
+    ResourceLoader resourceLoader = new ResourceLoader();
+    static final String directory = "/savedgames/";
     private static final long serialVersionUID = -4105494649356150949L;
-//    private static final Logger logger = LoggerFactory.getLogger(FileTree.class);
-    static final URL directory = FileFrame.class.getResource("/savedgames/");
     Calendar calendar = Calendar.getInstance();
 
     public FileTree(Scrabble game) {
@@ -28,22 +29,22 @@ public class FileTree extends JFrame implements TreeSelectionListener {
         setVisible(true);
     }
 
-    public void displayDial() {
+    public void displayDialogBox() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         for (File file : File.listRoots()) {
             String absolutePath = file.getAbsolutePath();
-            DefaultMutableTreeNode lecteur = new DefaultMutableTreeNode(absolutePath);
+            DefaultMutableTreeNode defaultMutableTreeNode = new DefaultMutableTreeNode(absolutePath);
 //            logger.info("Chemin du fichier : " + absolutePath);
-            if (absolutePath.equals(directory.getPath())) {
+            if (absolutePath.equals(resourceLoader.getPathFromResource(directory))) {
 
                 try {
-                    for (File nom : file.listFiles()) {
-                        DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName() + "\\");
-                        lecteur.add(this.listFile(nom, node));
+                    for (File file1 : file.listFiles()) {
+                        DefaultMutableTreeNode node = new DefaultMutableTreeNode(file1.getName() + "\\");
+                        defaultMutableTreeNode.add(this.listFile(file1, node));
                     }
                 } catch (NullPointerException ignored) {
                 }
-                root.add(lecteur);
+                root.add(defaultMutableTreeNode);
             }
         }
     }
@@ -60,13 +61,13 @@ public class FileTree extends JFrame implements TreeSelectionListener {
         if (file.isFile())
             return new DefaultMutableTreeNode(file.getName());
         else {
-            for (File nom : file.listFiles()) {
+            for (File file1 : file.listFiles()) {
                 DefaultMutableTreeNode subNode;
-                if (nom.isDirectory()) {
-                    subNode = new DefaultMutableTreeNode(nom.getName() + "\\");
-                    node.add(this.listFile(nom, subNode));
+                if (file1.isDirectory()) {
+                    subNode = new DefaultMutableTreeNode(file1.getName() + "\\");
+                    node.add(this.listFile(file1, subNode));
                 } else {
-                    subNode = new DefaultMutableTreeNode(nom.getName());
+                    subNode = new DefaultMutableTreeNode(file1.getName());
                 }
 
                 node.add(subNode);

@@ -1,13 +1,8 @@
-/bin/*
 /.idea/*
 /src/main/resources/savedgames
 /src/main/resources/screenshots
 *.iml
-*.swp
 *.jar
-/target/*
-/classes/production/*
-
-
-
-
+/target/classes
+/target/generated-sources
+/target/maven-archiver

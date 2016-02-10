@@ -195,9 +195,9 @@ public class MainWindow extends JFrame implements Observer {
         });
 
         addPlayerMenuItem.addActionListener(e -> new PlayerDialPane(game));
-        saveMenuItem.addActionListener(e -> new FileFrame().writeDial());
+        saveMenuItem.addActionListener(e -> new FileFrame().writeDialogBox());
 
-        loadMenuItem.addActionListener(e -> new FileFrame().readDial(game));
+        loadMenuItem.addActionListener(e -> new FileFrame().readDialogBox(game));
     }
 
     @Override
