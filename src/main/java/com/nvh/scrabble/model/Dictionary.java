@@ -1,27 +1,25 @@
 package com.nvh.scrabble.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.nvh.scrabble.service.ResourceLoader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Dictionary {
 
-    public static final URL dictionaryFile = Dictionary.class.getResource("/dictionaries/ODS6.txt");
-
+    public static final String dictionaryFile = "/dictionaries/ODS6.txt";
+    private static ResourceLoader resourceLoader = new ResourceLoader();
     public static final List<String> dictionary = new ArrayList<>();
-    private static final Logger logger = LoggerFactory.getLogger(Dictionary.class);
+//    private static final Logger logger = LoggerFactory.getLogger(Dictionary.class);
 
     public Dictionary() {
 
         for (byte j = 2; j <= 15; j++) {
             try {
-                BufferedReader in = new BufferedReader(new FileReader(dictionaryFile.getFile()));
+                BufferedReader in = new BufferedReader(new FileReader(resourceLoader.getFileFromResource(dictionaryFile)));
 
                 String line;
                 while (!(line = in.readLine()).equals("*")) {
@@ -32,7 +30,7 @@ public class Dictionary {
                 }
                 in.close();
             } catch (IOException e) {
-                logger.error(e.getMessage());
+//                logger.error(e.getMessage());
             }
         }
     }
