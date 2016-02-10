@@ -11,13 +11,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.Calendar;
 
-public class FilePane extends JFrame implements TreeSelectionListener {
+public class FileTree extends JFrame implements TreeSelectionListener {
     private static final long serialVersionUID = -4105494649356150949L;
-//    private static final Logger logger = LoggerFactory.getLogger(FilePane.class);
+//    private static final Logger logger = LoggerFactory.getLogger(FileTree.class);
     static final URL directory = FileFrame.class.getResource("/savedgames/");
     Calendar calendar = Calendar.getInstance();
 
-    public FilePane(Scrabble game) {
+    public FileTree(Scrabble game) {
         setBounds(600, 460, 410, 200);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
