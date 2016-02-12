@@ -48,7 +48,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
             this.letters.add(allLetters.charAt(i));
     }
 
-    @SuppressWarnings("unchecked")
     public void copyOf(Scrabble toCopy) {
         this.running = true;
         this.setGrid(toCopy.grid);
@@ -173,7 +172,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return letter;
     }
 
-    @SuppressWarnings("unchecked")
     public String manualDrawing(String remainingDrawing)
     //place le drawing et renvoie "" si possible, sinon renvoie msg d'erreur et ne place rien
     {

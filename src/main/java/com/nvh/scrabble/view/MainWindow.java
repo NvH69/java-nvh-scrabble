@@ -5,8 +5,8 @@ import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.model.Scrabble.Solution;
 import com.nvh.scrabble.service.Solver;
 import com.nvh.scrabble.view.internaldialpanes.ConfirmationPane;
-import com.nvh.scrabble.view.internaldialpanes.FileFrame;
-import com.nvh.scrabble.view.internaldialpanes.LettersPanel;
+import com.nvh.scrabble.view.internaldialpanes.FilePane;
+import com.nvh.scrabble.view.internaldialpanes.LettersPane;
 import com.nvh.scrabble.view.internaldialpanes.PlayerDialPane;
 import com.nvh.scrabble.view.internalwindows.*;
 
@@ -24,7 +24,7 @@ public class MainWindow extends JFrame implements Observer {
     public static JInternalFrame solutionsFrame = new SolutionWindow();
     public static JInternalFrame scoreFrame = new ScoreWindow();
     public static JFrame progressionFrame = new ProgressWindow();
-    public static JTextPane lettersPane = new LettersPanel();
+    public static JTextPane lettersPane = new LettersPane();
     public static JLabel timerLabel = new JLabel("");
     public static JButton mainButton = new JButton();
 
@@ -195,9 +195,9 @@ public class MainWindow extends JFrame implements Observer {
         });
 
         addPlayerMenuItem.addActionListener(e -> new PlayerDialPane(game));
-        saveMenuItem.addActionListener(e -> new FileFrame().writeDial());
+        saveMenuItem.addActionListener(e -> new FilePane().writeDialogBox());
 
-        loadMenuItem.addActionListener(e -> new FileFrame().readDial(game));
+        loadMenuItem.addActionListener(e -> new FilePane().readDialogBox(game));
     }
 
     @Override

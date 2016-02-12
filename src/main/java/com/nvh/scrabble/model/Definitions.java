@@ -1,141 +1,138 @@
 package com.nvh.scrabble.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.nvh.scrabble.service.ResourceLoader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Definitions {
 
-    public static final String[] definitionsDictionary = new String[400000];
-    public static final URL definitionsFile = Dictionary.class.getResource("/dictionaries/definitions.txt");
-
+    public static final List<String> definitionsDictionary = new ArrayList<>();
+    private static final String definitionsFile = "/dictionaries/definitions.txt";
+    private static ResourceLoader resourceLoader = new ResourceLoader();
     public Definitions() {
 
         int i = 0;
-        Logger logger = LoggerFactory.getLogger(Definitions.class);
-        logger.info(definitionsFile.getFile());
+//        Logger logger = LoggerFactory.getLogger(Definitions.class);
+//        logger.info(definitionsFile.getFile());
         try {
-            BufferedReader in = new BufferedReader(new FileReader(definitionsFile.getFile()));
+            BufferedReader in = new BufferedReader(new FileReader(resourceLoader.getFileFromResource(definitionsFile)));
 
             String line;
             while (!(line = in.readLine()).equals("*")) {
 
-                definitionsDictionary[i] = line;
-                i++;
+                definitionsDictionary.add(line);
             }
             in.close();
         } catch (IOException e) {
-            logger.error(e.getMessage());
+//            logger.error(e.getMessage());
         }
     }
 
-    public static String getDefinition(String y) {
+    public static String getDefinition(String word) {
         String[] x = new String[45];
-        x[0] = y;
-        x[1] = y + "R";
-        x[2] = y + "RE";
-        if (y.endsWith("S") || y.endsWith("E")) x[3] = y.substring(0, y.length() - 1);
+        x[0] = word;
+        x[1] = word + "R";
+        x[2] = word + "RE";
+        if (word.endsWith("S") || word.endsWith("E")) x[3] = word.substring(0, word.length() - 1);
         else x[3] = " ";
-        if (y.endsWith("IE")) x[4] = y.substring(0, y.length() - 2) + "YER";
+        if (word.endsWith("IE")) x[4] = word.substring(0, word.length() - 2) + "YER";
         else x[4] = " ";
-        if (y.endsWith("AI") || y.endsWith("NT") || y.endsWith("AS") || y.endsWith("AT"))
-            x[5] = y.substring(0, y.length() - 2) + "ER";
+        if (word.endsWith("AI") || word.endsWith("NT") || word.endsWith("AS") || word.endsWith("AT"))
+            x[5] = word.substring(0, word.length() - 2) + "ER";
         else x[5] = " ";
-        if (y.endsWith("AIT") || y.endsWith("ANT") || y.endsWith("AIS") || y.endsWith("ONS") || y.endsWith("IEZ"))
-            x[6] = y.substring(0, y.length() - 3) + "ER";
+        if (word.endsWith("AIT") || word.endsWith("ANT") || word.endsWith("AIS") || word.endsWith("ONS") || word.endsWith("IEZ"))
+            x[6] = word.substring(0, word.length() - 3) + "ER";
         else x[6] = " ";
-        if (y.endsWith("AMES") || y.endsWith("ATES") || y.endsWith("IONS") || y.endsWith("ASSE"))
-            x[7] = y.substring(0, y.length() - 4) + "ER";
+        if (word.endsWith("AMES") || word.endsWith("ATES") || word.endsWith("IONS") || word.endsWith("ASSE"))
+            x[7] = word.substring(0, word.length() - 4) + "ER";
         else x[7] = " ";
-        x[8] = y.substring(0, y.length() - 1) + "R";
-        x[9] = y.substring(0, y.length() - 1) + "ER";
-        if (y.endsWith("NT") || y.endsWith("ES")) x[10] = y.substring(0, y.length() - 2) + "R";
+        x[8] = word.substring(0, word.length() - 1) + "R";
+        x[9] = word.substring(0, word.length() - 1) + "ER";
+        if (word.endsWith("NT") || word.endsWith("ES")) x[10] = word.substring(0, word.length() - 2) + "R";
         else x[10] = " ";
-        if (y.endsWith("SSANT") || y.endsWith("SSENT") || y.endsWith("SSONT") || y.endsWith("SSAIS") || y.endsWith("SSAIT") || y.endsWith("SSIEZ"))
-            x[11] = y.substring(0, y.length() - 5) + "R";
+        if (word.endsWith("SSANT") || word.endsWith("SSENT") || word.endsWith("SSONT") || word.endsWith("SSAIS") || word.endsWith("SSAIT") || word.endsWith("SSIEZ"))
+            x[11] = word.substring(0, word.length() - 5) + "R";
         else x[11] = " ";
-        if (y.endsWith("IES")) x[12] = y.substring(0, y.length() - 3) + "YER";
+        if (word.endsWith("IES")) x[12] = word.substring(0, word.length() - 3) + "YER";
         else x[12] = " ";
-        if (y.endsWith("MES") || y.endsWith("TES") || y.endsWith("SSE") || y.endsWith("SES"))
-            x[13] = y.substring(0, y.length() - 3) + "R";
+        if (word.endsWith("MES") || word.endsWith("TES") || word.endsWith("SSE") || word.endsWith("SES"))
+            x[13] = word.substring(0, word.length() - 3) + "R";
         else x[13] = " ";
-        if (y.endsWith("AS") || y.endsWith("AI")) x[14] = y.substring(0, y.length() - 2) + "E";
+        if (word.endsWith("AS") || word.endsWith("AI")) x[14] = word.substring(0, word.length() - 2) + "E";
         else x[14] = " ";
-        if (y.endsWith("UX")) x[15] = y.substring(0, y.length() - 2) + "L";
+        if (word.endsWith("UX")) x[15] = word.substring(0, word.length() - 2) + "L";
         else x[15] = " ";
-        if (y.endsWith("E") || y.endsWith("U") || y.endsWith("S")) x[16] = y.substring(0, y.length() - 1) + "RE";
+        if (word.endsWith("E") || word.endsWith("U") || word.endsWith("S")) x[16] = word.substring(0, word.length() - 1) + "RE";
         else x[16] = " ";
-        if (y.endsWith("SE")) x[17] = y.substring(0, y.length() - 2) + "X";
+        if (word.endsWith("SE")) x[17] = word.substring(0, word.length() - 2) + "X";
         else x[17] = " ";
-        if (y.endsWith("AIT") || y.endsWith("IEZ") || y.endsWith("AIS")) x[18] = y.substring(0, y.length() - 3) + "E";
+        if (word.endsWith("AIT") || word.endsWith("IEZ") || word.endsWith("AIS")) x[18] = word.substring(0, word.length() - 3) + "E";
         else x[18] = " ";
-        if (y.endsWith("IONS")) x[19] = y.substring(0, y.length() - 4) + "E";
+        if (word.endsWith("IONS")) x[19] = word.substring(0, word.length() - 4) + "E";
         else x[19] = " ";
-        if (y.endsWith("AIENT")) x[20] = y.substring(0, y.length() - 5) + "E";
+        if (word.endsWith("AIENT")) x[20] = word.substring(0, word.length() - 5) + "E";
         else x[20] = " ";
-        if (y.endsWith("AS") || (y.endsWith("SE"))) x[21] = y.substring(0, y.length() - 2) + "R";
+        if (word.endsWith("AS") || (word.endsWith("SE"))) x[21] = word.substring(0, word.length() - 2) + "R";
         else x[21] = " ";
-        if (y.endsWith("E")) x[22] = y.substring(0, y.length() - 1) + "IR";
+        if (word.endsWith("E")) x[22] = word.substring(0, word.length() - 1) + "IR";
         else x[22] = " ";
-        if (y.endsWith("AIS")) x[23] = y.substring(0, y.length() - 3) + "IR";
+        if (word.endsWith("AIS")) x[23] = word.substring(0, word.length() - 3) + "IR";
         else x[23] = " ";
-        if (y.endsWith("VE")) x[24] = y.substring(0, y.length() - 2) + "F";
+        if (word.endsWith("VE")) x[24] = word.substring(0, word.length() - 2) + "F";
         else x[24] = " ";
-        if (y.endsWith("IEZ")) x[25] = y.substring(0, y.length() - 3) + "RE";
+        if (word.endsWith("IEZ")) x[25] = word.substring(0, word.length() - 3) + "RE";
         else x[25] = " ";
-        if (y.endsWith("IONS")) x[26] = y.substring(0, y.length() - 4) + "RE";
+        if (word.endsWith("IONS")) x[26] = word.substring(0, word.length() - 4) + "RE";
         else x[26] = " ";
-        if (y.endsWith("AIENT")) x[27] = y.substring(0, y.length() - 5) + "RE";
+        if (word.endsWith("AIENT")) x[27] = word.substring(0, word.length() - 5) + "RE";
         else x[27] = " ";
-        if (y.endsWith("AIT") || y.endsWith("ONS") || y.endsWith("AIS") || y.endsWith("VES"))
-            x[28] = y.substring(0, y.length() - 3) + "RE";
+        if (word.endsWith("AIT") || word.endsWith("ONS") || word.endsWith("AIS") || word.endsWith("VES"))
+            x[28] = word.substring(0, word.length() - 3) + "RE";
         else x[28] = " ";
-        if (y.endsWith("SSEZ")) x[29] = y.substring(0, y.length() - 4) + "R";
+        if (word.endsWith("SSEZ")) x[29] = word.substring(0, word.length() - 4) + "R";
         else x[29] = " ";
-        if (y.endsWith("EZ") || y.endsWith("NT") || y.endsWith("IS") || y.endsWith("IT") || y.endsWith("VE") || y.endsWith("ES") || y.endsWith("SE"))
-            x[30] = y.substring(0, y.length() - 2) + "RE";
+        if (word.endsWith("EZ") || word.endsWith("NT") || word.endsWith("IS") || word.endsWith("IT") || word.endsWith("VE") || word.endsWith("ES") || word.endsWith("SE"))
+            x[30] = word.substring(0, word.length() - 2) + "RE";
         else x[30] = " ";
-        if (y.endsWith("AIT") || y.endsWith("ONS") || y.endsWith("AIS") || y.endsWith("VES") || y.endsWith("TES") || y.endsWith("SES") || y.endsWith("IEZ"))
-            x[31] = y.substring(0, y.length() - 3) + "RE";
+        if (word.endsWith("AIT") || word.endsWith("ONS") || word.endsWith("AIS") || word.endsWith("VES") || word.endsWith("TES") || word.endsWith("SES") || word.endsWith("IEZ"))
+            x[31] = word.substring(0, word.length() - 3) + "RE";
         else x[31] = " ";
-        if (y.endsWith("IMES") || y.endsWith("ITES") || y.endsWith("SAIS") || y.endsWith("SAIT") || y.endsWith("SIEZ"))
-            x[32] = y.substring(0, y.length() - 4) + "RE";
+        if (word.endsWith("IMES") || word.endsWith("ITES") || word.endsWith("SAIS") || word.endsWith("SAIT") || word.endsWith("SIEZ"))
+            x[32] = word.substring(0, word.length() - 4) + "RE";
         else x[32] = " ";
-        if (y.endsWith("ERENT")) x[33] = y.substring(0, y.length() - 5) + "RE";
+        if (word.endsWith("ERENT")) x[33] = word.substring(0, word.length() - 5) + "RE";
         else x[33] = " ";
-        if (y.endsWith("T") || y.endsWith("S")) x[34] = y.substring(0, y.length() - 1) + "DRE";
+        if (word.endsWith("T") || word.endsWith("S")) x[34] = word.substring(0, word.length() - 1) + "DRE";
         else x[34] = " ";
-        if (y.endsWith("A")) x[35] = y.substring(0, y.length() - 1);
+        if (word.endsWith("A")) x[35] = word.substring(0, word.length() - 1);
         else x[35] = " ";
-        if (y.endsWith("ES") || y.endsWith("EZ") || y.endsWith("RE") || y.endsWith("AI") || y.endsWith("AS"))
-            x[36] = y.substring(0, y.length() - 2);
+        if (word.endsWith("ES") || word.endsWith("EZ") || word.endsWith("RE") || word.endsWith("AI") || word.endsWith("AS"))
+            x[36] = word.substring(0, word.length() - 2);
         else x[36] = " ";
-        if (y.endsWith("AIT") || y.endsWith("ENT") || y.endsWith("AIS") || y.endsWith("ONS") || y.endsWith("ONT") || y.endsWith("IEZ") || y.endsWith("NES"))
-            x[37] = y.substring(0, y.length() - 3);
+        if (word.endsWith("AIT") || word.endsWith("ENT") || word.endsWith("AIS") || word.endsWith("ONS") || word.endsWith("ONT") || word.endsWith("IEZ") || word.endsWith("NES"))
+            x[37] = word.substring(0, word.length() - 3);
         else x[37] = " ";
-        if (y.endsWith("IONS")) x[38] = y.substring(0, y.length() - 4);
+        if (word.endsWith("IONS")) x[38] = word.substring(0, word.length() - 4);
         else x[38] = " ";
-        if (y.endsWith("AIENT")) x[39] = y.substring(0, y.length() - 5);
+        if (word.endsWith("AIENT")) x[39] = word.substring(0, word.length() - 5);
         else x[39] = " ";
-        if (y.endsWith("AIENT")) x[40] = y.substring(0, y.length() - 5) + "ER";
+        if (word.endsWith("AIENT")) x[40] = word.substring(0, word.length() - 5) + "ER";
         else x[40] = " ";
-        if (y.endsWith("ASSENT")) x[41] = y.substring(0, y.length() - 6) + "ER";
+        if (word.endsWith("ASSENT")) x[41] = word.substring(0, word.length() - 6) + "ER";
         else x[41] = " ";
-        if (y.endsWith("SES")) x[42] = y.substring(0, y.length() - 3) + "X";
+        if (word.endsWith("SES")) x[42] = word.substring(0, word.length() - 3) + "X";
         else x[42] = " ";
-        x[43] = y.substring(0, y.length() - 1);
+        x[43] = word.substring(0, word.length() - 1);
         int j = 0;
         while (x[j] != null) {
             if (x[j].length() < 2) j++;
-            int i = 0;
-            while (definitionsDictionary[i] != null && x[j] != null) {
-                if (x[j].regionMatches(true, 0, definitionsDictionary[i], 0, x[j].length()) && definitionsDictionary[i].indexOf(" ") == x[j].length())
-                    return definitionsDictionary[i];
-                i++;
+            for (String definition : definitionsDictionary) {
+                if (x[j].regionMatches(true, 0, definition, 0, x[j].length()) && definition.indexOf(" ") == x[j].length())
+                    return definition;
             }
             j++;
         }

@@ -1,7 +1,7 @@
 package com.nvh.scrabble.service;
 
+import java.io.File;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.Calendar;
 
 public class Timer extends Thread implements Serializable {
@@ -10,8 +10,10 @@ public class Timer extends Thread implements Serializable {
     public static boolean isTicking = false;
     public static StringBuffer tempLcd = new StringBuffer("");
     public static Calendar calendar;
-    final URL timerShort = Timer.class.getResource("/sounds/timer_short.wav");
-    final URL ding = Timer.class.getResource("/sounds/ding.wav");
+    ResourceLoader resourceLoader = new ResourceLoader();
+    final File timerShort = resourceLoader.getFileFromResource("/sounds/timer_short.wav");
+    final File ding = resourceLoader.getFileFromResource("/sounds/ding.wav");
+
     private final long dtReset;
     public String display;
     private boolean isOn;
@@ -43,12 +45,12 @@ public class Timer extends Thread implements Serializable {
                 long nowTimer = System.currentTimeMillis();
                 calendar.setTimeInMillis(this.dt - nowTimer);
                 if (calendar.getTimeInMillis() < 20000 && !isTicking)
-                    new SampledSound(timerShort.getFile()).play();
+                    new SampledSound(timerShort.getAbsolutePath()).play();
                 if (calendar.getTimeInMillis() < 0) {
                     tempLcd.delete(0, 7);
                     //jouer son
                     isTicking = true;
-                    new SampledSound(ding.getFile()).play();
+                    new SampledSound(ding.getAbsolutePath()).play();
                 }
                 if (calendar.get(Calendar.MINUTE) > 9) {
                     tempLcd.append(calendar.get(Calendar.MINUTE)).append(":").append(calendar.get(Calendar.SECOND));
