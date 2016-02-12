@@ -14,9 +14,7 @@ public class SampledSound implements Serializable {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
             format = stream.getFormat();
             samples = getSamples(stream);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (UnsupportedAudioFileException | IOException e) {
             e.printStackTrace();
         }
     }

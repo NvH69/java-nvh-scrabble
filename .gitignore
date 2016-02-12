@@ -2,7 +2,5 @@
 /src/main/resources/savedgames
 /src/main/resources/screenshots
 *.iml
-*.jar
-/target/classes
-/target/generated-sources
-/target/maven-archiver
+/*.dat
+/target

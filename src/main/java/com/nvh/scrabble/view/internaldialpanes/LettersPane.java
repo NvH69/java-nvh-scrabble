@@ -10,9 +10,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 @SuppressWarnings("serial")
-public class LettersPanel extends JTextPane implements Observer {
+public class LettersPane extends JTextPane implements Observer {
 
-    public LettersPanel() {
+    public LettersPane() {
         setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
         setBackground(Color.WHITE);
         setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
