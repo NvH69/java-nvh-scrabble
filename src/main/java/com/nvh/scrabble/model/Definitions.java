@@ -13,11 +13,10 @@ public class Definitions {
     public static final List<String> definitionsDictionary = new ArrayList<>();
     private static final String definitionsFile = "/dictionaries/definitions.txt";
     private static ResourceLoader resourceLoader = new ResourceLoader();
+
     public Definitions() {
 
         int i = 0;
-//        Logger logger = LoggerFactory.getLogger(Definitions.class);
-//        logger.info(definitionsFile.getFile());
         try {
             BufferedReader in = new BufferedReader(new FileReader(resourceLoader.getFileFromResource(definitionsFile)));
 
@@ -66,11 +65,13 @@ public class Definitions {
         else x[14] = " ";
         if (word.endsWith("UX")) x[15] = word.substring(0, word.length() - 2) + "L";
         else x[15] = " ";
-        if (word.endsWith("E") || word.endsWith("U") || word.endsWith("S")) x[16] = word.substring(0, word.length() - 1) + "RE";
+        if (word.endsWith("E") || word.endsWith("U") || word.endsWith("S"))
+            x[16] = word.substring(0, word.length() - 1) + "RE";
         else x[16] = " ";
         if (word.endsWith("SE")) x[17] = word.substring(0, word.length() - 2) + "X";
         else x[17] = " ";
-        if (word.endsWith("AIT") || word.endsWith("IEZ") || word.endsWith("AIS")) x[18] = word.substring(0, word.length() - 3) + "E";
+        if (word.endsWith("AIT") || word.endsWith("IEZ") || word.endsWith("AIS"))
+            x[18] = word.substring(0, word.length() - 3) + "E";
         else x[18] = " ";
         if (word.endsWith("IONS")) x[19] = word.substring(0, word.length() - 4) + "E";
         else x[19] = " ";

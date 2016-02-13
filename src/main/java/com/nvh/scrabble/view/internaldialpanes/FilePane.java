@@ -12,24 +12,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 
 public class FilePane extends JFrame {
     private static final long serialVersionUID = -4105494649356150949L;
-    private JTree tree;
-    private JScrollPane scrollPane = new JScrollPane();
+    private static URL directory;
     JTextArea textArea = new JTextArea();
     JButton actionButton = new JButton();
-    private static URL directory;
     Calendar calendar = Calendar.getInstance();
+    private JTree tree;
+    private JScrollPane scrollPane = new JScrollPane();
 
     public FilePane() {
 
         try {
             directory = new File(System.getProperty("user.dir")).toURI().toURL();
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         this.setBounds(600, 460, 276, 407);
@@ -58,9 +57,10 @@ public class FilePane extends JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(directory);
         DefaultMutableTreeNode savedgames = new DefaultMutableTreeNode(directory.getPath());
         try {
-            for (File nom : new File(directory.getPath()).listFiles()) {
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(nom.getName());
-                savedgames.add(this.listFile(nom, node));
+            for (File file : new File(directory.getPath()).listFiles()) {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(file.getName());
+                if (file.getName().endsWith(".dat") || file.isDirectory())
+                    savedgames.add(this.listFile(file, node));
             }
         } catch (NullPointerException ignored) {
         }
@@ -87,7 +87,6 @@ public class FilePane extends JFrame {
             }
             dispose();
         });
-
     }
 
     public void readDialogBox(Scrabble game) {
@@ -103,7 +102,6 @@ public class FilePane extends JFrame {
                         e1.printStackTrace();
                     }
                 } catch (ClassNotFoundException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
@@ -121,7 +119,6 @@ public class FilePane extends JFrame {
                     if (game.isAutoDrawing()) MainWindow.autoDrawingButton.setSelected(true);
                     else MainWindow.manualDrawingButton.setSelected(true);
                 }
-                Launcher.phase = 0;
                 Launcher.currentTurn = game.getTurn();
 
                 GameWindow.update();

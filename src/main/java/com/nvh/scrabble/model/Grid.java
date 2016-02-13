@@ -115,7 +115,7 @@ public class Grid extends Observable implements Serializable {
         this.bonus.get(x).set(y, pts);
     }
 
-    public String getListOfWords() {
+    public String getWordList() {
         return this.listOfWords;
     }
 
@@ -160,7 +160,7 @@ public class Grid extends Observable implements Serializable {
 
         // ajouter le nouveau mot à la liste des mots de la game
         placedWords.stream().filter
-                (tm -> !this.getListOfWords().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
+                (tm -> !this.getWordList().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
         this.setChanged();
         this.notifyObservers(solution); //notification nouvelle solution à game
         this.fittings(); //mise à jour de la grille avec les nouveaux fittings
