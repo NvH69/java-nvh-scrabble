@@ -17,14 +17,12 @@ import java.util.ArrayList;
 import java.util.Observer;
 
 public class Launcher {
-    static ArrayList<Player> players = new ArrayList<>();
     public static int phase = 0;
     public static int currentTurn = 1;
     public static Scrabble game;
     public static JFrame gameFrame;
     public static Solver solver = new Solver();
-
-//    static Logger logger;
+    static ArrayList<Player> players = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -37,7 +35,7 @@ public class Launcher {
                 }
             }
         } catch (Exception e) {
-//            logger.error(e.getMessage());
+            e.printStackTrace();
         }
         game = new Scrabble(new Grid(null, null, ""), players, false, false, 180000,
                 false);

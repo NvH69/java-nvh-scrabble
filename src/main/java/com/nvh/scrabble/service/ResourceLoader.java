@@ -7,7 +7,6 @@ import java.nio.file.Path;
 public class ResourceLoader implements Serializable {
     private static final long serialVersionUID = 5417648932725664389L;
     File file = null;
-//    Logger logger = LoggerFactory.getLogger(ResourceLoader.class);
 
     public File getFileFromResource(String resource) {
 

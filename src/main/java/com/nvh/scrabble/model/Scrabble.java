@@ -64,7 +64,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
             this.drawing = "";
         this.turn = toCopy.turn;
         this.grid.fittings();
-
         setChanged();
         notifyObservers();
     }
@@ -514,7 +513,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             List<String> allWords = tempGrid.placedWords(); // liste de tous les mots  + nouveaux mots formés
 
             for (String s : allWords) // parcourir tous les nouveaux mots
-                if (!grid.getListOfWords().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
+                if (!grid.getWordList().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
                     // vérif de l'isCorrectlySpelled
                     if (!Dictionary.isCorrectlySpelled(s)) return null;
             //si tous les mots sont corrects
