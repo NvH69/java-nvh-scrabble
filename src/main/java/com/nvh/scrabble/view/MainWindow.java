@@ -1,6 +1,6 @@
 package com.nvh.scrabble.view;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.model.Scrabble.Solution;
 import com.nvh.scrabble.service.Solver;
@@ -128,9 +128,9 @@ public class MainWindow extends JFrame implements Observer {
         timerLabel.setBounds(10, 695, 187, 52);
 
         mainButton.addActionListener(arg0 -> {
-            if (Launcher.phase == 0) Launcher.phase++;
+            if (game.getPhase() == 0) game.phaseUp();
 
-            if (Launcher.phase == 2 && Solver.solutions.size() > 0) {
+            if (game.getPhase() == 2 && Solver.solutions.size() > 0) {
                 boolean areAllPlayersDone = true; //VRAI si tous les joueurs ont validé leur coup
                 Solution solution = null;
                 //controle que tous les joueurs ont eu un score :
@@ -203,6 +203,6 @@ public class MainWindow extends JFrame implements Observer {
     @Override
     public void update(Observable obs, Object obj) {
         if (obs instanceof Solver)
-            timerLabel.setText(Launcher.game.getMainTimer().getDisplay());
+            timerLabel.setText(ScrabbleController.game.getMainTimer().getDisplay());
     }
 }

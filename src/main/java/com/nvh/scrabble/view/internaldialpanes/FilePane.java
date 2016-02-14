@@ -1,6 +1,6 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.service.Serializer;
 import com.nvh.scrabble.view.MainWindow;
@@ -81,7 +81,7 @@ public class FilePane extends JFrame {
         actionButton.setText("Sauvegarder");
         actionButton.addActionListener(e -> {
             try {
-                Serializer.write(Launcher.game, textArea.getText());
+                Serializer.write(ScrabbleController.game, textArea.getText());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -119,8 +119,6 @@ public class FilePane extends JFrame {
                     if (game.isAutoDrawing()) MainWindow.autoDrawingButton.setSelected(true);
                     else MainWindow.manualDrawingButton.setSelected(true);
                 }
-                Launcher.currentTurn = game.getTurn();
-
                 GameWindow.update();
                 dispose();
             }

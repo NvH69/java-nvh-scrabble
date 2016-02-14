@@ -1,6 +1,6 @@
 package com.nvh.scrabble.service;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Grid;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.view.MainWindow;
@@ -20,7 +20,7 @@ public class Solver extends Observable {
         Grid grid = game.getGrid();
         String drawing = game.getDrawing();
         addObserver((Observer) MainWindow.progressionFrame);
-        addObserver((Observer) Launcher.gameFrame);
+        addObserver((Observer) ScrabbleController.gameFrame);
         addObserver((Observer) MainWindow.solutionsFrame);
 
         MainWindow.progressionFrame.setVisible(true);
@@ -69,6 +69,6 @@ public class Solver extends Observable {
         Collections.sort(solutions);
         setChanged();
         notifyObservers(solutions);
-        Launcher.phase++;
+        game.phaseUp();
     }
 }

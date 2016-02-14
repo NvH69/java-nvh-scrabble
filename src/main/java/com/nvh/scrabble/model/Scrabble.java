@@ -5,10 +5,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Scrabble extends Observable implements Serializable, Observer {
+    public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
+    public final static int[] letterValues =
+            {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
     private static final long serialVersionUID = 1L;
+    public ArrayList<Character> letters = new ArrayList<>(102);
+    String allLetters = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
+            + "GGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRR"
+            + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
     private ArrayList<Player> players;
     private String drawing;
-
     private ArrayList<Solution> solutions;
     private ArrayList<String> drawingHistory = new ArrayList<>();
     private Grid grid;
@@ -16,17 +22,9 @@ public class Scrabble extends Observable implements Serializable, Observer {
     private boolean autoDrawing, autoTop, running;
     private long timer;
     private com.nvh.scrabble.service.Timer mainTimer;
+    private int phase;
 
-
-    public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
-    public final static int[] letterValues = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
-
-    public ArrayList<Character> letters = new ArrayList<>(102);
-    String allLetters = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
-            + "GGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRR"
-            + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
     // * : joker    # : raccord possible
-
     public Scrabble(Grid grid, ArrayList<Player> players, boolean autoDrawing, boolean autoTop, long timer,
                     boolean running) {
         this.grid = grid;
@@ -40,7 +38,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         this.running = running;
         this.autoTop = autoTop;
         this.mainTimer = new com.nvh.scrabble.service.Timer(timer);
-
+        this.phase = 0;
         grid.addObserver(this);
 
         //init letters
@@ -84,12 +82,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return players.get(i);
     }
 
-
     public void addPlayer(String name) {
         this.players.add(new Player(name.toUpperCase(), 0, new ArrayList<>()));
         setChanged();
         notifyObservers();
     }
+
 
     public void setPlayers(ArrayList<Player> j) {
         this.players = new ArrayList<>();
@@ -126,10 +124,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
         this.turn = turn;
     }
 
-
     public ArrayList<Solution> getSolutions() {
         return solutions;
     }
+
 
     public void addSolution(Solution solution) {
         solutions.add(solution);
@@ -155,6 +153,18 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
     public com.nvh.scrabble.service.Timer getMainTimer() {
         return mainTimer;
+    }
+
+    public int getPhase() {
+        return phase;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
+
+    public void phaseUp() {
+        this.phase++;
     }
 
     public String getCountOfRemainingLetters() {
@@ -208,8 +218,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
             else drawing = "Les letters demandées ne sont plus disponibles";
         }
         if ((this.turn > 1 && remainingDrawing.startsWith("+") &&
-                this.getSolutions().get(this.turn - 2).getRemainingDrawing().length() + remainingDrawing.length() != 8) ||
-                (this.turn == 1 && remainingDrawing.length() != 8) || (remainingDrawing.startsWith("-") && remainingDrawing.length() != 8))
+                this.getSolutions().
+                        get(this.turn - 2).getRemainingDrawing().length() + remainingDrawing.length() != 8) ||
+                (this.turn == 1 && remainingDrawing.length() != 8) ||
+                (remainingDrawing.startsWith("-") && remainingDrawing.length() != 8))
             drawing = "Le tirage doit contenir 7 letters";
         if (Objects.equals(drawing, "")) this.setDrawing(remainingDrawing);
         else this.letters = (ArrayList<Character>) backupLetters.clone();
@@ -242,12 +254,14 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (letter == '*') {
                 voyelCount++;
                 consonantCount++;
-            } else if (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
+            } else if
+                    (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
                 voyelCount++;
             else if (Character.isLetter(letter)) consonantCount++;
         }
 
-        if ((this.turn < 16 && voyelCount > 1 && consonantCount > 1) || (this.turn > 15 && voyelCount > 0 && consonantCount > 0))
+        if ((this.turn < 16 && voyelCount > 1 && consonantCount > 1) ||
+                (this.turn > 15 && voyelCount > 0 && consonantCount > 0))
             this.setDrawing(drawing); // <--- si le drawing convient
         else {//sinon remise des letters dans le sac et nouveau drawing si possible
             for (int i = 0; i < drawing.length(); i++) {
@@ -300,7 +314,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (letter == '*') {
                 voyelCount++;
                 consonantCount++;
-            } else if (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
+            } else if
+                    (letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O' || letter == 'U' || letter == 'Y')
                 voyelCount++;
             else
                 consonantCount++;
@@ -320,26 +335,33 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return consonantCount > 0 && voyelCount > 0;
     }
 
+    @Override
+    public void update(Observable obs, Object obj) {
+
+        //si l'évènement est la mise en place d'une solution :
+        if (obj instanceof Solution) {
+
+            this.addSolution((Solution) obj); //ajout de la solution à la partie
+            this.getPlayer(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
+            this.setTurn(this.getTurn() + 1); //avancée d'un turn
+
+            setChanged();
+            notifyObservers(obj); //
+            setChanged();
+            notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre tirage
+        } else //pour tout autre évènement :
+        {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
     public class Word implements Serializable {
 
         private static final long serialVersionUID = 6044242150909210877L;
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public String getWord() {
-            return word;
-        }
-
         private String word;
         private int x, y;
         private boolean h;
-
 
         public Word(String word, int x, int y, boolean h) {
             this.word = word;
@@ -363,6 +385,18 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 this.x = Integer.parseInt(onlyDigits(coordinates)) - 1;
                 this.y = alphabet.indexOf(Y);
             }
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public String getWord() {
+            return word;
         }
 
         public int letterValue(char c) {
@@ -558,7 +592,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
         public int getScore(Grid grid, String[] wordSequence) {
             int points = 0, alternativePoints = 0, bonus = 1, alternativeBonus = 1;
-            boolean isTouchingUp = false, isTouchingDown = false, isTouchingLeft = false, isTouchingRight = false, direction;
+            boolean isTouchingUp = false,
+                    isTouchingDown = false, isTouchingLeft = false, isTouchingRight = false, direction;
             //1 : calcul des points du mot placé
             for (int i = 0; i < this.lenght(); i++) {
                 if (this.h) {
@@ -592,10 +627,13 @@ public class Scrabble extends Observable implements Serializable, Observer {
                                     alternativeBonus *= (grid.getBonus(x + i, y) / 10);
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
+                                    alternativePoints +=
+                                            letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
                                 for (int j = 1; j <= this.getY(); j++) {
                                     if (Character.isLetter(grid.getCoordinates(x + i, y - j)))
-                                        alternativePoints += letterValue(grid.getCoordinates(x + i, y - j)) * grid.getBonus(x + i, y - j);
+                                        alternativePoints +=
+                                                letterValue(grid.getCoordinates(x + i, y - j)) *
+                                                        grid.getBonus(x + i, y - j);
                                     else break;
                                 }
                             }
@@ -610,10 +648,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
                                 if (grid.getBonus(x + i, y) < 9 && direction)
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x + i, y);
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) *
+                                            grid.getBonus(x + i, y);
                                 for (int j = 1; j <= 14 - this.getY(); j++) {
                                     if (Character.isLetter(grid.getCoordinates(x + i, y + j)))
-                                        alternativePoints += letterValue(grid.getCoordinates(x + i, y + j)) * grid.getBonus(x + i, y + j);
+                                        alternativePoints += letterValue(grid.getCoordinates(x + i, y + j)) *
+                                                grid.getBonus(x + i, y + j);
                                     else break;
                                 }
                             }
@@ -632,10 +672,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
                                     alternativeBonus *= (grid.getBonus(x, y + i)) / 10;
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 } else
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x, y + i);
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) *
+                                            grid.getBonus(x, y + i);
                                 for (int j = 1; j <= this.getX(); j++) {
                                     if (Character.isLetter(grid.getCoordinates(x - j, y + i)))
-                                        alternativePoints += letterValue(grid.getCoordinates(x - j, y + i)) * grid.getBonus(x - j, y + i);//ajout
+                                        alternativePoints += letterValue(grid.getCoordinates(x - j, y + i)) *
+                                                grid.getBonus(x - j, y + i);//ajout
                                     else break;
                                 }
                             }
@@ -651,10 +693,12 @@ public class Scrabble extends Observable implements Serializable, Observer {
                                     alternativePoints += letterValue(wordSequence[0].charAt(i));
                                 }
                                 if (grid.getBonus(x, y + i) < 9 && direction)
-                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) * grid.getBonus(x, y + i);
+                                    alternativePoints += letterValue(wordSequence[0].charAt(i)) *
+                                            grid.getBonus(x, y + i);
                                 for (int j = 1; j <= 14 - this.getX(); j++) {
                                     if (Character.isLetter(grid.getCoordinates(x + j, y + i)))
-                                        alternativePoints += letterValue(grid.getCoordinates(x + j, y + i)) * grid.getBonus(x + j, y + i);//ajout
+                                        alternativePoints += letterValue(grid.getCoordinates(x + j, y + i)) *
+                                                grid.getBonus(x + j, y + i);//ajout
                                     else break;
                                 }
                             }
@@ -706,8 +750,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
             if (Objects.equals(information[1], "[]") && getDrawing().length() > 6) scr2 = "Scrabble !";
             else scr2 = "";
             if (word.lenght() > 6)
-                return word.word + " \t| " + "\t" + Grid.toCoordinates(word.getX(), word.getY(), word.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
-            return word.word + "\t \t| " + "\t" + Grid.toCoordinates(word.getX(), word.getY(), word.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
+                return word.word + " \t| " + "\t" + Grid.toCoordinates(word.getX(), word.getY(),
+                        word.isHorizontal()) + "\t | \t" + points + "\t | " + scr1;
+            return word.word + "\t \t| " + "\t" + Grid.toCoordinates(word.getX(),
+                    word.getY(), word.isHorizontal()) + "\t | \t" + points + "\t | " + scr1 + "\t | " + scr2;
         }
 
         public String getRemainingDrawing() {
@@ -739,27 +785,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return points == o.points ?
                     Integer.compare(points, o.points) :
                     Integer.compare(o.points, points);
-        }
-    }
-
-    @Override
-    public void update(Observable obs, Object obj) {
-
-        //si l'évènement est la mise en place d'une solution :
-        if (obj instanceof Solution) {
-
-            this.addSolution((Solution) obj); //ajout de la solution à la partie
-            this.getPlayer(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
-            this.setTurn(this.getTurn() + 1); //avancée d'un turn
-
-            setChanged();
-            notifyObservers(obj); //
-            setChanged();
-            notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre tirage
-        } else //pour tout autre évènement :
-        {
-            setChanged();
-            notifyObservers();
         }
     }
 }

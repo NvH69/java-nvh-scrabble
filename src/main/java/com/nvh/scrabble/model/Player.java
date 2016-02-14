@@ -1,6 +1,6 @@
 package com.nvh.scrabble.model;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Scrabble.Solution;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class Player extends Observable implements Serializable {
         this.name = name;
         this.points = points;
         this.words = words;
-        this.addObserver(Launcher.game);
+        this.addObserver(ScrabbleController.game);
     }
 
 
