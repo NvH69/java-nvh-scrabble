@@ -17,7 +17,7 @@ public class ProgressWindow extends JInternalFrame implements Observer {
     public ProgressWindow() {
         this.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 11));
 
-        this.setBounds(15, 30, 60, 640);
+        this.setBounds(15, 25, 60, 650);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 

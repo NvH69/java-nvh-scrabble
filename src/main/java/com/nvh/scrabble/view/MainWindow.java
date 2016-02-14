@@ -37,9 +37,23 @@ public class MainWindow extends JFrame implements Observer {
     public static JRadioButtonMenuItem manualDrawingButton = new JRadioButtonMenuItem("Tirage manuel");
     public static JRadioButtonMenuItem autoDrawingButton = new JRadioButtonMenuItem("Tirage automatique");
 
-    public static String mainFont = "DejaVu Sans Mono";
+    public static String mainFont;
 
     public MainWindow(Scrabble game) {
+
+        System.out.println(System.getProperty("os.name").substring(0, 3));
+        switch (System.getProperty("os.name").substring(0, 3)) {
+            case "Lin":
+                mainFont = "DejaVu Sans Mono";
+                break;
+            case "Mac":
+                mainFont = "Monaco";
+                break;
+            case "Win":
+                mainFont = "Consolas";
+            default:
+                mainFont = "System";
+        }
 
         getContentPane().setBackground(Color.BLACK);
         JMenuBar menuBar = new JMenuBar();

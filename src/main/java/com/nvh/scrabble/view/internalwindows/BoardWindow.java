@@ -30,22 +30,31 @@ public class BoardWindow extends JInternalFrame implements Observer {
         ImageIcon boardIcon = new ImageIcon(resourceLoader.getFileFromResource(boardPath).getPath());
         ImagePanel boardPanel = new ImagePanel(boardIcon.getImage(), 0, 0);
         this.getContentPane().add(boardPanel);
+        this.setFocusable(false);
         setContentPane(boardPanel);
         GridBagLayout gridBagLayout = new GridBagLayout();
         gridBagConstraints.anchor = GridBagConstraints.NORTH;
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        gridBagLayout.columnWidths = new int[]{40, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 0};
-        gridBagLayout.rowHeights = new int[]{15, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 0};
+        gridBagLayout.rowWeights =
+                new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        gridBagLayout.columnWidths =
+                new int[]{40, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 34, 0};
+        gridBagLayout.rowHeights =
+                new int[]{15, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 0};
         getContentPane().setLayout(gridBagLayout);
 
         for (int i = 0; i < letterImages.length; i++) {
-            letterImages[i] = new ImageIcon(resourceLoader.getFileFromResource(woodFiles + letters.charAt(i) + ".jpg").getAbsolutePath());
+            letterImages[i] =
+                    new ImageIcon(resourceLoader.getFileFromResource(
+                            woodFiles + letters.charAt(i) + ".jpg").getAbsolutePath());
             if (letters.charAt(i) != '0')
-                jokerImages[i] = new ImageIcon(resourceLoader.getFileFromResource(woodFiles + letters.charAt(i) + "0.jpg").getAbsolutePath());
+                jokerImages[i] =
+                        new ImageIcon(resourceLoader.getFileFromResource(
+                                woodFiles + letters.charAt(i) + "0.jpg").getAbsolutePath());
         }
     }
 
-    public static void drawLetter(char c, int x, int y, boolean joker, Object o) {//dessine une lettre dans un objet graphique donné (o)
+    public static void drawLetter(char c, int x, int y, boolean joker, Object o) {
+        //dessine une lettre dans un objet graphique donné (o)
         if (Character.isAlphabetic(c) || c == '0') {
             JLabel jLabel;
             if (!joker) jLabel = new JLabel(letterImages[letters.indexOf(c)]);
