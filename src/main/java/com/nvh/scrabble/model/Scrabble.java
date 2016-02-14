@@ -352,6 +352,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             notifyObservers(obj); //
             setChanged();
             notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre tirage
+            this.setPhase(0);
         } else //pour tout autre évènement :
         {
             setChanged();

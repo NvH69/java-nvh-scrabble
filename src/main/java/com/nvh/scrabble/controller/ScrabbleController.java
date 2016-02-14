@@ -13,7 +13,6 @@ import com.nvh.scrabble.view.internalwindows.SolutionWindow;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observer;
 
 public class ScrabbleController {
 
@@ -36,12 +35,7 @@ public class ScrabbleController {
         gameFrame = new MainWindow(game);
         gameFrame.setVisible(true);
 
-        game.addObserver((Observer) MainWindow.scoreFrame);
-        game.addObserver((Observer) MainWindow.messageLabel);
-        game.addObserver((Observer) MainWindow.solutionsFrame);
-        game.addObserver((Observer) MainWindow.gridFrame);
-        game.addObserver((Observer) MainWindow.lettersPane);
-        game.addObserver((Observer) MainWindow.progressionFrame);
+        ObserversController.swingObserversImplementer(game);
 
         while (!game.isRunning()) {
             game.notifyObservers();
@@ -50,6 +44,7 @@ public class ScrabbleController {
             else
                 MainWindow.mainButton.setText("Partie terminée");
         }
+
         while (game.isRunning()) {
 
             switch (game.getPhase()) {
@@ -128,12 +123,10 @@ public class ScrabbleController {
                         e.printStackTrace();
                     }
                     GameWindow.update();
-                    game.setPhase(0);
                     break;
             }
         }
         //si la partie n'est plus en cours (par manque de lettres)
         MainWindow.mainButton.setText("Partie terminée");
-
     }
 }

@@ -52,7 +52,7 @@ public class Grid extends Observable implements Serializable {
 
     private ArrayList<ArrayList<Character>> resetGrid() {
         ArrayList<ArrayList<Character>> newGrid = new ArrayList<>();
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 15; i++) {
             if (i != 7)
                 newGrid.add(new ArrayList<>
                         (Arrays.asList(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')));
