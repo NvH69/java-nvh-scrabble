@@ -10,16 +10,14 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ProgressWindow extends JFrame implements Observer {
+public class ProgressWindow extends JInternalFrame implements Observer {
     private static final long serialVersionUID = -596843077674913400L;
     static public JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL, 0, Dictionary.dictionary.size());
 
     public ProgressWindow() {
         this.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 11));
 
-        this.setBounds(168, 150, 45, 620);
-        this.setAlwaysOnTop(true);
-        this.setUndecorated(true);
+        this.setBounds(15, 30, 60, 640);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -27,9 +25,7 @@ public class ProgressWindow extends JFrame implements Observer {
         contentPane.setLayout(null);
 
         progressBar.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
-        progressBar.setBounds(0, 0, 45, 620);
-        this.setBackground(Color.black);
-        progressBar.setBackground(Color.black);
+        progressBar.setBounds(0, 0, 45, 640);
         contentPane.add(progressBar, BorderLayout.CENTER);
         setResizable(false);
         contentPane.setVisible(true);
