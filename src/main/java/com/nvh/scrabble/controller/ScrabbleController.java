@@ -43,9 +43,13 @@ public class ScrabbleController {
         game.addObserver((Observer) MainWindow.lettersPane);
         game.addObserver((Observer) MainWindow.progressionFrame);
 
-        while (!game.isRunning())
+        while (!game.isRunning()) {
             game.notifyObservers();
-
+            if (currentTurn == 1)
+                MainWindow.mainButton.setText("En attente...");
+            else
+                MainWindow.mainButton.setText("Partie terminée");
+        }
         while (game.isRunning()) {
 
             switch (game.getPhase()) {

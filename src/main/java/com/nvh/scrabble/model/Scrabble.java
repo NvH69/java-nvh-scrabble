@@ -1,5 +1,7 @@
 package com.nvh.scrabble.model;
 
+import com.nvh.scrabble.controller.ScrabbleController;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +49,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
     }
 
     public void copyOf(Scrabble toCopy) {
-        this.running = true;
         this.setGrid(toCopy.grid);
         this.setPlayers(toCopy.players);
         this.autoDrawing = toCopy.autoDrawing;
@@ -61,7 +62,9 @@ public class Scrabble extends Observable implements Serializable, Observer {
         else
             this.drawing = "";
         this.turn = toCopy.turn;
+        ScrabbleController.currentTurn = this.turn;
         this.grid.fittings();
+        this.running = this.isStillDrawable();
         setChanged();
         notifyObservers();
     }
