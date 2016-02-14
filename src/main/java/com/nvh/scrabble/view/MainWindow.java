@@ -23,7 +23,7 @@ public class MainWindow extends JFrame implements Observer {
     public static JInternalFrame gridFrame = new BoardWindow();
     public static JInternalFrame solutionsFrame = new SolutionWindow();
     public static JInternalFrame scoreFrame = new ScoreWindow();
-    public static JFrame progressionFrame = new ProgressWindow();
+    public static JInternalFrame progressionFrame = new ProgressWindow();
     public static JTextPane lettersPane = new LettersPane();
     public static JLabel timerLabel = new JLabel("");
     public static JButton mainButton = new JButton();
@@ -110,6 +110,7 @@ public class MainWindow extends JFrame implements Observer {
         getContentPane().add(gridFrame);
         getContentPane().add(solutionsFrame);
         getContentPane().add(scoreFrame);
+        getContentPane().add(progressionFrame);
         getContentPane().add(mainButton);
         getContentPane().add(messageLabel);
         getContentPane().add(gameFrame);
