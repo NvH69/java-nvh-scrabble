@@ -1,6 +1,6 @@
 package com.nvh.scrabble.view.internalwindows;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Scrabble;
 import com.nvh.scrabble.view.MainWindow;
 
@@ -34,10 +34,10 @@ public class ScoreWindow extends JInternalFrame implements Observer {
         scoreTable.setAlignmentX(CENTER_ALIGNMENT);
         scoreTable.getSelectionModel().addListSelectionListener(e -> {
             if (scoreTable.getSelectedRow() > 0 &&
-                    scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
+                    scoreTable.getSelectedRow() < ScrabbleController.game.getNumberOfPlayers())
                 GameWindow.updatePlayer(scoreTable.getSelectedRow());
             else if (scoreTable.getSelectedRow() == 0 &&
-                    scoreTable.getSelectedRow() < Launcher.game.getNumberOfPlayers())
+                    scoreTable.getSelectedRow() < ScrabbleController.game.getNumberOfPlayers())
                 GameWindow.update();
         });
     }
@@ -51,9 +51,9 @@ public class ScoreWindow extends JInternalFrame implements Observer {
             r[i][1] = String.valueOf(((Scrabble) game).getPlayer(i).getPoints());
             if (((Scrabble) game).getPlayer(0).getPoints() == 0) r[i][2] = "---";
             else {
-                double pct = Launcher.game.getPlayer(i).getPoints() * 100 / ((Scrabble) game).getPlayer(0).getPoints();
-                if (Launcher.game.getPlayer(i).getWordsCount() >
-                        Launcher.game.getSolutions().size()) r[i][2] = "OK !";
+                double pct = ScrabbleController.game.getPlayer(i).getPoints() * 100 / ((Scrabble) game).getPlayer(0).getPoints();
+                if (ScrabbleController.game.getPlayer(i).getWordsCount() >
+                        ScrabbleController.game.getSolutions().size()) r[i][2] = "OK !";
                 else r[i][2] = (int) (pct) + "%";
 
             }

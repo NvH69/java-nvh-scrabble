@@ -1,6 +1,6 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
-import com.nvh.scrabble.Launcher;
+import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ public class LettersPane extends JTextPane implements Observer {
     public void update(Observable arg0, Object obj) {
 
         if (obj instanceof String) {
-            setText("Lettres restantes : " + Launcher.game.getLetters().size() + "\n" + Launcher.game.getCountOfRemainingLetters());
+            setText("Lettres restantes : " + ScrabbleController.game.getLetters().size() + "\n" + ScrabbleController.game.getCountOfRemainingLetters());
             setFont(new Font(MainWindow.mainFont, Font.PLAIN, 12));
         }
     }
