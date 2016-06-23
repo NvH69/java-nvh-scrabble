@@ -465,7 +465,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
                         int index = 0;
                         wordToTest.setCharAt(i, '*');
                         //insertion choix de la position du joker
-                        //si le joker est placé sur case bonus ET le drawing
+                        //si le joker est placé sur case bonus ET le tirage
                         //contient déjà la lettre cherchée
                         if (grid.getBonus(x + i, y) > 1 && drawing.contains(Character.toString(word.charAt(i)))) {
                             //échange de position entre le joker et la lettre déjà placée
