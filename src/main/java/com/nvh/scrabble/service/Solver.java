@@ -64,8 +64,6 @@ public class Solver extends Observable {
             allSolutions.clear();
             dictionaryIndex++;
         }
-        MainWindow.progressionFrame.setVisible(true);
-
         Collections.sort(solutions);
         setChanged();
         notifyObservers(solutions);

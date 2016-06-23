@@ -32,10 +32,10 @@ public class Dictionary {
         }
     }
 
-    public static boolean isCorrectlySpelled(String s) {
+    public static boolean isCorrectlySpelled(String toCheck) {
 
         for (String word : dictionary) {
-            if (s.equals(word)) return true;
+            if (toCheck.equals(word)) return true;
         }
         return false;
     }
