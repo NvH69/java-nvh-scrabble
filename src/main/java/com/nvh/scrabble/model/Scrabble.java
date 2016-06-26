@@ -346,10 +346,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
             this.addSolution((Solution) obj); //ajout de la solution à la partie
             this.getPlayer(0).addPoints(((Solution) obj).getPoints()); //ajout des points du TOP
-            this.setTurn(this.getTurn() + 1); //avancée d'un turn
+            this.setTurn(this.getTurn() + 1); //avancée d'un tour
 
             setChanged();
-            notifyObservers(obj); //
+            notifyObservers(obj);
             setChanged();
             notifyObservers(((Solution) obj).getRemainingDrawing()); //notification pour la fenêtre tirage
             this.setPhase(0);
@@ -413,7 +413,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         }
 
         public String[] isMatchingWord(String drawing, Grid grid)
-        // Teste un Word placé : renvoie les letters utilisées (index 0) et le drawing restant (index1)
+        // Teste un mot placé : renvoie les lettres utilisées (index 0) et le tirage restant (index1)
         // OU null si impossible
         {
             String word = this.word;
@@ -552,7 +552,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
             for (String s : allWords) // parcourir tous les nouveaux mots
                 if (!grid.getWordList().contains("_" + s + "_") && s.length() > 1) //si  un nouveau mot est formé
-                    // vérif de l'isCorrectlySpelled
+                    // vérification de l'orthographe
                     if (!Dictionary.isCorrectlySpelled(s)) return null;
             //si tous les mots sont corrects
             information[0] = wordToTest.toString();
@@ -713,8 +713,8 @@ public class Scrabble extends Observable implements Serializable, Observer {
 
                     }
                 }
-
             }
+            //si un Scrabble est obtenu, on ajoute 50 points
             if (Objects.equals(wordSequence[1], "[]") && getDrawing().length() > 6) points += 50;
             return points;
         }

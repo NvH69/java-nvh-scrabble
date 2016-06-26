@@ -81,9 +81,20 @@ public class Grid extends Observable implements Serializable {
                 (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
         newBonus.add(new ArrayList<>
                 (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 20, 1, 1, 1, 2, 1, 1, 30)));
-        for (int i = 6; i >= 0; i--) {
-            newBonus.add(newBonus.get(i));
-        }
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 3, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 1, 1, 20, 1, 1, 1, 1, 1, 20, 1, 1, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(2, 1, 1, 20, 1, 1, 1, 2, 1, 1, 1, 20, 1, 1, 2)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 1, 20, 1, 1, 1, 2, 1, 2, 1, 1, 1, 20, 1, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(1, 20, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1, 20, 1)));
+        newBonus.add(new ArrayList<>
+                (Arrays.asList(30, 1, 1, 2, 1, 1, 1, 30, 1, 1, 1, 2, 1, 1, 30)));
         return newBonus;
     }
 
@@ -152,37 +163,36 @@ public class Grid extends Observable implements Serializable {
                 else this.setBonus(x, y + i, 1);        //matérialise les cases bonus occupées
             }
         }
-        // mise à jour des fittings
         //mise à jour des mots formés
-
         List<String> placedWords = this.placedWords(); // liste de tous les mots  + nouveaux
-        //String motsPresents = this.allCells();
 
         // ajouter le nouveau mot à la liste des mots de la game
         placedWords.stream().filter
                 (tm -> !this.getWordList().contains("_" + tm + "_") && tm.length() > 1).forEach(this::setWordList);
         this.setChanged();
-        this.notifyObservers(solution); //notification nouvelle solution à game
-        this.fittings(); //mise à jour de la grille avec les nouveaux fittings
+        this.notifyObservers(solution); //notification de nouvelle solution à la partie
+        this.fittings(); //mise à jour de la grille avec les nouvelles connexions possibles
 
     }
 
-    public void setWord(Word word) {// place un word "test" : pour placer véritablement un word : setSolution
+    // place un mot "test" : pour placer définitivemnt un mot : setSolution
+    public void setWord(Word word) {
         int x = word.getX();
         int y = word.getY();
-        //écriture du word dans la grille (H et V)
+        //écriture du mot dans la grille (H et V)
         if (word.isHorizontal()) {
             for (int i = 0; i < word.lenght(); i++) {
-                this.set(x + i, y, word.charAt(i));    //remplissage
+                this.set(x + i, y, word.charAt(i));    //placement horizontal
             }
         } else {
             for (int i = 0; i < word.lenght(); i++) {
-                this.set(x, y + i, word.charAt(i));    //remplissage
+                this.set(x, y + i, word.charAt(i));    //sinon placement vertical
             }
         }
     }
 
-    public void fittings() //place # sur toutes les cases de fittings
+    //place # sur toutes les cases de connexions possibles
+    public void fittings()
     {
         setFilledCoordinates(new int[]{14, 0, 14, 0});
         for (int x = 0; x < 15; x++)
@@ -204,7 +214,8 @@ public class Grid extends Observable implements Serializable {
                 }
     }
 
-    public List<String> placedWords() {//renvoie la liste de tous les mots présents dans une grille
+    //renvoie la liste de tous les mots présents dans une grille
+    public List<String> placedWords() {
         List<String> placedWords = new ArrayList<>();
 
         String horizontalAnswers = "";
