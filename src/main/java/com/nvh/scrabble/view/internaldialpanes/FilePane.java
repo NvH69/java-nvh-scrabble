@@ -18,9 +18,9 @@ import java.util.Calendar;
 public class FilePane extends JFrame {
     private static final long serialVersionUID = -4105494649356150949L;
     private static URL directory;
-    JTextArea textArea = new JTextArea();
-    JButton actionButton = new JButton();
-    Calendar calendar = Calendar.getInstance();
+    private JTextArea textArea = new JTextArea();
+    private JButton actionButton = new JButton();
+    private Calendar calendar = Calendar.getInstance();
     private JTree tree;
     private JScrollPane scrollPane = new JScrollPane();
 
@@ -53,7 +53,7 @@ public class FilePane extends JFrame {
         displayTree();
     }
 
-    public void displayTree() {
+    private void displayTree() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(directory);
         DefaultMutableTreeNode savedgames = new DefaultMutableTreeNode(directory.getPath());
         try {
@@ -125,7 +125,7 @@ public class FilePane extends JFrame {
         });
     }
 
-    public String actualDate() {
+    private String actualDate() {
         int jour = calendar.get(Calendar.DAY_OF_MONTH);
         int mois = calendar.get(Calendar.MONTH);
         int annee = calendar.get(Calendar.YEAR);

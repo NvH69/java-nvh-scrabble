@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 public class ResourceLoader implements Serializable {
     private static final long serialVersionUID = 5417648932725664389L;
-    File file = null;
+    private File file = null;
 
     public File getFileFromResource(String resource) {
 

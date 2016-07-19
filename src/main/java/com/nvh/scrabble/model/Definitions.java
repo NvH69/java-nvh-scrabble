@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Definitions {
 
-    public static final List<String> definitionsDictionary = new ArrayList<>();
+    private static final List<String> definitionsDictionary = new ArrayList<>();
     private static final String definitionsFile = "/dictionaries/definitions.txt";
     private static ResourceLoader resourceLoader = new ResourceLoader();
 

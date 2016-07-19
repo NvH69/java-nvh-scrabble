@@ -7,17 +7,17 @@ import java.util.Calendar;
 public class Timer extends Thread implements Serializable {
 
     private static final long serialVersionUID = -6290616549583735992L;
-    public static boolean isTicking = false;
-    public static StringBuffer tempLcd = new StringBuffer("");
-    public static Calendar calendar;
-    ResourceLoader resourceLoader = new ResourceLoader();
-    final File timerShort = resourceLoader.getFileFromResource("/sounds/timer_short.wav");
-    final File ding = resourceLoader.getFileFromResource("/sounds/ding.wav");
-
+    private static boolean isTicking = false;
+    private static StringBuffer tempLcd = new StringBuffer("");
+    private static Calendar calendar;
     private final long dtReset;
-    public String display;
+    private ResourceLoader resourceLoader = new ResourceLoader();
+    private final File timerShort = resourceLoader.getFileFromResource("/sounds/timer_short.wav");
+    private final File ding = resourceLoader.getFileFromResource("/sounds/ding.wav");
+    private String display;
     private boolean isOn;
     private long dt;
+
     public Timer(long dt) {
         this.dt = dt + 1000 + System.currentTimeMillis();
         this.dtReset = dt + 1000;
@@ -78,7 +78,7 @@ public class Timer extends Thread implements Serializable {
         if (this.isOn) this.isOn = false;
     }
 
-    public void reset() {
+    void reset() {
         dt = dtReset + System.currentTimeMillis();
         isOn = true;
         isTicking = false;

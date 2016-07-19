@@ -27,21 +27,19 @@ public class MainWindow extends JFrame implements Observer {
     public static JTextPane lettersPane = new LettersPane();
     public static JLabel timerLabel = new JLabel("");
     public static JButton mainButton = new JButton();
-
     public static JMenuItem addPlayerMenuItem = new JMenuItem("Ajouter joueur...");
     public static JCheckBoxMenuItem autoTopCheckBox = new JCheckBoxMenuItem("Top automatique");
     public static JMenuItem LauncherMenuItem = new JMenuItem("Lancer !");
     public static JMenuItem saveMenuItem = new JMenuItem("Sauvegarder...");
     public static JMenuItem loadMenuItem = new JMenuItem("Reprendre...");
-    public static JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Annonce des tirages");
     public static JRadioButtonMenuItem manualDrawingButton = new JRadioButtonMenuItem("Tirage manuel");
     public static JRadioButtonMenuItem autoDrawingButton = new JRadioButtonMenuItem("Tirage automatique");
-
     public static String mainFont;
+
+    private static JCheckBoxMenuItem soundCheckBox = new JCheckBoxMenuItem("Annonce des tirages");
 
     public MainWindow(Scrabble game) {
 
-        System.out.println(System.getProperty("os.name").substring(0, 3));
         switch (System.getProperty("os.name").substring(0, 3)) {
             case "Lin":
                 mainFont = "DejaVu Sans Mono";

@@ -10,9 +10,8 @@ import java.util.Objects;
 
 public class ManualDrawingPane extends JDialog {
     private static final long serialVersionUID = 1L;
-    JLabel newLettersLabel = new JLabel("Entrer nouvelles letters (+) ou nouveau tirage (-)");
-    JTextField textField;
-    JButton okButton = new JButton("OK");
+    private JLabel newLettersLabel = new JLabel("Entrer nouvelles letters (+) ou nouveau tirage (-)");
+    private JTextField textField;
 
     public ManualDrawingPane(Scrabble game) {
         setModal(true);
@@ -50,6 +49,7 @@ public class ManualDrawingPane extends JDialog {
             textField.grabFocus();
         });
 
+        JButton okButton = new JButton("OK");
         okButton.setBounds(155, 113, 100, 47);
         contentPane.add(okButton);
         okButton.setVisible(true);

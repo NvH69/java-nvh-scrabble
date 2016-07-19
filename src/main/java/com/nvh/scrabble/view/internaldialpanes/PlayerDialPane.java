@@ -9,10 +9,7 @@ import java.awt.*;
 
 public class PlayerDialPane extends JDialog {
     private static final long serialVersionUID = 1L;
-    JLabel titleLabel = new JLabel("Entrer le pseudo du nouveau joueur");
-    JButton okButton = new JButton("OK");
-    JButton cancelButton = new JButton("Annuler");
-    JFormattedTextField playerTextField = new JFormattedTextField();
+    private JFormattedTextField playerTextField = new JFormattedTextField();
 
     public PlayerDialPane(Scrabble game) {
         setModal(true);
@@ -24,6 +21,7 @@ public class PlayerDialPane extends JDialog {
         this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
+        JLabel titleLabel = new JLabel("Entrer le pseudo du nouveau joueur");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setRequestFocusEnabled(false);
         titleLabel.setFont(new Font(MainWindow.mainFont, Font.PLAIN, 16));
@@ -31,6 +29,7 @@ public class PlayerDialPane extends JDialog {
 
         contentPane.add(titleLabel);
 
+        JButton okButton = new JButton("OK");
         okButton.setBounds(246, 113, 100, 47);
         contentPane.add(okButton);
 
@@ -38,6 +37,7 @@ public class PlayerDialPane extends JDialog {
         contentPane.add(playerTextField);
 
 
+        JButton cancelButton = new JButton("Annuler");
         cancelButton.addActionListener(arg0 -> {
         });
         cancelButton.setBounds(51, 113, 100, 47);

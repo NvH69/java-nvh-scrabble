@@ -19,8 +19,8 @@ public class ScrabbleController {
     public static int currentTurn = 1;
     public static Scrabble game;
     public static JFrame gameFrame;
-    public static Solver solver = new Solver();
-    static ArrayList<Player> players = new ArrayList<>();
+    private static Solver solver = new Solver();
+    private static ArrayList<Player> players = new ArrayList<>();
 
     public ScrabbleController() {
 

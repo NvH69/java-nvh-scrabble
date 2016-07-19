@@ -3,13 +3,13 @@ package com.nvh.scrabble.service;
 import javax.sound.sampled.*;
 import java.io.*;
 
-public class SampledSound implements Serializable {
+class SampledSound implements Serializable {
 
     private static final long serialVersionUID = -724230047417667272L;
     private AudioFormat format;
     private byte[] samples;
 
-    public SampledSound(String filename) {
+    SampledSound(String filename) {
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
             format = stream.getFormat();
@@ -19,11 +19,11 @@ public class SampledSound implements Serializable {
         }
     }
 
-    public byte[] getSamples() {
+    private byte[] getSamples() {
         return samples;
     }
 
-    public byte[] getSamples(AudioInputStream stream) {
+    private byte[] getSamples(AudioInputStream stream) {
         int length = (int) (stream.getFrameLength() * format.getFrameSize());
         samples = new byte[length];
         DataInputStream in = new DataInputStream(stream);
@@ -35,7 +35,7 @@ public class SampledSound implements Serializable {
         return samples;
     }
 
-    public void play() {
+    void play() {
         InputStream source = new ByteArrayInputStream(this.getSamples());
 
         int bufferSize = 1000000;

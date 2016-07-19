@@ -5,9 +5,9 @@ import com.nvh.scrabble.view.MainWindow;
 
 import java.util.Observer;
 
-public class ObserversController {
+class ObserversController {
 
-    public static void swingObserversImplementer(Scrabble game) {
+    static void swingObserversImplementer(Scrabble game) {
         game.addObserver((Observer) MainWindow.scoreFrame);
         game.addObserver((Observer) MainWindow.messageLabel);
         game.addObserver((Observer) MainWindow.solutionsFrame);

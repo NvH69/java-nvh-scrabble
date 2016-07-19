@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Dictionary {
 
-    public static final String dictionaryFile = "/dictionaries/ODS6.txt";
     public static final List<String> dictionary = new ArrayList<>();
+    private static final String dictionaryFile = "/dictionaries/ODS6.txt";
     private static ResourceLoader resourceLoader = new ResourceLoader();
 
     public Dictionary() {
@@ -32,7 +32,7 @@ public class Dictionary {
         }
     }
 
-    public static boolean isCorrectlySpelled(String toCheck) {
+    static boolean isCorrectlySpelled(String toCheck) {
 
         for (String word : dictionary) {
             if (toCheck.equals(word)) return true;

@@ -7,13 +7,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Serializer {
-private static URL path;
+    private static URL path;
 
     public static void write(Scrabble game, String name) throws IOException {
 
         ObjectOutputStream oos;
         try {
-           path = new File(name).toURI().toURL();
+            path = new File(name).toURI().toURL();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

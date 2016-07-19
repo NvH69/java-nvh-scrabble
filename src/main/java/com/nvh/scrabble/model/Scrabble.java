@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 
 public class Scrabble extends Observable implements Serializable, Observer {
     public static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ*";
-    public final static int[] letterValues =
-            {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
+
     private static final long serialVersionUID = 1L;
-    public ArrayList<Character> letters = new ArrayList<>(102);
-    String allLetters = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
-            + "GGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRR"
-            + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
+    private final static int[] letterValues =
+            {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0};
+    private ArrayList<Character> letters = new ArrayList<>(102);
     private ArrayList<Player> players;
     private String drawing;
     private ArrayList<Solution> solutions;
@@ -44,6 +42,9 @@ public class Scrabble extends Observable implements Serializable, Observer {
         grid.addObserver(this);
 
         //init letters
+        String allLetters = "AAAAAAAAABBCCDDDEEEEEEEEEEEEEEEFF"
+                + "GGHHIIIIIIIIJKLLLLLMMMNNNNNNOOOOOOPPQRRRRRR"
+                + "SSSSSSTTTTTTUUUUUUVVWXYZ**";
         for (int i = 0; i < allLetters.length(); i++)
             this.letters.add(allLetters.charAt(i));
     }
@@ -73,7 +74,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return this.grid;
     }
 
-    public void setGrid(Grid toBeCopied) {
+    private void setGrid(Grid toBeCopied) {
         for (int x = 0; x < 15; x++)
             for (int y = 0; y < 15; y++) {
                 this.grid.set(x, y, toBeCopied.get(x, y));
@@ -92,7 +93,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     }
 
 
-    public void setPlayers(ArrayList<Player> j) {
+    private void setPlayers(ArrayList<Player> j) {
         this.players = new ArrayList<>();
         this.players.addAll(j.stream().collect(Collectors.toList()));
         setChanged();
@@ -123,7 +124,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return turn;
     }
 
-    public void setTurn(int turn) {
+    private void setTurn(int turn) {
         this.turn = turn;
     }
 
@@ -132,7 +133,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
     }
 
 
-    public void addSolution(Solution solution) {
+    private void addSolution(Solution solution) {
         solutions.add(solution);
         setChanged();
         notifyObservers();
@@ -162,7 +163,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
         return phase;
     }
 
-    public void setPhase(int phase) {
+    private void setPhase(int phase) {
         this.phase = phase;
     }
 
@@ -284,7 +285,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return this.drawing;
     }
 
-    public void setDrawing(String drawing) {
+    private void setDrawing(String drawing) {
         if (Objects.equals(drawing, "")) {
             this.drawing = "";
             return;
@@ -403,7 +404,7 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return word;
         }
 
-        public int letterValue(char c) {
+        int letterValue(char c) {
             return letterValues[alphabet.indexOf(c)];
         }
 
@@ -560,16 +561,16 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return information;
         }
 
-        public int lenght() {
+        int lenght() {
             if (word != null) return word.length();
             return 0;
         }
 
-        public char charAt(int i) {
+        char charAt(int i) {
             return word.charAt(i);
         }
 
-        public String onlyDigits(String s) {
+        String onlyDigits(String s) {
             String digits = "";
             for (int i = 0; i < s.length(); i++) {
                 Character toTest = s.charAt(i);
@@ -769,10 +770,6 @@ public class Scrabble extends Observable implements Serializable, Observer {
             return remainingDrawing;
         }
 
-        public String getSequence() {
-            return this.information[0];
-        }
-
         public String getWordWithJokers() //renvoie le mot solution avec la lettre remplacée par un joker entre ( )
         {
             String reponse = "";
@@ -782,6 +779,10 @@ public class Scrabble extends Observable implements Serializable, Observer {
                 else reponse += "(" + this.word.getWord().charAt(c) + ")";
             }
             return reponse;
+        }
+
+        String getSequence() {
+            return this.information[0];
         }
 
         @Override

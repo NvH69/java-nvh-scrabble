@@ -29,7 +29,7 @@ public class Player extends Observable implements Serializable {
         return this.points;
     }
 
-    public void addPoints(int p) {
+    void addPoints(int p) {
         this.points += p;
         setChanged();
         notifyObservers();
