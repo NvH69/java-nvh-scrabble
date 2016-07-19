@@ -4,3 +4,4 @@
 *.iml
 /*.dat
 /target
+*.log
