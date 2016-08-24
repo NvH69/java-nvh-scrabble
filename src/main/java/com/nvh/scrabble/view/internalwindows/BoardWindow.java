@@ -1,7 +1,7 @@
 package com.nvh.scrabble.view.internalwindows;
 
 import com.nvh.scrabble.model.Grid;
-import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.model.Solution;
 import com.nvh.scrabble.service.ResourceLoader;
 
 import javax.swing.*;
@@ -81,8 +81,8 @@ public class BoardWindow extends JInternalFrame implements Observer {
 
     @Override
     public void update(Observable obs, Object obj) {
-        if (obj instanceof Scrabble.Solution) {
-            Scrabble.Solution s = (Scrabble.Solution) obj;
+        if (obj instanceof Solution) {
+            Solution s = (Solution) obj;
             String mot = s.getWord().getWord();
             for (int i = 0; i < mot.length(); i++) {
                 if (s.getWord().isHorizontal()) {

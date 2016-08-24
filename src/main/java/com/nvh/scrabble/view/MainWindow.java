@@ -2,7 +2,8 @@ package com.nvh.scrabble.view;
 
 import com.nvh.scrabble.controller.ScrabbleController;
 import com.nvh.scrabble.model.Scrabble;
-import com.nvh.scrabble.model.Scrabble.Solution;
+import com.nvh.scrabble.model.Solution;
+import com.nvh.scrabble.model.Word;
 import com.nvh.scrabble.service.Solver;
 import com.nvh.scrabble.view.internaldialpanes.ConfirmationPane;
 import com.nvh.scrabble.view.internaldialpanes.FilePane;
@@ -154,7 +155,7 @@ public class MainWindow extends JFrame implements Observer {
                 if (!areAllPlayersDone && SolutionWindow.table.getSelectedRow() != -1) {//place le coup d'un joueur autre que TOP si possible :
                     if (SolutionWindow.table.getSelectedRow() <= Solver.solutions.size())
                         if (SolutionWindow.table.getSelectedRow() == 0)
-                            solution = game.new Solution(0, game.new Word("-------", "A1"), null);
+                            solution = new Solution(game, 0, new Word("-------", "A1"), null);
                         else
                             solution = Solver.solutions.get(SolutionWindow.table.getSelectedRow() - 1);
 

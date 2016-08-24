@@ -1,6 +1,7 @@
 package com.nvh.scrabble.view.internaldialpanes;
 
 import com.nvh.scrabble.model.Scrabble;
+import com.nvh.scrabble.model.Solution;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
@@ -45,7 +46,7 @@ public class ConfirmationPane extends JDialog {
         this.setVisible(true);
     }
 
-    public ConfirmationPane(Scrabble game, int player, Scrabble.Solution solution) {
+    public ConfirmationPane(Scrabble game, int player, Solution solution) {
         setTitle("Confirmation");
         setModal(true);
         setBounds(600, 460, 469, 193);

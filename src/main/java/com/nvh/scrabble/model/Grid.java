@@ -1,8 +1,5 @@
 package com.nvh.scrabble.model;
 
-import com.nvh.scrabble.model.Scrabble.Solution;
-import com.nvh.scrabble.model.Scrabble.Word;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;

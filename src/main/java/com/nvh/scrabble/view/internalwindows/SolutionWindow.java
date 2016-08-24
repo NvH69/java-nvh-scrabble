@@ -1,7 +1,7 @@
 package com.nvh.scrabble.view.internalwindows;
 
 import com.nvh.scrabble.controller.ScrabbleController;
-import com.nvh.scrabble.model.Scrabble.Solution;
+import com.nvh.scrabble.model.Solution;
 import com.nvh.scrabble.view.MainWindow;
 
 import javax.swing.*;
